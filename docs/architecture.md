@@ -74,6 +74,7 @@ path is not a valid service route merely because the graph contains it.
 | --- | --- |
 | `structure.consistency` | Validated counts, or structural error messages for mutated Python inputs |
 | `connectivity.physical_path` | Explicit source/destination, path node IDs and link IDs, physical scope |
+| `bandwidth.traffic_evaluability` | One finding per incomplete communicating service, provider/consumer IDs and all missing demand/routes, independent of link presence |
 | `bandwidth.nominal_link_budget` | Link capacity, per-direction/shared routed demands, missing information, assumptions |
 | `requirement.evaluability` | Free-text or unsupported isolation constraint and why it is unevaluated |
 
@@ -92,6 +93,13 @@ Port speeds are not substituted for missing link capacity. If any communicating
 service has unknown demand or any missing consumer route, the unknown traffic might
 use any link. Every otherwise passing link check becomes `NOT_EVALUATED`. A known
 overload still fails because additional traffic cannot remove the demonstrated excess.
+Incomplete traffic also emits a service-level `bandwidth.traffic_evaluability` finding
+with `WARNING` severity, `NOT_EVALUATED` status, and a null requirement ID: this check
+applies to the declared traffic inventory independently of scoped link requirements.
+Its affected components include the service, provider, and consumers; evidence lists
+both missing demand and each missing consumer route. This finding is emitted even
+with zero links. Empty architectures and services without consumers add no traffic
+finding. Complete services add no extra finding, preserving the sample report counts.
 These are nominal budget checks over the declared traffic inventory, not guaranteed
 throughput, scheduling, or service-delivery checks. An isolation requirement always
 remains `NOT_EVALUATED` in Phase 1, including when devices appear physically disconnected.

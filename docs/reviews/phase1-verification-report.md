@@ -1,560 +1,484 @@
 # Phase 1 Independent Verification Report
 
-Audit date: **2026-11-10 (Europe/Berlin)**  
-Project: **Automotive E/E Architecture AI Copilot — Phase 1**  
-Repository: `/home/alvin/eeai/auto-ee-arch-ai-copilot`  
-Decision: **NO-GO pending correction of D-001**
+Audit date: **2026-11-10 (Europe/Berlin), independent rerun after remediation**
+Project: **Automotive E/E Architecture AI Copilot — Phase 1**
+Decision: **CONDITIONAL GO**
+Repository: `/home/alvin/eeai/auto-ee-arch-ai-copilot`
 
-This is an audit of the existing working tree, not an implementation change. The base
-commit is `a6fc1e244c4b8f1cf0245a95eb5e43136e00384f`, but most implementation files
-are untracked and README.md was already modified. The commit alone therefore does
-not identify the audited implementation. A pre-audit SHA-256 manifest covered 43
-non-cache repository files; its digest is
-`1816c53d56685604c29a838832346c290d84dc822c03fd9c833e595d87e06245`.
-Line references below refer to that working-tree snapshot and are repository-relative.
+This rerun supersedes the original NO-GO assessment in this report. The original
+HIGH defect D-001 is now **CLOSED — independently verified**. The implementation and
+regression tests were already changed before this rerun; the auditor changed only
+this verification report. The separate remediation report was read as context, not
+accepted as proof of its execution claims.
 
-Only this report was added to the repository. Existing application code, tests,
-configuration, dependency files, and documentation were not changed. Temporary probes,
-logs, coverage outputs, caches, and distributions were kept under `/tmp`. No external
-service, cloud credential, LLM API, or proprietary automotive data was used. Nothing
-was automatically repaired.
+The base commit is `322002fe0583df10ececcc48b995eef08406cb1c`; the audited working tree
+also contains changes to the validator, README, architecture documentation and ADR,
+plus an untracked traffic-completeness test module and remediation report. A pre-rerun
+SHA-256 manifest covered 46 non-cache files, including the prior report. Its digest is
+`3a80bf052c91895f55dfae99136cd7ac6ef7ae9c4506f420fca5c0c393df44de`.
+References below are repository-relative and refer to this working-tree snapshot.
+
+No source, test, dependency or project configuration file was changed by the auditor.
+New execution artifacts are under `/tmp/phase1-reaudit`; original audit artifacts were
+preserved. No external service, cloud credentials, proprietary data or LLM API was
+used. No image was pulled and no issue was silently repaired.
 
 ## 1. Executive Summary
 
-The implementation substantially achieves Phase 1's intended lightweight foundation:
-Pydantic v2 domain models, reference validation, a NetworkX physical multigraph,
-explicit routed-demand budgets, structured findings, stateless FastAPI endpoints,
-synthetic examples, automated checks, CI configuration, and architecture documentation.
-The domain and analysis services can support a separate Requirements RAG pipeline
-without structural redesign.
+The deterministic Phase 1 core now satisfies the locally verified modeling, topology,
+validation, API and engineering-quality objectives. D-001 no longer causes unsupported
+PASS results: incomplete communicating services emit an independent
+`bandwidth.traffic_evaluability` finding even with zero links. Missing demand and routes
+remain visible, while demonstrated engineering failures retain precedence.
 
-One **HIGH** defect prevents approval of the Phase 1 validation contract. A model with
-two ECUs, a communicating service, no physical links, and no traffic route receives
-an overall **PASS**. Missing demand also disappears in this case. The validator
-collects missing traffic information but only exposes it through link findings;
-with zero links, it emits no such finding. This is an unsupported success for
-incomplete engineering input, not a schema rejection issue. Python and REST probes
-reproduce it. See D-001.
-
-| Traceability outcome | Count |
+| Requirement classification | Count |
 | --- | ---: |
-| PASS | 16 |
-| PARTIAL | 3 |
-| FAIL | 1 |
+| PASS | 19 |
+| PARTIAL | 1 |
+| FAIL | 0 |
 | NOT VERIFIED | 0 |
-| Total Phase 1 requirements | 20 |
+| Total | 20 |
 
-These are requirement-level classifications, not test counts. Docker is PARTIAL
-because its configuration is inspected but runtime behavior is **NOT VERIFIED**.
-Remote CI execution and the Python 3.13 matrix leg are also **NOT VERIFIED** subchecks.
-Later-phase AI, RAG, vector storage, agents, deployment, and production TSN analysis
-are **NOT APPLICABLE** to this audit and are not counted as missing Phase 1 features.
+These are requirement-level outcomes. Docker is PARTIAL: configuration is verified,
+but image build/runtime behavior remains **NOT VERIFIED**. Remote CI execution and
+Python 3.13 execution are also **NOT VERIFIED** subchecks. Later-phase LLM, RAG,
+vector databases, agents, deployment and production TSN analysis are
+**NOT APPLICABLE**, not Phase 1 omissions.
 
-Execution evidence:
+Fresh execution evidence:
 
-- Existing suite: **92 passed**, measured **100.00% statement-and-branch coverage**
-  over 454 statements and 108 branches; the 90% configured gate passed.
-- Ruff lint and formatting checks passed; strict mypy passed for 23 files across
-  `src` and `tests`.
-- Offline locked dependency dry run resolved 43 packages, checked 42, and proposed
-  no changes. Installed package versions checked against the lockfile had no mismatches.
-- Independent probe harness: **74 checks, 71 expectations satisfied, 3 failed
-  expectations**, all three reproducing D-001. An explicitly labeled namespace
-  observation is included among the satisfied checks; these are not 74 new project tests.
-- Source distribution and wheel both built successfully offline using the existing cache.
-- Docker CLI could not operate in this WSL distribution; no image build or container
-  execution is claimed.
+- **108 tests passed**, including 16 new traffic-completeness regression cases and all
+  92 original cases; **100.00% measured statement-and-branch coverage**, with 461
+  statements and 112 branches fully covered.
+- Original independent probe harness: **74/74 expectations satisfied**. All three
+  previously failing D-001 expectations now pass. These are supplemental checks,
+  including a labeled namespace observation, not additional committed tests.
+- Ruff lint and formatting checks, strict mypy on `src` and `tests`, locked offline
+  dependency consistency, and offline source/wheel builds passed.
+- Docker daemon access is now available outside the sandbox, but neither required
+  base image is cached. Building would require image retrieval, which this audit
+  does not authorize. Container execution therefore remains unverified.
 
-**Phase 2 readiness: Ready with minor changes.** The necessary change is a bounded
-validation correction and regression coverage, not a new architecture. Close D-001
-before treating the existing validator as an authoritative tool or completing the
-Phase 1 gate. A fresh readiness decision must consider the correction's actual results.
+**Open confirmed defects: 0 CRITICAL, 0 HIGH, 0 MEDIUM, 0 LOW.** The former HIGH defect
+is retained below as a closed finding with reproduction and closure evidence.
+
+**Phase 2 readiness: Ready without structural changes.** Requirements RAG can proceed
+around the existing core. The remaining conditions concern container and remote CI
+verification, not a reproduced deterministic-core defect. An unconditional GO is not
+issued while the container verification gap remains.
 
 ## 2. Requirement Traceability Matrix
 
-PASS means sufficient inspection and/or execution evidence for the stated requirement.
-PARTIAL means a material limitation remains. FAIL means a reproduced contract violation.
-Evidence identifiers M/T/BW/V/API/S refer to the independent checks described below.
+PASS requires sufficient inspection and/or execution evidence for the stated
+requirement. PARTIAL means an implementation/verification limitation remains.
+M/T/BW/V/API/S identifiers refer to the independent probe families detailed below.
 
 | ID | Requirement | Implementation | Test Evidence | Status |
 | --- | --- | --- | --- | --- |
-| P1-001 | uv dependency management | `pyproject.toml:1–28`; `uv.lock:1–80`; `.python-version:1` | Offline locked all-groups dry run: no changes; installed/locked comparison: no mismatches; offline package build succeeds | PASS |
-| P1-002 | ECU model | `src/ee_arch_copilot/domain/models/ecu.py:12–31` | M00/M01; `tests/test_models.py:24–119`; six sample ECUs load | PASS |
-| P1-003 | Network interfaces | `src/ee_arch_copilot/domain/models/network.py:18–34`; `common.py:13–15` | M05/M10–M16/M20/M21; duplicate interface, CAN VLAN, finite quantity tests | PASS |
-| P1-004 | Ethernet switches | `src/ee_arch_copilot/domain/models/network.py:37–48` | M02/M04; `tests/test_models.py:129–151`; sample switch ports validate | PASS |
-| P1-005 | Network links | `src/ee_arch_copilot/domain/models/network.py:51–67`; `architecture.py:55–81` | M03–M06/M09/M16/M19/M20; endpoint, speed, uniqueness and self-link tests | PASS |
-| P1-006 | Services | `src/ee_arch_copilot/domain/models/service.py:17–57`; `architecture.py:83–118` | M07/M08/M15; route integrity and cycle rejection in `tests/test_models.py:60–78,154–164` | PASS |
-| P1-007 | Requirements | `src/ee_arch_copilot/domain/models/requirement.py:11–61`; `architecture.py:120–135` | M22; standalone requirement loading; type discriminator and component/reference rejection tests | PASS |
-| P1-008 | Root architecture validation | `src/ee_arch_copilot/domain/models/architecture.py:24–135` | Independent invalid-data challenges M01–M20 reject invalid structures; M23 round trip; V05 mutation revalidation | PASS |
-| P1-009 | NetworkX topology | `src/ee_arch_copilot/services/topology.py:57–138` | T01–T07: multiple paths, islands, isolation, neighbors, absent endpoint, parallel links, repeatable JSON | PASS |
-| P1-010 | Connectivity validation | `src/ee_arch_copilot/services/validator.py:89–139` | V01/V02/V03 verify PASS, FAIL and NOT_EVALUATED; cross-VLAN/cross-technology scope limitations inspected | PASS |
-| P1-011 | Bandwidth validation | `src/ee_arch_copilot/services/validator.py:86–88,118–152,154–238` | A–F pass for modeled links; D01/D01b/D01c expose incorrect overall PASS with zero links and incomplete traffic | FAIL |
-| P1-012 | Structured validation findings | `src/ee_arch_copilot/services/validator.py:19–45,144–152,216–238` | V04 verifies fields and repeatability; D-001 shows missing-information evidence can disappear entirely | PARTIAL |
-| P1-013 | FastAPI REST endpoints | `src/ee_arch_copilot/api/routes/architecture.py:16–44`; `health.py:11–19`; `main.py:11–40` | All 25 existing API tests pass; API01–API11 verify schemas, 200/404/422/500 behavior and statelessness; D-001 remains a validator defect surfaced by REST | PASS |
-| P1-014 | Synthetic sample data | `data/examples/centralized_architecture.json:1–408`; `requirements.json:1–77` | S01–S03: internally valid, standalone requirements match; 9 PASS / 2 NOT_EVALUATED / 0 FAIL | PASS |
-| P1-015 | Unit and API tests | `tests/conftest.py:16–91`; four test modules | 92 passed; 100.00% measured coverage; substantive assertions; missing zero-link traffic combination documented in D-001 | PASS |
-| P1-016 | Ruff and mypy | `pyproject.toml:33–49`; `.pre-commit-config.yaml:1–20` | Ruff lint passes; 27 files already formatted; strict mypy succeeds on 23 files | PASS |
-| P1-017 | Docker | `Dockerfile:1–18`; `.dockerignore:1–13` | Configuration inspected: locked runtime install, no dev group, non-root application command; Docker runtime/build NOT VERIFIED because WSL integration unavailable | PARTIAL |
-| P1-018 | GitHub Actions | `.github/workflows/ci.yml:1–35` | Inspection confirms locked install, formatting, lint, mypy, coverage tests, package build, Python 3.12/3.13 and no required secrets; remote execution NOT VERIFIED | PASS |
-| P1-019 | Documentation | `README.md:30–53,171–205,241–259`; `docs/architecture.md:13–116`; ADR and roadmap | Scope and architecture accurately described; missing-traffic status claims at README 196–198 / architecture 91–94 lack the D-001 exception | PARTIAL |
-| P1-020 | Phase 2 extensibility | `requirement.py:47–61`; `validator.py:31–45,48–49`; `docs/architecture.md:99–115`; `docs/roadmap.md:14–21` | Standalone requirement and JSON round-trip probes; service dependency inspection; typed, machine-readable results; no structural redesign needed | PASS |
+| P1-001 | uv dependency management | `pyproject.toml:1–28`; `uv.lock:1–80`; `.python-version:1` | Locked offline all-groups dry run proposes no changes; 42 installed/locked versions compared without mismatch; source/wheel build passes | PASS |
+| P1-002 | ECU model | `src/ee_arch_copilot/domain/models/ecu.py:12–31` | Valid input and duplicate ECU challenges M00/M01; six sample ECUs load | PASS |
+| P1-003 | Network interfaces | `src/ee_arch_copilot/domain/models/network.py:18–34`; `common.py:13–15` | M05/M10–M16/M20/M21 verify technology, quantity and VLAN behavior; existing interface tests pass | PASS |
+| P1-004 | Ethernet switches | `src/ee_arch_copilot/domain/models/network.py:37–48` | M02/M04 cross-kind device duplication and missing port checks; existing switch-port tests pass | PASS |
+| P1-005 | Network links | `src/ee_arch_copilot/domain/models/network.py:51–67`; `architecture.py:55–81` | Unknown endpoint/interface, negative/zero capacity, duplicate ID and endpoint-speed challenges reject invalid input | PASS |
+| P1-006 | Services | `src/ee_arch_copilot/domain/models/service.py:17–57`; `architecture.py:83–118` | Provider/consumer, nonfinite demand and route-integrity tests pass | PASS |
+| P1-007 | Requirements | `src/ee_arch_copilot/domain/models/requirement.py:11–61`; `architecture.py:120–135` | Standalone M22 requirement validation, sample array equality, discriminator/component-reference tests pass | PASS |
+| P1-008 | Root architecture validation | `src/ee_arch_copilot/domain/models/architecture.py:24–135` | Independent malformed structures rejected; M23 round trip and V05 mutation revalidation pass | PASS |
+| P1-009 | NetworkX topology | `src/ee_arch_copilot/services/topology.py:57–138` | T01–T07 verify paths, islands, isolation, neighbors, unknown endpoint, parallel links and repeated JSON | PASS |
+| P1-010 | Connectivity validation | `src/ee_arch_copilot/services/validator.py:90–140` | V01–V03 verify PASS, FAIL and NOT_EVALUATED; physical-only scope retained | PASS |
+| P1-011 | Bandwidth validation | `src/ee_arch_copilot/services/validator.py:86–87,155–269` | A–F and extra directional/decimal checks pass; D01/D01b/D01c now pass; 16 regression cases cover remediation and controls | PASS |
+| P1-012 | Structured validation findings | `src/ee_arch_copilot/services/validator.py:19–45,145–153,175–197,247–269` | Fields, evidence and repeatability verified; zero-link missing traffic now has an independent finding | PASS |
+| P1-013 | FastAPI REST endpoints | `src/ee_arch_copilot/api/routes/architecture.py:16–44`; `health.py:11–19`; `main.py:11–40` | 25 original API tests, 3 new TestClient cases, and independent 200/404/422/500/OpenAPI/statelessness checks pass | PASS |
+| P1-014 | Synthetic sample data | `data/examples/centralized_architecture.json:1–408`; `requirements.json:1–77` | S01–S03: valid references; CAN/Ethernet represented; standalone requirements match; 9 PASS / 2 NOT_EVALUATED / 0 FAIL | PASS |
+| P1-015 | Unit and API tests | `tests/conftest.py:16–91`; original test modules; `tests/test_traffic_completeness.py:14–131` | 108 passed; measured 100.00% statement-and-branch coverage; meaningful new evidence/precedence/control assertions | PASS |
+| P1-016 | Ruff and mypy | `pyproject.toml:33–49`; `.pre-commit-config.yaml:1–20` | Ruff lint passes; 30 files already formatted; strict mypy succeeds on 24 files | PASS |
+| P1-017 | Docker | `Dockerfile:1–18`; `.dockerignore:1–13` | Configuration inspected; daemon accessible; required base images absent; image build/runtime NOT VERIFIED | PARTIAL |
+| P1-018 | GitHub Actions | `.github/workflows/ci.yml:1–35` | Configured locked install, format/lint/types/coverage/build, Python 3.12/3.13, no required application secrets; remote execution NOT VERIFIED | PASS |
+| P1-019 | Documentation | `README.md:188–210`; `docs/architecture.md:71–124`; ADR and roadmap | Updated traffic-evaluability guarantees match executed zero-link results; physical and later-phase limits remain explicit | PASS |
+| P1-020 | Phase 2 extensibility | `requirement.py:47–61`; `validator.py:31–49`; `docs/architecture.md:107–124`; `docs/roadmap.md:14–21` | Standalone requirements, JSON round trips, machine-readable evidence and inward dependency boundaries verified | PASS |
 
 ## 3. Domain Model Assessment
 
-All requested entity models exist with operational Pydantic validation, not just
-placeholder fields:
+**PASS.** Domain modules and topology implementation match the original audit's
+content hashes. They were independently challenged again; earlier execution results
+were not substituted for the current run.
 
-| Model | Verified representation and invariants |
+| Model | Verified properties and source |
 | --- | --- |
-| ECU | ID, name, enum type, optional description, interfaces; local interface uniqueness (`ecu.py:21–31`) |
-| Interface | ID, Ethernet/CAN technology, optional positive finite nominal Mbps speed, strict integer VLAN annotations (`network.py:23–34`) |
-| Ethernet switch | ID, name, optional description, nonempty Ethernet-only ports; local port uniqueness (`network.py:37–48`) |
-| Link | ID, source/destination device and interface IDs, technology, optional positive finite nominal Mbps bandwidth; no device self-links (`network.py:51–67`) |
-| Service | ID/name, provider ECU, consumer ECUs, protocol enum, optional nonnegative finite Mbps demand and explicit routes (`service.py:25–57`) |
-| Requirement | ID, description, type, associated components, optional discriminated structured constraints with matching kind (`requirement.py:18–61`) |
-| Architecture | Entity collections and aggregate uniqueness/reference/route checks (`architecture.py:24–135`) |
+| ECU | ID, name, enum ECU type, description, network interfaces; local interface uniqueness (`ecu.py:21–31`) |
+| Interface | ID, Ethernet/CAN technology, optional positive finite nominal Mbps speed, VLAN membership (`network.py:23–34`) |
+| Ethernet switch | ID/name/description, nonempty Ethernet-only ports, local uniqueness and per-port speeds/VLANs (`network.py:37–48`) |
+| Link | ID, source/destination device and interface, technology, optional positive finite Mbps capacity; self-link rejection (`network.py:51–67`) |
+| Service | ID/name, provider, consumers, protocol, optional nonnegative finite Mbps demand, explicit consumer routes (`service.py:25–57`) |
+| Requirement | ID/description/type, associated components, optional discriminated structured constraints (`requirement.py:18–61`) |
+| Architecture | Collection uniqueness, endpoint/service/requirement references, technology/speed/route invariants (`architecture.py:24–135`) |
 
-The root aggregate checks device uniqueness across ECUs and switches, collection-local
-link/service/requirement uniqueness, endpoint and interface existence, technology
-compatibility, known endpoint speed ceilings, Ethernet point-to-point interface use,
-provider/consumer existence, and requirement references. Traffic routes must use known
-links in a contiguous, cycle-free path terminating at the stated consumer.
+Independent invalid-input challenges, all satisfied again:
 
-Independent invalid-data results:
+| Scenario | Actual outcome |
+| --- | --- |
+| Duplicate ECU IDs | Rejected: `Duplicate device IDs` |
+| ECU and switch sharing a device ID | Rejected: `Duplicate device IDs` |
+| Nonexistent endpoint ECU | Rejected: `unknown device` |
+| Nonexistent switch port | Rejected: `unknown interface/port` |
+| Ethernet link using a CAN-only interface | Rejected: `interface technology mismatch` |
+| Negative or zero link capacity | Rejected: quantity must be greater than zero |
+| Nonexistent provider | Rejected: `unknown provider ECU` |
+| Nonexistent consumer | Rejected: `unknown consumer ECU` |
+| Duplicate link identifier | Rejected: `Duplicate link IDs` |
+| VLAN 0/4095, duplicate IDs, string or boolean IDs | Rejected with bound, uniqueness or integer diagnostics |
+| VLAN boundaries 1 and 4094 | Accepted |
+| Valid disjoint endpoint VLAN memberships | Accepted as annotations, without a forwarding claim |
+| Infinite demand, malformed identifier, unknown field, capacity above known port speed | Rejected with meaningful errors |
+| Valid architecture, standalone requirement, JSON round trip | Accepted; round-trip equality preserved |
 
-| Scenario | Actual outcome | Classification |
-| --- | --- | --- |
-| Duplicate ECU IDs | Rejected: `Duplicate device IDs` | PASS |
-| Duplicate ECU/switch device ID | Rejected: `Duplicate device IDs` | PASS |
-| Unknown link endpoint ECU | Rejected: `unknown device` | PASS |
-| Unknown switch port | Rejected: `unknown interface/port` | PASS |
-| Ethernet link attached to CAN-only interface | Rejected: `interface technology mismatch` | PASS |
-| Negative or zero link capacity | Rejected: quantity must be greater than zero | PASS |
-| Unknown service provider | Rejected: `unknown provider ECU` | PASS |
-| Unknown service consumer | Rejected: `unknown consumer ECU` | PASS |
-| Duplicate link ID | Rejected: `Duplicate link IDs` | PASS |
-| VLAN 0, 4095, duplicate IDs, string or boolean IDs | Rejected with bound/uniqueness/integer errors | PASS |
-| VLANs 1 and 4094 | Accepted | PASS |
-| Different valid VLAN lists on the two endpoints | Accepted as annotations; no VLAN forwarding claim | PASS within documented scope |
-| Infinite demand, malformed identifier, unknown field, capacity above known port speed | Rejected with meaningful errors | PASS |
-| Valid synthetic architecture and JSON round trip | Accepted; equality preserved | PASS |
+Existing assertions additionally cover duplicate interfaces/ports/services/requirements,
+CAN VLAN rejection, route cycles, noncontiguous/unknown/wrong-destination routes,
+requirement type mismatches and invalid component/constraint references.
 
-The existing suite additionally verifies duplicate interface/port/service/requirement
-IDs, CAN VLAN rejection, self-links, route cycles, requirement kind mismatches and
-unknown requirement component/constraint references. Assertions inspect actual errors,
-not only whether an arbitrary exception occurred.
+Schema rejection and engineering findings are distinguished: invalid references are
+model errors/HTTP 422; a valid model with an unmet physical connectivity requirement
+produces an engineering FAIL. Isolated ECUs and empty architectures are structurally
+allowed. D-001's fix correctly preserves structural acceptance.
 
-Structural invalidity is rejected during Pydantic construction and HTTP request
-validation. A structurally valid but insufficient physical connection becomes an
-engineering finding. No finding is expected for every isolated ECU unless a modeled
-connectivity requirement demands a path (`docs/architecture.md:54–56`).
-
-Identifiers have bounded syntax and consistent normalization through the shared base
-model (`common.py:9–23`). Cross-kind reuse is deliberately allowed for a device, link
-and service, as documented. Probe OBS01 accepted all three named `a`; a bare
-`associated_components: ["a"]` does not encode which kind is intended. This is a
-documented namespace limitation, not a violation of promised global uniqueness.
-Phase 2 consumers should retain entity-kind context when interpreting these references;
-the audit does not require a speculative domain redesign.
-
-Numeric Mbps fields use finite floats at the input boundary, then Decimal for
-summation. Numeric string coercion is permitted by Pydantic's default float behavior;
-strict integers are explicitly required for VLANs. The audit does not interpret
-the schema as a promise of strict JSON numeric-token validation for every quantity.
+Identifier syntax/normalization is centralized (`common.py:9–23`). Device IDs are unique
+across ECUs and switches; links, services and requirements use collection-local
+uniqueness. OBS01 again confirms documented cross-kind reuse: device, link and service
+may all be named `a`. A generic component string does not encode entity kind. This
+known namespace limitation is not a violation of promised global uniqueness; downstream
+records should retain kind context when necessary. No speculative refactor is required.
+Finite float fields allow normal Pydantic numeric coercion; VLAN integers explicitly
+use strict validation. Exact arbitrary-precision input quantities are not promised.
 
 ## 4. Topology Engine Assessment
 
-**PASS for the declared physical topology scope.**
+**PASS for physical topology.** The implementation remains an undirected NetworkX
+`MultiGraph`, keyed by unique link ID (`topology.py:63–94`). It creates ECU/switch nodes
+and preserves endpoint/interface IDs, technology, nominal capacity and endpoint VLANs.
+Parallel links with distinct physical interfaces remain separate graph/export edges.
 
-`TopologyService._build_graph` creates an undirected `nx.MultiGraph`, includes every
-ECU and switch, and keys each edge by its unique physical link ID (`topology.py:63–94`).
-Endpoint interfaces, technology, nominal capacity and both endpoint VLAN lists survive
-serialization. Parallel links use distinct interfaces and remain distinct edges.
+The rerun's T01–T07 checks verified:
 
-Independent checks established:
+- A connected four-device cycle with alternative physical paths and a valid two-hop query.
+- An isolated ECU and an absent physical path, plus separate connected islands with no isolates.
+- Sorted direct neighbors and reference-relative unreachable-device queries.
+- An explicit `UnknownDeviceError` for nonexistent endpoints.
+- Two preserved physical links between the same devices.
+- Serializable topology responses and five identical exports for identical input.
 
-- A four-device cycle has two alternative physical routes; the query returns a valid
-  two-hop path. This route is not used for bandwidth assignment.
-- An isolated device produces `exists: false` for a query from another component.
-  Separate connected islands remain visible even when neither island contains an isolate.
-- Neighbor queries return sorted unique device IDs; reference-relative disconnection
-  identifies all unreachable devices.
-- Unknown endpoints raise `UnknownDeviceError`; REST maps this to 404.
-- Two separate links between the same ECU pair survive both the graph and JSON export.
-- Five identical exports produce identical JSON. Repeated validation outputs are also
-  consistent for unchanged inputs.
+An unweighted shortest device path is returned; each parallel hop uses the smallest
+link ID (`topology.py:100–115`). This representative path does not assign service traffic.
+Equivalent documents with reordered collections are not guaranteed canonical output or
+identical equal-hop path choices; determinism for identical input was verified.
 
-Path queries use an unweighted minimum-hop device path and the lexicographically
-smallest parallel link per hop (`topology.py:100–115`). Equal-hop device paths and
-node/edge array order can depend on input insertion order; there is no promise of
-canonicalization across reordered but equivalent documents. Determinism for identical
-input was verified; canonical equality across permutations is not claimed.
-
-The API and findings explicitly state physical scope and retain limitations. The
-sample body-to-ADAS path crosses CAN/Ethernet adjacency without asserting gateway
-translation. Neither disjoint VLAN annotations nor physical adjacency prove VLAN
-reachability, IP routing, SOME/IP discovery, application availability, or TSN timing.
-This correctly respects Phase 1 boundaries.
+Physical adjacency does not imply VLAN forwarding, IP routing, SOME/IP discovery,
+application availability or TSN compliance. Responses explicitly expose physical scope
+and limitations. Cross-CAN/Ethernet paths do not establish gateway translation. These
+limits correctly match Phase 1 rather than missing future-phase functionality.
 
 ## 5. Validation Engine Assessment
 
-**Structural rules: PASS. Connectivity: PASS. Bandwidth: FAIL due to D-001.**
+**PASS for the declared structural, physical connectivity and nominal budget contract.**
 
-The validator revalidates a snapshot of the root aggregate; invalid nested mutations
-produce an explicit structural FAIL rather than silently bypassing model invariants
-(`validator.py:49–68`). A topology service separately snapshots its input. A mutated
-provider reference was independently rejected.
+Root snapshot revalidation protects service entry points against prior model mutations
+(`validator.py:49–68`); V05 rechecks an invalid mutated provider. Connectivity findings
+retain requirement IDs, endpoints, scope and path evidence. Valid paths PASS, a required
+missing path FAILS, and absent structured constraints produce NOT_EVALUATED. Isolation
+and unsupported free text remain explicitly unevaluated.
 
-Connectivity constraints generate a physical-path finding with requirement ID,
-affected endpoints and path evidence. Connected input passes, a required absent path
-fails, and a connectivity requirement without structured constraints is NOT_EVALUATED.
-Isolation constraints and free-text latency are explicitly NOT_EVALUATED.
+Bandwidth demand is declared provider-to-consumer unicast **per consumer**, in Mbps.
+Only explicit ordered link routes assign demand. Every traversed link receives that
+flow's load; Ethernet uses per-direction budgets and CAN a shared local link budget.
+Capacity comes from the specific link rather than an inferred port speed.
 
-Bandwidth semantics are sufficiently explicit for a basic nominal check:
-
-- Every named speed/demand/capacity field is in Mbps.
-- Service demand is a declared provider-to-consumer unicast demand **per consumer**.
-- Only explicit ordered link routes assign demand. Shortest paths do not choose traffic routes.
-- Each routed flow contributes to every traversed link; Ethernet uses per-direction
-  budgets, CAN uses a shared local link budget (`validator.py:154–189`).
-- Known link capacity, rather than inferred endpoint speed, is the comparison value.
-- Missing communicating demand/routes conservatively affect all otherwise passing
-  link checks; a demonstrated known overload still fails (`validator.py:198–215`).
-- Evidence distinguishes a nominal budget from guaranteed application throughput,
-  delivery, latency, overhead, or scheduling.
-
-| Engineering scenario | Independent input and observed result | Assessment |
+| Independent scenario | Fresh observed result | Status |
 | --- | --- | --- |
-| A: Below capacity | 60 Mbps explicitly mapped to a 100 Mbps link; demand evidence `60.0`, PASS | PASS |
-| B: Above capacity | Three mapped services: 60 + 25 + 20 Mbps; evidence `105.0`, FAIL on 100 Mbps | PASS |
-| C: Missing routing | 60 Mbps service, modeled 100 Mbps link, route absent; NOT_EVALUATED and missing-route evidence | PASS for modeled links; see zero-link exception |
-| D: Shared bottleneck | Separate `a→x→y→c` and `b→x→y→d` flows at 60 and 50 Mbps; shared `x→y` link has `110.0` and FAIL; other links PASS | PASS |
-| E: Multiple routes | Two alternative paths, no selected route; all budgets NOT_EVALUATED. Selecting one explicit path evaluates it without assigning traffic to the other | PASS |
-| F: Missing bandwidth | Missing demand or link capacity independently produces NOT_EVALUATED | PASS for modeled links; see zero-link exception |
+| A: 60 Mbps mapped to 100 Mbps capacity | PASS; demand evidence `60.0` | PASS |
+| B: 60 + 25 + 20 Mbps mapped to 100 Mbps | FAIL; aggregated demand `105.0` | PASS |
+| C: Demand exists, no selected route | NOT_EVALUATED, missing-route evidence; works with and without links | PASS |
+| D: Distinct flows share a 100 Mbps bottleneck | 60 and 50 Mbps combine to `110.0`; shared link FAILS, other links PASS | PASS |
+| E: Alternative paths without selected route | NOT_EVALUATED; an explicitly selected route evaluates without assigning traffic to the alternative | PASS |
+| F: Missing demand or relevant link capacity | NOT_EVALUATED; demand and missing route can both be reported | PASS |
 
-Additional checks verified a known overload plus an unknown flow still FAILS; 60 Mbps
-in each Ethernet direction fits separate 100 Mbps budgets; the same two demands fail
-a shared 100 Mbps CAN budget; and 0.1 + 0.2 fits a declared 0.3 Mbps budget.
+Extra independent checks pass: known overload with other unknown traffic remains FAIL;
+60 Mbps each way fits separate 100 Mbps Ethernet direction budgets but exceeds a shared
+100 Mbps CAN budget; Decimal summation accepts 0.1 + 0.2 against 0.3 Mbps.
 
-**D-001 exception:** when no link exists, incomplete service traffic has no link finding
-through which to propagate its missing-information evidence. The aggregate status then
-becomes PASS. This affects the completeness and semantic consistency of the result
-contract, even though the A–F cases with modeled links behave correctly.
+The remediation adds one `bandwidth.traffic_evaluability` finding per incomplete
+communicating service, independently of link iteration (`validator.py:155–197`). It
+includes WARNING severity, NOT_EVALUATED, null requirement ID, service/provider/consumer
+components, explanation and missing demand/routes. This global inventory check does
+not fabricate a bandwidth requirement or infer service reachability.
 
-`ValidationFinding` has every requested field: rule ID, nullable requirement ID,
-severity, status, affected components, explanation and JSON-compatible evidence
-(`validator.py:31–38`). A bandwidth requirement can yield one finding per scoped link;
-unscoped links still receive checks with no requirement ID. FAIL takes precedence over
-NOT_EVALUATED, then PASS. Five identical report executions were compared successfully.
-The D-001 omission means this precedence cannot help when the relevant finding is absent.
+Known demand still accumulates on explicitly routed consumer paths. Missing traffic
+conservatively makes otherwise passing link checks NOT_EVALUATED; known overloads
+retain FAIL. Complete services and services without consumers do not add an extra
+traffic finding. Empty/no-traffic controls retain their documented behavior.
+
+All findings include rule ID, nullable requirement ID, severity, status, components,
+explanation and JSON evidence (`validator.py:31–38`). FAIL takes precedence over
+NOT_EVALUATED, then PASS (`validator.py:145–153`). Repeated independent reports are
+identical for identical input. New tests also check that validation leaves the caller's
+architecture unchanged. Nominal budgets do not guarantee throughput, delivery or latency.
 
 ## 6. REST API Assessment
 
-**PASS for HTTP adapter behavior; D-001 is also exposed through the validation endpoint.**
+**PASS.** Both original ASGITransport tests and independent FastAPI TestClient probes
+execute real in-process requests. All expected endpoints and typed successful responses
+are present; OpenAPI generation includes the four application paths and response schemas.
 
-All expected endpoints are registered. Architecture request bodies and the path envelope
-are Pydantic schemas; all successful responses have declared response models. Generated
-OpenAPI contains exactly the four application paths and referenced response schemas.
-
-| Check | Observed HTTP/result |
+| Scenario | Fresh result |
 | --- | --- |
-| `GET /health` | 200, `status: ok`, version `0.1.0`, phase 1 |
-| Valid architecture validation | 200, structured findings |
-| Valid topology | 200, physical nodes/edges/components |
-| Physical path found | 200, `exists: true`, path evidence |
-| Physical path absent | 200, `exists: false` |
-| Unknown but syntactically valid query device ID | 404 with unknown-device detail |
-| Malformed device ID syntax | 422 |
-| Invalid architecture endpoint reference | 422 with meaningful reference error |
-| Empty object, array, string, integer or missing/null architecture body | 422 with diagnostics |
-| Malformed JSON | 422 |
-| NaN/nonfinite bandwidth input | 422, serializable error response |
-| Schema-valid mapped overload | 200, engineering status FAIL |
-| Unexpected injected validator exception | 500, `Internal Server Error`; no success envelope |
+| `GET /health` | 200, status ok, version 0.1.0, phase 1 |
+| Valid architecture validation/topology | 200, meaningful typed reports/graph data |
+| Physical path found / absent | 200, `exists: true` / `exists: false` |
+| Unknown valid-syntax query device | 404 with meaningful detail |
+| Invalid device ID syntax or structure | 422 with diagnostics |
+| Missing fields, array/string/integer/null body | 422 |
+| Malformed JSON or nonfinite bandwidth | 422, serializable error detail |
+| Schema-valid engineering overload | 200 with engineering FAIL |
+| Incomplete zero-link service | 200 with NOT_EVALUATED and independent missing-traffic evidence |
+| Unexpected injected validator exception | 500, Internal Server Error; no success envelope |
 | A / empty / A topology submissions | Identical A responses, no retained architecture state |
-| D-001 zero-link incomplete communicating traffic | 200, **incorrect engineering status PASS** |
+| OpenAPI | Four application paths; referenced response schemas |
 
-The independent checks used FastAPI TestClient and no external server. The existing
-suite uses in-process httpx ASGITransport. The single failure-injection check temporarily
-patched a Python method in memory; it did not alter application files. The API catches
-only the known query error, allowing unexpected failures to remain server errors.
+The unexpected-error probe temporarily patches a method in memory solely to exercise
+failure handling. It changes no application file. Request-validation handling avoids
+nonfinite input values breaking JSON error serialization (`main.py:21–33`). HTTP 200
+for completed engineering analysis is appropriate even when a finding is FAIL or
+NOT_EVALUATED; schema errors remain separate.
 
-The custom request-validation handler avoids echoing raw nonfinite values that could
-break JSON error encoding (`main.py:21–33`). Source inspection and the existing four
-nonfinite-token API cases support this behavior.
+Three new TestClient regression cases at `tests/test_traffic_completeness.py:109–131`
+verify demand None/0/60 with no links: HTTP 200, NOT_EVALUATED, correct affected
+components, all missing information, and equality with direct Python validation.
 
 ## 7. Testing and Engineering Quality
 
-The audit used the existing Python **3.12.16** environment. Resolved tool/library versions
-included uv **0.13.7**, Pydantic **2.14.3**, NetworkX **3.7**, FastAPI **0.162.3**,
-pytest **9.2.0**, pytest-cov **7.1.0**, Ruff **0.17.4**, mypy **1.20.2** and httpx **0.28.1**.
-
-The shell did not expose uv on PATH; the existing binary was available at
-`/tmp/ee-arch-uv/bin/uv`. Commands below ran from the repository root with this prefix:
+Fresh commands ran on Python **3.12.16**, uv **0.13.7**, using the existing environment.
+No dependency upgrade or installation was needed. Unless noted, each uv command used:
 
 ```bash
 env -u PYTHONPATH PYTHONDONTWRITEBYTECODE=1 \
-  UV_CACHE_DIR=/tmp/phase1-audit/uv-cache UV_PYTHON_DOWNLOADS=never
+  UV_CACHE_DIR=/tmp/ee-arch-uv-cache UV_PYTHON_DOWNLOADS=never
 ```
 
-This prefix was followed by the executable/arguments listed below; coverage added
-`COVERAGE_FILE=/tmp/phase1-audit/.coverage`. Removing inherited PYTHONPATH follows the
-README's documented environment advice. No dependency installation or upgrade was needed.
+The prefix was followed by the executable/arguments in the table. Tests additionally
+set `COVERAGE_FILE=/tmp/phase1-reaudit/.coverage`. Coverage, caches, distributions and
+probe outputs were redirected outside the repository.
 
-| Executed command after environment prefix | Actual result |
+| Executed command after prefix | Actual result |
 | --- | --- |
-| `/tmp/ee-arch-uv/bin/uv sync --locked --all-groups --dry-run --offline` | Exit 0; `Resolved 43 packages`; `Checked 42 packages`; `Would make no changes` |
-| `/tmp/ee-arch-uv/bin/uv run --no-sync --offline ruff check --no-cache .` | Exit 0; `All checks passed!` |
-| `/tmp/ee-arch-uv/bin/uv run --no-sync --offline ruff format --check --no-cache .` | Exit 0; `27 files already formatted` |
-| `/tmp/ee-arch-uv/bin/uv run --no-sync --offline mypy --cache-dir /tmp/phase1-audit/mypy src tests` | Exit 0; `Success: no issues found in 23 source files` |
-| `timeout 45s /tmp/ee-arch-uv/bin/uv run --no-sync --offline pytest -p no:cacheprovider -o 'addopts=--strict-markers --strict-config --cov=ee_arch_copilot --cov-report=term-missing --cov-report=xml:/tmp/phase1-audit/coverage.xml'` | Exit 0 outside sandbox; **92 passed in 0.47s**, coverage gate passed |
-| `/tmp/ee-arch-uv/bin/uv build --offline --out-dir /tmp/phase1-audit/dist` with the initially empty audit uv cache | Exit 2; hatchling unavailable in that offline cache; no implementation failure inferred |
-| Same build with `UV_CACHE_DIR=/tmp/ee-arch-uv-cache` (existing project cache) | Exit 0; source distribution and wheel built successfully |
+| `/tmp/ee-arch-uv/bin/uv sync --locked --all-groups --dry-run --offline` | Exit 0; resolved 43 packages, checked 42; would make no changes |
+| `/tmp/ee-arch-uv/bin/uv run --no-sync --offline ruff check --no-cache .` | Exit 0; all checks passed |
+| `/tmp/ee-arch-uv/bin/uv run --no-sync --offline ruff format --check --no-cache .` | Exit 0; 30 files already formatted |
+| `/tmp/ee-arch-uv/bin/uv run --no-sync --offline mypy --cache-dir /tmp/phase1-reaudit/mypy src tests` | Exit 0; no issues in 24 source files |
+| `timeout 45s /tmp/ee-arch-uv/bin/uv run --no-sync --offline pytest -p no:cacheprovider -o 'addopts=--strict-markers --strict-config --cov=ee_arch_copilot --cov-report=term-missing --cov-report=xml:/tmp/phase1-reaudit/coverage.xml'` | Exit 0; **108 passed, 1 warning in 0.55s**; unchanged 90% coverage gate passed |
+| `/tmp/ee-arch-uv/bin/uv build --offline --out-dir /tmp/phase1-reaudit/dist` | Exit 0; source distribution and wheel built |
+| `timeout 45s /tmp/ee-arch-uv/bin/uv run --no-sync --offline python /tmp/phase1-reaudit/recheck.py` | Exit 0; **74 checks, 74 passed, no failed expectations** |
+| `git diff --check` (no uv prefix) | Exit 0 |
 
-The full suite initially stalled at its first API request inside the execution
-sandbox and was interrupted. A minimal unrelated `asyncio.to_thread` probe completed
-its work but stalled during event-loop shutdown there, supporting an execution-environment
-issue. The same offline suite completed outside the sandbox with the execution tool's
-escalated-permission mechanism. This is not recorded as a project test failure.
-The independent TestClient probes used the same outside-sandbox execution mode.
+An independent installed-package comparison checked 42 lockfile entries and found no
+version mismatches. The locked environment and declared Python version remain consistent.
 
-A diagnostic unit-only run inside the sandbox also passed all **67** model, topology
-and validator tests. Its reduced-scope coverage gate was explicitly disabled because
-it omitted API execution; it is not the reported full-suite gate result.
+The full suite and independent API probes ran outside the execution sandbox using the
+execution tool's escalation mechanism. The first audit established that this sandbox
+stalls in-process API/async shutdown operations; this rerun did not attribute that known
+environment issue to the application or repeat the stalled test attempt.
 
 Measured full-suite coverage:
 
 ```text
-TOTAL: 454 statements, 0 missed, 108 branches, 0 partial branches
+TOTAL: 461 statements, 0 missed, 112 branches, 0 partial branches
 Coverage: 100.00%
 Required test coverage of 90.0% reached.
-92 passed in 0.47s
+108 passed, 1 warning in 0.55s
 ```
 
-All measured source modules report 100%. Coverage XML and data were written under
-`/tmp/phase1-audit`. This measurement belongs to the existing suite, not to the separate
-independent probe run. Coverage does not establish completeness of input combinations;
-D-001 is a concrete counterexample despite every line and branch being exercised.
+The warning is a locked Starlette TestClient deprecation of its httpx backend. It does
+not fail the checks; no unrelated dependency change or warning suppression was applied.
+This coverage measurement is from the project suite, not the independent probes.
+Coverage alone is not evidence of all input combinations, as the original D-001 showed.
 
-The independent harness was `/tmp/phase1-audit/probes.py`, executed offline with the
-existing project environment. Its output is in `probes.log` and machine-readable
-`independent-results.json` in the same temporary directory:
+The original probe code at `/tmp/phase1-audit/probes.py` was loaded with `runpy` under
+a non-main name and its five probe families invoked again. New logs/JSON are under
+`/tmp/phase1-reaudit`; the original code and outputs were preserved. In addition to
+model/topology/API/sample checks, all three originally failing D-001 probes now pass.
+The reproduction below keeps closure evidence reviewable without relying on temporary files.
 
-```text
-74 checks
-71 satisfied expectations
-3 failed expectations:
-  D01 zero links missing route
-  D01b zero links missing demand
-  D01c API zero-link incomplete traffic
-```
+Test and maintainability review:
 
-These temporary artifacts are supplemental execution evidence, not committed tests
-or a second audit report. The report embeds the defect reproduction so its main finding
-does not depend on the continued existence of `/tmp`.
-
-Repository and test quality observations:
-
-- A small `src` layout separates `domain/models`, `services`, `api/routes`, and the
-  ASGI application factory. The 17 source modules have no detected first-party import
-  cycles in an AST import scan. Manual dependency inspection supports the claimed
-  inward boundaries. No placeholder AI classes, dead integration layer, or unnecessary
-  repository/provider framework was found.
-- No infrastructure package is needed by the current in-memory application. Its
-  absence is consistent with the documentation and Phase 1 scope.
-- Tests use real models, graphs, validators and HTTP adapters. Assertions check actual
-  statuses, errors, routes, capacities, directionality and evidence; the existing suite
-  does not rely on excessive mocks. Some API path assertions only check existence/scope,
-  but topology tests verify the actual path and edge IDs.
-- The missing zero-link/incomplete-service combination is an important regression gap.
-  Add it as part of correcting D-001; a higher percentage coverage target would not
-  independently address it.
-- Strict mypy and Ruff are configured and pass. Shared models and validators avoid
-  substantial duplication; rebuilding snapshots twice is a documented defensive choice,
-  not an unexplained abstraction or established performance defect.
-- Expected exceptions have explicit domain/HTTP behavior. Unexpected server errors
-  propagate correctly. There is no application-specific logging or configuration layer;
-  these are documented later observability/deployment concerns, not Phase 1 blockers.
-- Build archives were inspected: the wheel contains the actual application modules
-  and package metadata, and the source distribution includes source and tests. This
-  supports packaging functionality without claiming a container or remote CI run.
+- Real domain models, graphs, validation logic and HTTP adapters are exercised. Existing
+  assertions check error messages, edge/path IDs, demand evidence, statuses and scope;
+  they do not merely assert the existence of files/classes or rely on excessive mocks.
+- The new test module's 16 parametrized cases cover missing routes with and without links,
+  unknown/zero/positive demand, explicit-route unknown demand, multiple services/consumers,
+  proven-failure precedence, empty/no-service/no-consumer controls, repeatability,
+  input preservation and direct-Python/API agreement (`test_traffic_completeness.py:14–131`).
+- Domain modules depend on Pydantic rather than HTTP/NetworkX. Services depend inward on
+  domain types; HTTP routes adapt requests/results. No new circular dependency, dead
+  adapter, placeholder AI integration or unjustified abstraction was found.
+- The correction combines traffic evidence generation with existing load collection,
+  introducing no domain/schema or infrastructure redesign. No significant duplication
+  or new configuration burden was identified.
+- Expected errors have explicit model/domain/HTTP semantics; unexpected exceptions remain
+  server failures. Application-specific observability/configuration infrastructure is
+  deferred consistently with the roadmap, not required to pass this proof-of-concept phase.
 
 ## 8. Docker and CI Assessment
 
-Docker configuration inspection:
-
-| Property | Evidence | Status |
-| --- | --- | --- |
-| Lockfile used | `Dockerfile:11–14`, `uv sync --locked --no-dev --no-editable` | PASS by inspection |
-| Python compatibility | Python 3.12 base; `.python-version` 3.12; package requires >=3.12 | PASS by inspection |
-| Runtime dev dependency exclusion | Only dev group is `dev`; installation uses `--no-dev` | PASS by inspection |
-| No host virtual environment copied | Explicit COPY of metadata and `src`; `.dockerignore:2` excludes `.venv` | PASS by inspection |
-| Actual ASGI application starts | Uvicorn target `ee_arch_copilot.main:app` exists and imports successfully | PASS by inspection and local import |
-| Unprivileged runtime | UID 10001 user created and selected, `Dockerfile:14–16` | PASS by inspection |
-| Local image build and runtime | Docker unavailable in this WSL distribution | NOT VERIFIED |
-
-`docker version` exited 1 with:
+Docker availability changed since the first audit. `docker version` initially failed
+with socket permission denied inside the sandbox. Outside it, fresh inspection succeeded:
+client/engine **29.5.3**, Docker Desktop **4.78.0**. Read-only image inventory and exact
+base-image inspection were then performed; no images or containers were changed.
 
 ```text
-The command 'docker' could not be found in this WSL 2 distro.
-We recommend to activate the WSL integration in Docker Desktop settings.
+docker image inspect python:3.12-slim ghcr.io/astral-sh/uv:0.13.7
+Error response from daemon: No such image: python:3.12-slim
+Error response from daemon: No such image: ghcr.io/astral-sh/uv:0.13.7
 ```
 
-There was consequently no usable Docker daemon/CLI for an image inventory or build.
-No new image was pulled. Base-image availability, runtime installed packages and
-container startup/HTTP behavior were not verified. Inspection is not container success.
-The image tags and bounded build-backend range also do not establish bit-for-bit
-reproducibility of an entire future image; locked application dependency selection
-is the narrower verified configuration claim.
+The two Dockerfile bases are absent. An offline build from this daemon's cache is
+therefore unavailable. No build was launched because missing bases would trigger image
+retrieval; no pull was authorized by the audit request. Docker build, runtime package
+inventory, startup and container HTTP behavior remain **NOT VERIFIED**. Successful
+host packaging and an accessible daemon do not establish container success.
 
-The CI workflow configures push/PR checks on Python 3.12 and 3.13, pins uv 0.13.7,
-installs locked development dependencies, runs formatting, Ruff, strict mypy, coverage
-tests and a distribution build (`.github/workflows/ci.yml:10–35`). Permissions are
-limited to repository content read, and no secrets or external application services
-are required by its configured checks. Pre-commit uses the same tools; its fix/format
-hooks were deliberately not run during the audit because they can modify files.
+| Configuration property | Evidence | Status |
+| --- | --- | --- |
+| Locked runtime dependency install | `Dockerfile:11–14`, `uv sync --locked --no-dev --no-editable` | PASS by inspection |
+| Python consistency | 3.12 image/default; package requires >=3.12 | PASS by inspection |
+| Development dependencies excluded | Only dev group is dev; runtime install uses `--no-dev` | PASS by inspection |
+| Host virtual environment excluded | Explicit COPY of metadata/source; `.dockerignore:2` excludes `.venv` | PASS by inspection |
+| Real application target | `Dockerfile:18`, `ee_arch_copilot.main:app` exists and executes in local tests | PASS by inspection/local execution |
+| Non-root runtime | UID 10001 created and selected (`Dockerfile:14–16`) | PASS by inspection |
+| Image build and container behavior | Required bases not cached; no authorized pull | NOT VERIFIED |
 
-The workflow is currently untracked in the working tree. Its configuration is present;
-this audit does not assert that it is committed or running on GitHub. No remote run,
-action-download compatibility, or Python 3.13 execution was independently verified.
-Local Python 3.12 checks and packaging passed as reported above.
+The workflow (`.github/workflows/ci.yml:10–35`) configures locked development dependency
+installation, formatting, Ruff, strict mypy, coverage tests and a distribution build on
+Python 3.12/3.13 with uv 0.13.7. It requires no application secrets, cloud service or LLM
+API. Read-only repository permissions are configured. The workflow now exists in the
+base checkpoint; no remote execution was consulted during this offline audit.
+
+Local Python 3.12 checks and packaging passed. Remote Actions, action acquisition and
+the Python 3.13 leg remain **NOT VERIFIED**. Image tags and bounded build-backend
+versions do not promise bit-for-bit future image reproducibility; locked application
+package resolution is the narrower supported claim. Fixing pre-commit hooks were not run.
 
 ## 9. Defect List
 
-One confirmed defect: **0 CRITICAL, 1 HIGH, 0 MEDIUM, 0 LOW**. The three failing probes
-are reproductions of one root cause, not three separate defects.
+**No open confirmed defects.** One former HIGH defect is closed with independent evidence.
+There are no newly identified CRITICAL, HIGH, MEDIUM or LOW defects. Container/remote CI
+verification limits are uncertainties, not invented implementation failures.
 
-### D-001 — Incomplete service traffic disappears when there are no physical links
+### D-001 — Incomplete service traffic lost with zero links — CLOSED
 
-- **Severity:** HIGH — incorrect engineering success and missing supporting evidence.
-- **Affected requirements:** P1-011 primarily; P1-012 and P1-019 are incomplete as a
-  consequence. The REST adapter exposes the same underlying validator result.
-- **File/line references:**
-  `src/ee_arch_copilot/services/validator.py:86–88` collects incomplete traffic;
-  `:118–123` and `:141–143` only consume it while producing link findings;
-  `:144–152` computes overall status from the findings that remain;
-  `:164–170` records missing demand/routes.
-  `README.md:196–198` and `docs/architecture.md:91–94` describe incomplete traffic
-  without explaining this exception.
-- **Reproduction scenario:** A structurally valid architecture contains two ECUs and
-  a service from one to the other. No links or traffic routes are supplied. Demand
-  is 60 Mbps, or omitted/unknown in a second variant. There is no explicit connectivity
-  requirement; the defect is loss of incomplete traffic evaluation, not failure to
-  invent an unmodeled connectivity requirement.
-- **Actual behavior:** Python validation returns `status: PASS` with one
-  `structure.consistency` PASS, `link_count: 0`, `service_count: 1`, and no
-  missing-route or missing-demand evidence. REST returns HTTP 200 with that same
-  incorrect engineering success. Both missing-route and missing-demand variants
-  were independently reproduced.
-- **Expected behavior:** Preserve structural acceptance and emit at least one
-  appropriate service/traffic evaluability finding with **NOT_EVALUATED**, affected
-  service/endpoints and missing route/demand evidence. The overall result must be
-  NOT_EVALUATED unless another rule establishes FAIL. HTTP 200 remains appropriate
-  for the completed analysis request; 422 is not the required correction.
-- **Likely root cause:** Incomplete traffic is stored only in a local list. It has
-  no independent finding and only influences `_check_link`. When zero links exist,
-  `_check_link` is never called. Aggregate status therefore sees only structural PASS.
-- **Recommended correction:** Surface incomplete communicating traffic independently
-  of per-link iteration, or otherwise guarantee that collected missing-information
-  evidence affects the report even with zero links. Preserve existing demonstrated
-  overload precedence and the valid empty/no-traffic architecture policy. Add Python
-  and API regression cases for zero links with known demand/missing route, unknown
-  demand, and appropriate control cases. Do not infer a traffic route.
+- **Original severity:** HIGH, incorrect engineering PASS and omitted evidence.
+- **Affected requirements:** P1-011, with consequences for P1-012 and P1-019.
+- **Original location/root cause:** incomplete demand/routes were consumed only in
+  per-link findings; zero links meant no finding could influence aggregate status.
+- **Reproduction:** two valid ECU references, one provider-to-consumer service,
+  no links/routes, known 60 Mbps demand or unknown demand, no explicit connectivity
+  requirement. Previously only `structure.consistency: PASS` appeared and overall PASS
+  followed. This was a traffic-evaluability error, not a reason to invent a connectivity
+  requirement or reject an otherwise valid schema.
+- **Expected:** explicit NOT_EVALUATED service evidence and aggregate NOT_EVALUATED,
+  unless another rule establishes FAIL; HTTP 200 remains appropriate for analysis.
+- **Current implementation:** `validator.py:86–87` extends report findings from
+  `_traffic_loads`; `:155–197` emits missing-traffic evidence independently of link
+  iteration; `:145–153` preserves FAIL precedence. Documentation now describes the rule
+  at `README.md:196–202` and `docs/architecture.md:96–102`.
+- **Fresh actual behavior:** D01 known-demand/no-route, D01b unknown-demand/no-route and
+  D01c REST probes all pass; overall NOT_EVALUATED includes a WARNING traffic finding,
+  affected service/endpoints and missing-information strings. Unknown demand also retains
+  the missing route, rather than hiding it.
+- **Regression evidence:** all 16 new cases and the 92 existing tests pass. Controls
+  verify empty/no-traffic PASS and proven FAIL precedence. Synthetic sample counts remain
+  9 PASS and 2 NOT_EVALUATED.
+- **Recommended correction:** none remains for this finding; retain the added regression
+  coverage. No implementation was changed by this auditor during revalidation.
 
-Self-contained Python reproduction, using the existing environment from repository root:
+Self-contained reproduction/closure check from the repository root:
 
 ```bash
-env -u PYTHONPATH PYTHONDONTWRITEBYTECODE=1 .venv/bin/python - <<'PY'
+env -u PYTHONPATH PYTHONDONTWRITEBYTECODE=1 .venv/bin/python - <<'PYCODE'
 from ee_arch_copilot.domain.models import Architecture
 from ee_arch_copilot.services.validator import ArchitectureValidator
 
 architecture = Architecture.model_validate({
-    "id": "missing-network",
-    "name": "Synthetic missing network",
+    "id": "missing-network", "name": "Synthetic missing network",
     "ecus": [
         {"id": "a", "name": "a", "ecu_type": "other"},
         {"id": "b", "name": "b", "ecu_type": "other"},
     ],
     "services": [{
-        "id": "stream",
-        "name": "Synthetic stream",
-        "provider_ecu_id": "a",
-        "consumer_ecu_ids": ["b"],
-        "protocol": "SOME/IP",
-        "bandwidth_requirement_mbps": 60,
+        "id": "stream", "name": "Synthetic stream",
+        "provider_ecu_id": "a", "consumer_ecu_ids": ["b"],
+        "protocol": "SOME/IP", "bandwidth_requirement_mbps": 60,
     }],
 })
-print(ArchitectureValidator().validate(architecture).model_dump_json(indent=2))
-PY
+report = ArchitectureValidator().validate(architecture)
+assert report.status == "NOT_EVALUATED"
+assert any(f.rule_id == "bandwidth.traffic_evaluability" for f in report.findings)
+print(report.model_dump_json(indent=2))
+PYCODE
 ```
 
-Observed result, abbreviated without changing its meaning:
-
-```json
-{
-  "architecture_id": "missing-network",
-  "status": "PASS",
-  "findings": [{
-    "rule_id": "structure.consistency",
-    "status": "PASS",
-    "evidence": {"device_count": 2, "link_count": 0, "service_count": 1}
-  }]
-}
-```
-
-The full finding also has the required schema fields; no traffic finding follows it.
-The REST reproduction posts the same architecture object to
-`/api/v1/architectures/validate`. An entirely empty architecture with **no communicating
-service** also returns PASS, but that is explicitly documented and is not this defect.
+Verified result shape: a structural PASS followed by a traffic-evaluability WARNING /
+NOT_EVALUATED, with `affected_components` containing the service/provider/consumer and
+missing-route evidence. Overall status is NOT_EVALUATED. Omitting demand records both
+missing demand and missing route. REST exposes the same result at HTTP 200.
 
 ## 10. Phase 2 Readiness
 
-**Architectural classification: Ready with minor changes.** No evidence supports a
-need for architectural replacement or a speculative abstraction layer.
+**Ready without structural changes.** The corrected deterministic core provides the
+required boundaries; the remaining infrastructure verification conditions do not
+justify architectural replacement.
 
-| Readiness question | Evidence-based assessment |
+| Question | Verified assessment |
 | --- | --- |
-| Requirements independent of topology? | Yes. `Requirement` validates by itself; M22 accepts a standalone requirement before aggregate reference resolution. The standalone sample array loads independently. |
-| Findings reference requirement IDs? | Yes. Typed nullable `requirement_id`; connectivity and scoped bandwidth findings carry the initiating ID. |
-| Models serializable? | Yes. Architecture JSON round trip and topology/report JSON serialization executed successfully. |
-| Document ingestion added without unnecessary core changes? | Yes for the initial pipeline. Document/version/section provenance can live in ingestion/retrieval records and link to existing requirement IDs. No current parser/storage dependency is embedded in the domain. |
-| RAG/LLM outside deterministic rules? | Yes. Current domain/services import no providers, document store, vector DB or orchestration code. The roadmap explicitly separates adapters. |
-| Validator usable as a future callable tool? | Yes structurally: typed input and report, no HTTP dependency or required external state. Correct D-001 before relying on complete status semantics. |
-| Machine-readable engineering evidence? | Yes for emitted findings: JSON evidence, IDs, status and severity. D-001 must be corrected so missing information is not omitted. |
-| Dependencies decoupled for future testing? | Yes. Real offline service tests and isolated app construction demonstrate usable boundaries without provider mocking. |
+| Requirements independent of topology? | Yes; standalone Requirement validation and standalone sample array loading pass. Root reference resolution occurs when attached to an architecture. |
+| Findings reference requirement IDs? | Yes; connectivity/scoped budget findings carry them. Inventory checks correctly use null when no requirement initiates them. |
+| Serializable architecture models? | Yes; JSON round trip and topology/report serialization pass. |
+| Ingestion without unnecessary domain changes? | Yes; document/version/location provenance can be held in ingestion records linked to requirement IDs, outside existing core models. |
+| RAG/LLM separate from validation? | Yes; no provider/document/vector dependency exists in deterministic domain/services. |
+| Validator usable as a callable tool? | Yes; typed inputs/reports, no HTTP dependency, snapshot validation and corrected missing-information semantics. |
+| Machine-readable evidence? | Yes; statuses/severity/IDs and JSON evidence include incomplete service traffic even with no link. |
+| Dependencies decoupled for testing? | Yes; real offline services and isolated app/API tests run without external-provider mocks. |
 
-Future ingestion should keep source provenance and retrieved prose distinct from reviewed
-structured constraints, as already described in `docs/architecture.md:101–110` and
-`docs/roadmap.md:16–21`. This is an existing extension boundary, not a recommendation
-to add unused interfaces now. The audit does not require later-phase features to be
-implemented before Phase 1 can be closed.
+Existing architecture/roadmap guidance keeps retrieved prose separate from reviewed
+machine-verifiable constraints and puts provenance, retrieval and provider calls in
+future adapters (`docs/architecture.md:109–124`; `docs/roadmap.md:14–21`). Maintain that
+boundary. No speculative provider interfaces, topology redesign or AI features are
+required to close the identified defect.
 
 ## 11. Remediation Plan
 
-No remediation was applied during this audit.
+No code remediation remains justified by confirmed defects in this rerun. Outstanding
+verification tasks are concrete and do not involve automatic changes to the application.
 
 | Priority | Action | Relative effort | Acceptance evidence |
 | --- | --- | --- | --- |
-| P0 | Correct D-001 so incomplete communicating traffic always yields explicit evidence and an appropriate overall status | Small | Both known-demand/no-route and unknown-demand zero-link models yield NOT_EVALUATED; no invented route; structural validity retained |
-| P0 | Add targeted Python and REST regression coverage for D-001 and controls | Small | New cases cover incomplete service with zero links, empty/no-traffic input, existing unknown-data behavior, and known overload precedence; full suite and quality gates pass |
-| P1 | Confirm documentation's missing-information guarantees against the corrected behavior | Small | README and architecture semantics match actual results; no undocumented zero-link exception |
-| P1 | Verify a local container build and health/analysis request after Docker becomes available, using already available base images or explicitly permitted pulls | Small | Recorded image build, installed runtime dependency check and container HTTP responses; no assumption of success from Dockerfile presence |
-| P1 | Commit the intended implementation and observe the configured CI matrix | Small | Successful Python 3.12 and 3.13 runs including locked install, quality checks, coverage and packaging; audited source snapshot identifiable in version control |
+| Complete | D-001 independent traffic evidence and regression coverage | Small; already implemented before this rerun | Three former independent failures now pass; 16 new project regression cases pass; full suite and quality gates pass |
+| P1 | Build the actual Dockerfile when the required base images are available through an explicitly authorized acquisition or existing cache | Small | Recorded image build with locked runtime dependencies; verify no development packages are installed |
+| P1 | Start the built container and perform health/validation HTTP checks | Small | Uvicorn startup as configured, non-root process, correct health and engineering response; stop/remove only audit-created containers |
+| P1 | Observe successful configured GitHub Actions checks on Python 3.12 and 3.13 after intended remediation is committed | Small | Locked install, lint/format/types, coverage and package build succeed for both versions |
 
-The container/CI items close verification uncertainty and do not represent reproduced
-implementation failures. P0 items are the validation-contract gate. No Large refactor
-or new infrastructure layer is justified by the audited evidence.
+No Large refactor or new infrastructure layer is supported by the audit evidence.
+The dependency warning may be handled in normal maintenance; it is not a reason for
+an unrelated upgrade during this audit.
 
 ## 12. Final Go/No-Go Decision
 
-**NO-GO for closing Phase 1 and approving the Phase 2 readiness gate in the current snapshot.**
+**CONDITIONAL GO.**
 
-D-001 remains a confirmed HIGH defect: incomplete engineering inputs can produce an
-unsupported overall PASS and omit their missing-information evidence. That violates
-the audit's success criteria even with a passing existing suite and 100% measured
-coverage. Docker runtime behavior also remains unverified; remote CI and Python 3.13
-were not executed during this audit.
+The current deterministic Phase 1 core is suitable for Phase 2 Requirements RAG.
+D-001 is independently closed, no CRITICAL or HIGH defect remains, all 108 tests and
+74 independent checks pass, and quality checks/packaging succeed. The local correctness
+gate has moved from NO-GO to pass without requiring architectural changes.
 
-The implementation otherwise provides a usable and well-separated foundation. Correct
-the bounded status/evidence defect, add the targeted regression checks, and reassess
-the gate using their results. No application code or tests were changed by this audit.
+Conditions: complete Docker build/runtime verification once its base images are
+available within authorization, and confirm the configured remote CI/Python 3.13 leg.
+These checks were not executed and must not be represented as successful. Their absence
+precludes an unconditional GO; no implementation failure is inferred solely from it.
+
+Only this verification report was updated by the auditor. Existing implementation,
+regression tests, dependency files and remediation documentation were preserved.

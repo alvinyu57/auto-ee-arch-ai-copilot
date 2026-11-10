@@ -50,6 +50,11 @@ A future traffic-scope model could reduce that conservatism. Explicit routes sti
 not establish forwarding; richer VLAN, gateway, and protocol models must remain separately
 identified analyses. CAN multidrop contention requires a bus model beyond pairwise links.
 
+Phase 1 remediation clarification (2026-11-10): incomplete communicating traffic must
+also have an independent service finding, including when there are no links. Report
+all missing demand/routes together. This closes audit D-001 without changing the
+domain schema, inventing routes, or introducing service-reachability analysis.
+
 CI checks locked installation, formatting, lint, strict types, coverage, and packaging.
 The Docker runtime uses the same lockfile and runs as a non-root user. Deployment security
 and external integrations remain out of scope until Phase 5.

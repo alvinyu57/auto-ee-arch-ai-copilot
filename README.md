@@ -196,6 +196,10 @@ not inferred from port speeds. Capacity cannot exceed a known endpoint speed.
 If any communicating service lacks demand or a consumer route, link budget checks
 remain `NOT_EVALUATED` unless the known traffic already proves an overload. Unknown
 traffic might traverse any link, so this policy is deliberately conservative.
+Each incomplete service also produces a `bandwidth.traffic_evaluability` finding
+with its service/provider/consumer IDs and missing information, even when there are
+no physical links. Missing demand and missing routes are reported together. The
+overall result is `NOT_EVALUATED` unless another finding establishes `FAIL`.
 No service consumers means no network demand. An empty service list means the
 declared traffic inventory is empty; it makes no claim about real-world background traffic.
 

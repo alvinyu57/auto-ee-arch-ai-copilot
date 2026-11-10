@@ -83,7 +83,8 @@ class ArchitectureValidator:
                 },
             )
         ]
-        loads, incomplete = self._traffic_loads(checked)
+        loads, incomplete, traffic_findings = self._traffic_loads(checked)
+        findings.extend(traffic_findings)
         links = {link.id: link for link in checked.links}
         scoped_links: set[str] = set()
         for requirement in checked.requirements:
@@ -154,20 +155,50 @@ class ArchitectureValidator:
     @staticmethod
     def _traffic_loads(
         architecture: Architecture,
-    ) -> tuple[dict[str, dict[str, Decimal]], list[str]]:
+    ) -> tuple[dict[str, dict[str, Decimal]], list[str], list[ValidationFinding]]:
         loads: dict[str, dict[str, Decimal]] = {link.id: {} for link in architecture.links}
         incomplete: list[str] = []
+        findings: list[ValidationFinding] = []
         links = {link.id: link for link in architecture.links}
         for service in architecture.services:
             if not service.consumer_ecu_ids:
                 continue
-            if service.bandwidth_requirement_mbps is None:
-                incomplete.append(f"Service {service.id}: bandwidth demand is missing")
-                continue
             routes = {route.consumer_ecu_id: route for route in service.traffic_routes}
+            missing = []
+            if service.bandwidth_requirement_mbps is None:
+                missing.append(f"Service {service.id}: bandwidth demand is missing")
+            missing.extend(
+                f"Service {service.id}: route to {consumer} is missing"
+                for consumer in service.consumer_ecu_ids
+                if consumer not in routes
+            )
+            if missing:
+                incomplete.extend(missing)
+                findings.append(
+                    ValidationFinding(
+                        rule_id="bandwidth.traffic_evaluability",
+                        severity=Severity.WARNING,
+                        status=FindingStatus.NOT_EVALUATED,
+                        affected_components=[
+                            service.id,
+                            service.provider_ecu_id,
+                            *service.consumer_ecu_ids,
+                        ],
+                        explanation=(
+                            "Declared service traffic cannot be fully assessed for nominal link "
+                            "budgets without demand and explicit consumer routes."
+                        ),
+                        evidence={
+                            "provider_ecu_id": service.provider_ecu_id,
+                            "consumer_ecu_ids": list(service.consumer_ecu_ids),
+                            "missing_information": list(missing),
+                        },
+                    )
+                )
+            if service.bandwidth_requirement_mbps is None:
+                continue
             for consumer in service.consumer_ecu_ids:
                 if consumer not in routes:
-                    incomplete.append(f"Service {service.id}: route to {consumer} is missing")
                     continue
                 current = service.provider_ecu_id
                 for link_id in routes[consumer].link_ids:
@@ -186,7 +217,7 @@ class ArchitectureValidator:
                         str(service.bandwidth_requirement_mbps)
                     )
                     current = destination
-        return loads, incomplete
+        return loads, incomplete, findings
 
     @staticmethod
     def _check_link(
