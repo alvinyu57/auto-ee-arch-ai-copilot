@@ -8,8 +8,9 @@ validation through a stateless REST API.
 **This project is an independent technical proof of concept and is not affiliated with any automotive OEM.**
 
 All supplied architectures, requirements, speeds, and traffic demands are synthetic
-engineering test data, not OEM production specifications. No LLM, RAG, vector database,
-cloud integration, or multi-agent workflow is implemented in this phase.
+engineering test data, not OEM production specifications. Phase 2 adds persistent
+requirements retrieval and optional evidence-citing generation. Local retrieval and
+all tests run without API keys or model downloads. There is no agent orchestration.
 
 ## Executive Overview
 
@@ -41,16 +42,23 @@ The goal is not to replace automotive system architects, but to help them make f
 
 ```text
 HTTP / OpenAPI (api) → deterministic use cases (services) → validated data (domain)
+                    → knowledge use cases (rag) → parsers / embeddings / Chroma + catalog
+                                               → optional LLM / citation checks
 ```
 
 `domain` has no FastAPI or NetworkX dependency. `services` uses domain models and
 NetworkX. The HTTP adapter handles request parsing and status codes. There is no
-infrastructure package yet because Phase 1 needs no external adapters. Future
-document stores and model providers can be added there when they have real behavior.
+coupling between deterministic validation and the knowledge pipeline. The `rag`
+package contains the working source, storage, retrieval, and provider adapters.
 
 See [architecture details](docs/architecture.md), the
 [architecture decision](docs/decisions/0001-architecture.md), and the
 [roadmap](docs/roadmap.md).
+
+Phase 2 details: [RAG architecture](docs/rag-architecture.md),
+[evaluation and measured results](docs/rag-evaluation.md),
+[ADR 0002](docs/decisions/0002-requirements-rag.md), and
+[implementation report](docs/reviews/phase2-implementation-report.md).
 
 ## Install
 
@@ -59,7 +67,7 @@ The repository defaults to Python 3.12; uv can download it if needed.
 
 ```bash
 cd auto-ee-arch-ai-copilot
-uv sync --locked --dev
+uv sync --locked --all-groups
 uv run --locked pre-commit install
 ```
 
@@ -81,6 +89,13 @@ The schema is at `/openapi.json`; ReDoc is at `/redoc`.
 | `POST /api/v1/architectures/validate` | Architecture | Structured validation report |
 | `POST /api/v1/architectures/topology` | Architecture | Physical nodes, edges, isolated nodes, components |
 | `POST /api/v1/architectures/path` | Architecture and two device IDs | One unweighted physical path or `exists: false` |
+| `POST /api/v1/knowledge/documents` | JSON document envelope | Created, unchanged, or replaced source revision |
+| `GET /api/v1/knowledge/documents` | None | Indexed source summaries |
+| `GET /api/v1/knowledge/documents/{id}` | None | Normalized indexed source |
+| `GET /api/v1/knowledge/chunks/{id}` | None | Resolve an active citation |
+| `DELETE /api/v1/knowledge/documents/{id}` | None | Delete source and vectors; 204 or 404 |
+| `POST /api/v1/knowledge/search` | Question and optional retrieval options | Evidence without an LLM call |
+| `POST /api/v1/knowledge/ask` | Question, retrieval and generation options | Cited answer or insufficient evidence; 503 if disabled |
 
 Structural request errors return HTTP **422**. An unknown device in a path query
 returns **404**. Valid analysis requests return **200**, including engineering
@@ -123,6 +138,112 @@ The path result contains `front-camera → switch-core → adas` and
 The sample validation report has **9 PASS**, **2 NOT_EVALUATED**, and **0 FAIL**
 findings: isolation and the free-text latency requirement remain unevaluated.
 The overall status is therefore `NOT_EVALUATED`.
+
+## Requirements knowledge pipeline (Phase 2)
+
+Markdown, text, and JSON document content can be indexed through the API. Extractable
+PDFs use `rag.ingestion.loader.load_file` from trusted Python code; pages without text
+are rejected with an explicit OCR limitation. No HTTP request accepts a local path.
+
+Ingest a minimal synthetic source:
+
+```bash
+curl --fail-with-body http://127.0.0.1:8000/api/v1/knowledge/documents \
+  -H 'Content-Type: application/json' -d '{
+    "document_id": "demo", "filename": "demo.md", "source_type": "markdown", "version": "1.0",
+    "content": "# Synthetic gateway\n\nREQ-ETH-001: Gateway shall use 1000BASE-T1 at 1000 Mbps."
+  }'
+```
+
+To load all four supplied specifications into the running API:
+
+```bash
+uv run --locked python - <<'PY'
+from pathlib import Path
+import httpx
+from ee_arch_copilot.rag.ingestion.loader import load_file
+
+with httpx.Client(base_url="http://127.0.0.1:8000", timeout=60) as api:
+    for path in sorted(Path("data/knowledge/synthetic").glob("*.md")):
+        source = load_file(path, document_id=path.stem, version="1.0")
+        response = api.post("/api/v1/knowledge/documents", json=source.model_dump())
+        response.raise_for_status()
+        print(path.name, response.json()["status"])
+PY
+```
+
+Search without an LLM:
+
+```bash
+curl --fail-with-body http://127.0.0.1:8000/api/v1/knowledge/search \
+  -H 'Content-Type: application/json' -d '{
+    "question": "Which requirements define Ethernet bandwidth between the Central Gateway and ADAS controller?",
+    "options": {"method": "hybrid", "semantic_top_k": 12, "keyword_top_k": 12,
+                "final_top_k": 3, "rrf_constant": 60}
+  }'
+```
+
+The response has `hits[].chunk` with the original requirement ID, source document ID,
+filename, version, section, text, original text, source location, and stable chunk ID.
+Each hit includes `score`, `rank`, `methods`, and component scores/ranks. These are
+ranking signals, not probabilities that an answer is correct. See the actual captured
+response in [the workflow evidence](docs/reviews/phase2-workflow.json).
+
+Choose `keyword`, `semantic`, or `hybrid`; filters support `document_id`,
+`requirement_id`, and `version`. Reranking is an optional local token-overlap heuristic.
+Repeating the same envelope returns `unchanged`; reusing `document_id` with changed
+content, metadata, or version replaces the active revision and invalidates old citations.
+Omitting `document_id` derives it from the basename, so supply explicit IDs for files
+with the same name from different origins. No requirement ID is invented.
+
+The local default is deterministic hash embeddings. For learned semantic retrieval,
+set `EMBEDDING_PROVIDER=openai_compatible`, `EMBEDDING_MODEL` to the server's embedding
+model, `EMBEDDING_DIMENSION` to its output size, and `EMBEDDING_BASE_URL` to its `/v1`
+endpoint. Set `EMBEDDING_API_KEY` only if needed. Model identity/dimension mismatches
+reject index reuse: select a new `VECTOR_DB_PATH` and ingest the corpus again.
+
+Copy `.env.example` to `.env` to configure providers. For generation, set
+`LLM_PROVIDER=openai_compatible`, `LLM_MODEL`, `LLM_BASE_URL`, and optionally
+`LLM_API_KEY`. The compatible server must support `/chat/completions` with JSON output.
+Credentials stay in environment variables and are excluded from responses and metadata.
+External providers receive the question and retrieved excerpts; embedding servers receive
+indexed text. Use only endpoints suitable for the documents you intend to index.
+
+```bash
+curl --fail-with-body http://127.0.0.1:8000/api/v1/knowledge/ask \
+  -H 'Content-Type: application/json' -d '{
+    "question": "REQ-ETH-002",
+    "options": {"method": "hybrid", "final_top_k": 5},
+    "generation": {"temperature": 0, "max_tokens": 1000}
+  }'
+```
+
+`ask` returns `answer`, structured `citations`, `referenced_requirement_ids`, `model`,
+and `evidence_status` (`cited`, `insufficient`, or `invalid_citations`). Missing provider
+configuration returns **503**; provider or malformed-response errors return **502**.
+With a configured provider, empty retrieval returns a fixed insufficient-evidence
+response without calling the model. Invalid citations suppress generated claims.
+Citation checks establish source existence, not full semantic support. Retrieved documents
+can contain prompt injections; the prompt treats them as untrusted data. Human review
+remains necessary for engineering conclusions. Phase 2 does not run architecture validation.
+
+Knowledge request bodies are bounded to 1,100,000 bytes by default; content is limited
+to 1,000,000 characters and questions to 5,000. Invalid inputs return **422**,
+oversized bodies **413**, and absent source/chunk IDs **404**. Settings are in
+[settings.py](src/ee_arch_copilot/core/settings.py). The legacy `/health` response retains
+`phase: 1` and version `0.1.0` for compatibility; OpenAPI documents the added capabilities.
+
+Run the evaluation and independent offline acceptance probe:
+
+```bash
+uv run --locked python -m ee_arch_copilot.rag.evaluation.run --output /tmp/rag-evaluation.json
+uv run --locked python scripts/verify_phase2.py --output /tmp/phase2-workflow.json
+```
+
+Both use temporary databases. The probe exercises real corpus ingestion through HTTP,
+duplicate detection, persistent reopening, all search modes, citation resolution,
+replacement/deletion, Phase 1 validation, and generation through a controlled HTTP
+provider. It does not claim live LLM integration or answer quality.
 
 ## Architecture document format
 
@@ -236,11 +357,12 @@ Ruff and mypy versions; `uv` must be on `PATH`.
 
 ```bash
 docker build -t auto-ee-arch-ai-copilot .
-docker run --rm -p 127.0.0.1:8000:8000 auto-ee-arch-ai-copilot
+docker run --rm -p 127.0.0.1:8000:8000 -v ee-knowledge:/var/lib/ee-arch auto-ee-arch-ai-copilot
 ```
 
 The image uses Python 3.12, locked runtime dependencies, a non-editable installation,
-and an unprivileged user. It needs no database or companion container.
+and an unprivileged user. A named volume persists Chroma and the evidence catalog;
+it needs no companion container. Run one application worker against each local store.
 
 ## Known limitations
 
@@ -253,14 +375,18 @@ and an unprivileged user. It needs no database or companion container.
 - CAN links represent physical adjacency and a local shared budget. A real multidrop
   bus and its bus-wide contention domain need a richer future model.
 - No TSN scheduling, worst-case latency, functional safety, or cybersecurity certification analysis.
-- No persistence, authentication, quotas, importers for proprietary formats, or enterprise integrations.
-- No LLM, RAG, embeddings, vector store, cloud infrastructure, or agent orchestration yet.
+- Knowledge persistence is local and intended for one process; no authentication,
+  tenant isolation, enterprise integrations, or proprietary-format importers.
+- Hash embeddings provide a lexical baseline; configure a real embedding server for
+  learned semantic retrieval. Live external embedding and LLM quality is not certified.
+- Citation validity verifies references, not semantic faithfulness of every generated claim.
+- No OCR, production TSN analysis, or agent orchestration.
 
 ## Roadmap and next step
 
-See [the milestone roadmap](docs/roadmap.md). Phase 2 adds document ingestion,
-requirements retrieval, and source citations. Begin with a small, versioned set of
-synthetic requirement documents and a citation-preserving ingestion/retrieval contract.
+See [the milestone roadmap](docs/roadmap.md). Phase 2 implements document ingestion,
+requirements retrieval, source citations, and optional generation with a versioned
+synthetic corpus and reproducible evaluation.
 Retrieved text should remain separate from structured constraints until reviewed by
 an engineer; deterministic findings remain the source of truth for implemented checks.
 

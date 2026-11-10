@@ -1,0 +1,103 @@
+[
+  {
+    "query_id": "qa01",
+    "question": "What nominal bandwidth is required on link-gateway?",
+    "expected_requirement_ids": [
+      "REQ-ETH-001",
+      "REQ-ETH-002"
+    ],
+    "expected_source_documents": [
+      "ethernet"
+    ],
+    "expected_facts": [
+      "1000 Mbps",
+      "1000BASE-T1"
+    ],
+    "unsupported_claims_to_reject": [
+      "The hardware has passed bandwidth validation"
+    ],
+    "no_answer": false
+  },
+  {
+    "query_id": "qa02",
+    "question": "Which SOME/IP identifier is assigned to the camera interface?",
+    "expected_requirement_ids": [
+      "REQ-SOA-016"
+    ],
+    "expected_source_documents": [
+      "soa"
+    ],
+    "expected_facts": [
+      "0x1234",
+      "front-camera",
+      "adas"
+    ],
+    "unsupported_claims_to_reject": [
+      "0x4321",
+      "interface compatibility was verified"
+    ],
+    "no_answer": false
+  },
+  {
+    "query_id": "qa03",
+    "question": "What maximum TSN camera latency is proposed?",
+    "expected_requirement_ids": [
+      "REQ-TSN-010"
+    ],
+    "expected_source_documents": [
+      "tsn"
+    ],
+    "expected_facts": [
+      "5 ms",
+      "design constraint"
+    ],
+    "unsupported_claims_to_reject": [
+      "Measured latency is 5 ms",
+      "worst-case timing passed"
+    ],
+    "no_answer": false
+  },
+  {
+    "query_id": "qa04",
+    "question": "Is VLAN isolation verified?",
+    "expected_requirement_ids": [
+      "REQ-ISO-001",
+      "REQ-ETH-008"
+    ],
+    "expected_source_documents": [
+      "overview",
+      "ethernet"
+    ],
+    "expected_facts": [
+      "NOT_EVALUATED",
+      "reviewed switch policy"
+    ],
+    "unsupported_claims_to_reject": [
+      "VLAN isolation passed",
+      "VLAN membership proves forwarding"
+    ],
+    "no_answer": false
+  },
+  {
+    "query_id": "qa05",
+    "question": "REQ-BATTERY-999",
+    "expected_requirement_ids": [],
+    "expected_source_documents": [],
+    "expected_facts": [],
+    "unsupported_claims_to_reject": [
+      "Any battery constraint"
+    ],
+    "no_answer": true
+  },
+  {
+    "query_id": "qa06",
+    "question": "Lithium cathode chemistry electrolyte formulation",
+    "expected_requirement_ids": [],
+    "expected_source_documents": [],
+    "expected_facts": [],
+    "unsupported_claims_to_reject": [
+      "Any chemical formulation"
+    ],
+    "no_answer": true
+  }
+]

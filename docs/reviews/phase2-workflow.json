@@ -1,0 +1,235 @@
+{
+  "live_llm_tested": false,
+  "generation_provider": "controlled-e2e-llm",
+  "generation_transport": "controlled HTTP response; no external API calls",
+  "ingestions": [
+    {
+      "document": {
+        "document_id": "ethernet",
+        "filename": "ethernet.md",
+        "title": "Automotive Ethernet Architecture Requirements",
+        "source_type": "markdown",
+        "version": "1.0",
+        "metadata": {},
+        "ingestion_timestamp": "2026-11-10T19:21:59.816360Z",
+        "content_hash": "1d41441b8400adbb7c70c673f86cb4fc010495e4ec2003d811653868fb87c8b8",
+        "chunk_count": 10
+      },
+      "status": "created"
+    },
+    {
+      "document": {
+        "document_id": "overview",
+        "filename": "overview.md",
+        "title": "Centralized E/E Architecture Overview",
+        "source_type": "markdown",
+        "version": "1.0",
+        "metadata": {},
+        "ingestion_timestamp": "2026-11-10T19:21:59.852312Z",
+        "content_hash": "9ed661ae81a1247c917413ca9f5d28e43629b711986d378e789157c0f250e5ce",
+        "chunk_count": 8
+      },
+      "status": "created"
+    },
+    {
+      "document": {
+        "document_id": "soa",
+        "filename": "soa.md",
+        "title": "SOA Communication Requirements",
+        "source_type": "markdown",
+        "version": "1.0",
+        "metadata": {},
+        "ingestion_timestamp": "2026-11-10T19:21:59.878804Z",
+        "content_hash": "d7eec17655ea096094ef99d78b317a9ee53c51433951b5c11cc1e739c31c2528",
+        "chunk_count": 9
+      },
+      "status": "created"
+    },
+    {
+      "document": {
+        "document_id": "tsn",
+        "filename": "tsn.md",
+        "title": "TSN Architecture Guidelines",
+        "source_type": "markdown",
+        "version": "1.0",
+        "metadata": {},
+        "ingestion_timestamp": "2026-11-10T19:21:59.966127Z",
+        "content_hash": "83408cde3d03ea7718b8b625d28c8dced25e024ba1187fa40c6b5eaaade4db6f",
+        "chunk_count": 7
+      },
+      "status": "created"
+    }
+  ],
+  "search_request": {
+    "question": "Which requirements define Ethernet bandwidth between the Central Gateway and ADAS controller?",
+    "options": {
+      "method": "hybrid",
+      "final_top_k": 3
+    }
+  },
+  "search_response": {
+    "hits": [
+      {
+        "chunk": {
+          "chunk_id": "chk-684c8762d3ae09db2ab2fb3f2ccaedb5",
+          "document_id": "ethernet",
+          "filename": "ethernet.md",
+          "document_title": "Automotive Ethernet Architecture Requirements",
+          "document_version": "1.0",
+          "requirement_id": "REQ-ETH-002",
+          "section": "Automotive Ethernet Architecture Requirements / Physical Ethernet interfaces",
+          "text": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable.",
+          "original_text": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable.",
+          "location": {
+            "start_offset": 517,
+            "end_offset": 827,
+            "start_line": 14,
+            "end_line": 18,
+            "page": null,
+            "json_pointer": null,
+            "text_start_offset": 0,
+            "text_end_offset": 310
+          },
+          "structured_fields": {}
+        },
+        "score": 0.03278688524590164,
+        "rank": 1,
+        "methods": [
+          "keyword",
+          "semantic"
+        ],
+        "ranking": {
+          "keyword_score": 9.517783103919356,
+          "keyword_rank": 1.0,
+          "semantic_score": 0.48511236906051636,
+          "semantic_rank": 1.0
+        }
+      },
+      {
+        "chunk": {
+          "chunk_id": "chk-64cddad02a1f385ca0c648fe2026b146",
+          "document_id": "ethernet",
+          "filename": "ethernet.md",
+          "document_title": "Automotive Ethernet Architecture Requirements",
+          "document_version": "1.0",
+          "requirement_id": "REQ-ETH-001",
+          "section": "Automotive Ethernet Architecture Requirements / Physical Ethernet interfaces",
+          "text": "REQ-ETH-001:\nThe Central Gateway (gateway) shall connect its eth0 interface to Ethernet Switch\nswitch-core port p1 using 1000BASE-T1 with a nominal link bandwidth of 1000 Mbps.",
+          "original_text": "REQ-ETH-001:\nThe Central Gateway (gateway) shall connect its eth0 interface to Ethernet Switch\nswitch-core port p1 using 1000BASE-T1 with a nominal link bandwidth of 1000 Mbps.",
+          "location": {
+            "start_offset": 339,
+            "end_offset": 515,
+            "start_line": 10,
+            "end_line": 12,
+            "page": null,
+            "json_pointer": null,
+            "text_start_offset": 0,
+            "text_end_offset": 176
+          },
+          "structured_fields": {}
+        },
+        "score": 0.03225806451612903,
+        "rank": 2,
+        "methods": [
+          "keyword",
+          "semantic"
+        ],
+        "ranking": {
+          "keyword_score": 7.862582502963135,
+          "keyword_rank": 2.0,
+          "semantic_score": 0.3665759563446045,
+          "semantic_rank": 2.0
+        }
+      },
+      {
+        "chunk": {
+          "chunk_id": "chk-e5aa8894b449265ab073c13dcd53d904",
+          "document_id": "overview",
+          "filename": "overview.md",
+          "document_title": "Centralized E/E Architecture Overview",
+          "document_version": "1.0",
+          "requirement_id": "SYS-REQ-101",
+          "section": "Centralized E/E Architecture Overview / Central compute and gateway",
+          "text": "SYS-REQ-101:\nThe Central Gateway (gateway) shall connect the central Ethernet Switch (switch-core)\nthrough link-gateway and the Body Controller (body) through CAN link-body-can at 1 Mbps.\nPhysical connectivity shall not imply CAN-to-Ethernet protocol translation.",
+          "original_text": "SYS-REQ-101:\nThe Central Gateway (gateway) shall connect the central Ethernet Switch (switch-core)\nthrough link-gateway and the Body Controller (body) through CAN link-body-can at 1 Mbps.\nPhysical connectivity shall not imply CAN-to-Ethernet protocol translation.",
+          "location": {
+            "start_offset": 240,
+            "end_offset": 503,
+            "start_line": 9,
+            "end_line": 12,
+            "page": null,
+            "json_pointer": null,
+            "text_start_offset": 0,
+            "text_end_offset": 263
+          },
+          "structured_fields": {}
+        },
+        "score": 0.031746031746031744,
+        "rank": 3,
+        "methods": [
+          "keyword",
+          "semantic"
+        ],
+        "ranking": {
+          "keyword_score": 7.6355335673574025,
+          "keyword_rank": 3.0,
+          "semantic_score": 0.3642951250076294,
+          "semantic_rank": 3.0
+        }
+      }
+    ],
+    "score_note": "Ranking scores and cosine similarity are not calibrated answer confidence."
+  },
+  "ask_request": {
+    "question": "REQ-ETH-002"
+  },
+  "ask_response": {
+    "answer": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable. [S1]",
+    "citations": [
+      {
+        "citation_id": "S1",
+        "chunk_id": "chk-684c8762d3ae09db2ab2fb3f2ccaedb5",
+        "document_id": "ethernet",
+        "filename": "ethernet.md",
+        "document_version": "1.0",
+        "requirement_id": "REQ-ETH-002",
+        "section": "Automotive Ethernet Architecture Requirements / Physical Ethernet interfaces",
+        "location": {
+          "start_offset": 517,
+          "end_offset": 827,
+          "start_line": 14,
+          "end_line": 18,
+          "page": null,
+          "json_pointer": null,
+          "text_start_offset": 0,
+          "text_end_offset": 310
+        },
+        "quote": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable."
+      }
+    ],
+    "referenced_requirement_ids": [
+      "REQ-ETH-002"
+    ],
+    "evidence_status": "cited",
+    "explanation": "Source references validated; semantic support of every claim is not proven.",
+    "model": "controlled-e2e-llm"
+  },
+  "no_evidence_response": {
+    "answer": "The answer cannot be determined from the indexed documents.",
+    "citations": [],
+    "referenced_requirement_ids": [],
+    "evidence_status": "insufficient",
+    "explanation": "No sufficient retrieved evidence supports an answer.",
+    "model": "controlled-e2e-llm"
+  },
+  "retrieval_modes_http_status": {
+    "keyword": 200,
+    "semantic": 200,
+    "hybrid": 200
+  },
+  "persistence_verified": true,
+  "replacement_verified": true,
+  "deletion_verified": true,
+  "citations_resolved_at_retrieval": true,
+  "phase1_validation_status": "NOT_EVALUATED"
+}
