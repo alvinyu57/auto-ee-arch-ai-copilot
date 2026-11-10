@@ -1,0 +1,77 @@
+[
+  {
+    "id": "REQ-CONN-001",
+    "description": "Synthetic: camera and ADAS must have a physical path.",
+    "requirement_type": "connectivity",
+    "associated_components": [
+      "front-camera",
+      "adas"
+    ],
+    "constraints": {
+      "kind": "connectivity",
+      "source_device_id": "front-camera",
+      "destination_device_id": "adas"
+    }
+  },
+  {
+    "id": "REQ-CONN-002",
+    "description": "Synthetic: body controller must physically connect to the gateway.",
+    "requirement_type": "connectivity",
+    "associated_components": [
+      "body",
+      "gateway"
+    ],
+    "constraints": {
+      "kind": "connectivity",
+      "source_device_id": "body",
+      "destination_device_id": "gateway"
+    }
+  },
+  {
+    "id": "REQ-BW-001",
+    "description": "Synthetic: all declared unicast traffic must fit each nominal link budget.",
+    "requirement_type": "bandwidth",
+    "associated_components": [
+      "link-gateway",
+      "link-adas",
+      "link-infotainment",
+      "link-camera",
+      "link-radar",
+      "link-body-can"
+    ],
+    "constraints": {
+      "kind": "bandwidth",
+      "link_ids": [
+        "link-gateway",
+        "link-adas",
+        "link-infotainment",
+        "link-camera",
+        "link-radar",
+        "link-body-can"
+      ]
+    }
+  },
+  {
+    "id": "REQ-ISO-001",
+    "description": "Synthetic: camera and infotainment require a reviewed isolation policy.",
+    "requirement_type": "isolation",
+    "associated_components": [
+      "front-camera",
+      "infotainment"
+    ],
+    "constraints": {
+      "kind": "isolation",
+      "source_device_id": "front-camera",
+      "destination_device_id": "infotainment"
+    }
+  },
+  {
+    "id": "REQ-TEXT-001",
+    "description": "Synthetic free text: camera delivery latency should be reviewed by an engineer.",
+    "requirement_type": "other",
+    "associated_components": [
+      "svc-camera"
+    ],
+    "constraints": null
+  }
+]

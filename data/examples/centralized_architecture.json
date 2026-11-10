@@ -1,0 +1,408 @@
+{
+  "id": "synthetic-centralized-001",
+  "name": "Synthetic Centralized E/E Architecture",
+  "description": "Synthetic engineering test data only; not OEM production specifications. Speeds and demands are illustrative.",
+  "ecus": [
+    {
+      "id": "gateway",
+      "name": "Central Gateway",
+      "ecu_type": "gateway",
+      "interfaces": [
+        {
+          "id": "eth0",
+          "technology": "ethernet",
+          "nominal_speed_mbps": 1000,
+          "vlan_ids": [
+            10,
+            20,
+            30
+          ]
+        },
+        {
+          "id": "can0",
+          "technology": "can",
+          "nominal_speed_mbps": 1,
+          "vlan_ids": []
+        }
+      ]
+    },
+    {
+      "id": "adas",
+      "name": "ADAS Domain Controller",
+      "ecu_type": "domain_controller",
+      "interfaces": [
+        {
+          "id": "eth0",
+          "technology": "ethernet",
+          "nominal_speed_mbps": 1000,
+          "vlan_ids": [
+            20,
+            30
+          ]
+        }
+      ]
+    },
+    {
+      "id": "infotainment",
+      "name": "Infotainment Domain Controller",
+      "ecu_type": "domain_controller",
+      "interfaces": [
+        {
+          "id": "eth0",
+          "technology": "ethernet",
+          "nominal_speed_mbps": 1000,
+          "vlan_ids": [
+            30
+          ]
+        }
+      ]
+    },
+    {
+      "id": "body",
+      "name": "Body Controller",
+      "ecu_type": "other",
+      "interfaces": [
+        {
+          "id": "can0",
+          "technology": "can",
+          "nominal_speed_mbps": 1,
+          "vlan_ids": []
+        }
+      ]
+    },
+    {
+      "id": "front-camera",
+      "name": "Front Camera ECU",
+      "ecu_type": "sensor",
+      "interfaces": [
+        {
+          "id": "eth0",
+          "technology": "ethernet",
+          "nominal_speed_mbps": 100,
+          "vlan_ids": [
+            20
+          ]
+        }
+      ]
+    },
+    {
+      "id": "radar",
+      "name": "Radar ECU",
+      "ecu_type": "sensor",
+      "interfaces": [
+        {
+          "id": "eth0",
+          "technology": "ethernet",
+          "nominal_speed_mbps": 100,
+          "vlan_ids": [
+            20
+          ]
+        }
+      ]
+    }
+  ],
+  "ethernet_switches": [
+    {
+      "id": "switch-core",
+      "name": "Central Ethernet Switch",
+      "ports": [
+        {
+          "id": "p1",
+          "technology": "ethernet",
+          "nominal_speed_mbps": 1000,
+          "vlan_ids": [
+            10,
+            20,
+            30
+          ]
+        },
+        {
+          "id": "p2",
+          "technology": "ethernet",
+          "nominal_speed_mbps": 1000,
+          "vlan_ids": [
+            20,
+            30
+          ]
+        },
+        {
+          "id": "p3",
+          "technology": "ethernet",
+          "nominal_speed_mbps": 1000,
+          "vlan_ids": [
+            30
+          ]
+        },
+        {
+          "id": "p4",
+          "technology": "ethernet",
+          "nominal_speed_mbps": 100,
+          "vlan_ids": [
+            20
+          ]
+        },
+        {
+          "id": "p5",
+          "technology": "ethernet",
+          "nominal_speed_mbps": 100,
+          "vlan_ids": [
+            20
+          ]
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "id": "link-gateway",
+      "source": {
+        "device_id": "gateway",
+        "interface_id": "eth0"
+      },
+      "destination": {
+        "device_id": "switch-core",
+        "interface_id": "p1"
+      },
+      "technology": "ethernet",
+      "nominal_bandwidth_mbps": 1000
+    },
+    {
+      "id": "link-adas",
+      "source": {
+        "device_id": "adas",
+        "interface_id": "eth0"
+      },
+      "destination": {
+        "device_id": "switch-core",
+        "interface_id": "p2"
+      },
+      "technology": "ethernet",
+      "nominal_bandwidth_mbps": 1000
+    },
+    {
+      "id": "link-infotainment",
+      "source": {
+        "device_id": "infotainment",
+        "interface_id": "eth0"
+      },
+      "destination": {
+        "device_id": "switch-core",
+        "interface_id": "p3"
+      },
+      "technology": "ethernet",
+      "nominal_bandwidth_mbps": 1000
+    },
+    {
+      "id": "link-camera",
+      "source": {
+        "device_id": "front-camera",
+        "interface_id": "eth0"
+      },
+      "destination": {
+        "device_id": "switch-core",
+        "interface_id": "p4"
+      },
+      "technology": "ethernet",
+      "nominal_bandwidth_mbps": 100
+    },
+    {
+      "id": "link-radar",
+      "source": {
+        "device_id": "radar",
+        "interface_id": "eth0"
+      },
+      "destination": {
+        "device_id": "switch-core",
+        "interface_id": "p5"
+      },
+      "technology": "ethernet",
+      "nominal_bandwidth_mbps": 100
+    },
+    {
+      "id": "link-body-can",
+      "source": {
+        "device_id": "body",
+        "interface_id": "can0"
+      },
+      "destination": {
+        "device_id": "gateway",
+        "interface_id": "can0"
+      },
+      "technology": "can",
+      "nominal_bandwidth_mbps": 1
+    }
+  ],
+  "services": [
+    {
+      "id": "svc-camera",
+      "name": "Camera Stream",
+      "provider_ecu_id": "front-camera",
+      "consumer_ecu_ids": [
+        "adas"
+      ],
+      "protocol": "SOME/IP",
+      "bandwidth_requirement_mbps": 60,
+      "traffic_routes": [
+        {
+          "consumer_ecu_id": "adas",
+          "link_ids": [
+            "link-camera",
+            "link-adas"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "svc-radar",
+      "name": "Radar Objects",
+      "provider_ecu_id": "radar",
+      "consumer_ecu_ids": [
+        "adas"
+      ],
+      "protocol": "DDS",
+      "bandwidth_requirement_mbps": 20,
+      "traffic_routes": [
+        {
+          "consumer_ecu_id": "adas",
+          "link_ids": [
+            "link-radar",
+            "link-adas"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "svc-driving-status",
+      "name": "Driving Status",
+      "provider_ecu_id": "adas",
+      "consumer_ecu_ids": [
+        "infotainment"
+      ],
+      "protocol": "SOME/IP",
+      "bandwidth_requirement_mbps": 8,
+      "traffic_routes": [
+        {
+          "consumer_ecu_id": "infotainment",
+          "link_ids": [
+            "link-adas",
+            "link-infotainment"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "svc-body",
+      "name": "Body Status Signals",
+      "provider_ecu_id": "body",
+      "consumer_ecu_ids": [
+        "gateway"
+      ],
+      "protocol": "OTHER",
+      "bandwidth_requirement_mbps": 0.1,
+      "traffic_routes": [
+        {
+          "consumer_ecu_id": "gateway",
+          "link_ids": [
+            "link-body-can"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "svc-diagnostics",
+      "name": "Illustrative Diagnostics",
+      "provider_ecu_id": "infotainment",
+      "consumer_ecu_ids": [
+        "gateway"
+      ],
+      "protocol": "REST",
+      "bandwidth_requirement_mbps": 0.2,
+      "traffic_routes": [
+        {
+          "consumer_ecu_id": "gateway",
+          "link_ids": [
+            "link-infotainment",
+            "link-gateway"
+          ]
+        }
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-CONN-001",
+      "description": "Synthetic: camera and ADAS must have a physical path.",
+      "requirement_type": "connectivity",
+      "associated_components": [
+        "front-camera",
+        "adas"
+      ],
+      "constraints": {
+        "kind": "connectivity",
+        "source_device_id": "front-camera",
+        "destination_device_id": "adas"
+      }
+    },
+    {
+      "id": "REQ-CONN-002",
+      "description": "Synthetic: body controller must physically connect to the gateway.",
+      "requirement_type": "connectivity",
+      "associated_components": [
+        "body",
+        "gateway"
+      ],
+      "constraints": {
+        "kind": "connectivity",
+        "source_device_id": "body",
+        "destination_device_id": "gateway"
+      }
+    },
+    {
+      "id": "REQ-BW-001",
+      "description": "Synthetic: all declared unicast traffic must fit each nominal link budget.",
+      "requirement_type": "bandwidth",
+      "associated_components": [
+        "link-gateway",
+        "link-adas",
+        "link-infotainment",
+        "link-camera",
+        "link-radar",
+        "link-body-can"
+      ],
+      "constraints": {
+        "kind": "bandwidth",
+        "link_ids": [
+          "link-gateway",
+          "link-adas",
+          "link-infotainment",
+          "link-camera",
+          "link-radar",
+          "link-body-can"
+        ]
+      }
+    },
+    {
+      "id": "REQ-ISO-001",
+      "description": "Synthetic: camera and infotainment require a reviewed isolation policy.",
+      "requirement_type": "isolation",
+      "associated_components": [
+        "front-camera",
+        "infotainment"
+      ],
+      "constraints": {
+        "kind": "isolation",
+        "source_device_id": "front-camera",
+        "destination_device_id": "infotainment"
+      }
+    },
+    {
+      "id": "REQ-TEXT-001",
+      "description": "Synthetic free text: camera delivery latency should be reviewed by an engineer.",
+      "requirement_type": "other",
+      "associated_components": [
+        "svc-camera"
+      ],
+      "constraints": null
+    }
+  ]
+}

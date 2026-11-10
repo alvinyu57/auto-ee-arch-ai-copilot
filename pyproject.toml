@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "auto-ee-arch-ai-copilot"
+version = "0.1.0"
+description = "Automotive E/E architecture modeling and deterministic physical network analysis"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "networkx>=3.4,<4",
+  "pydantic>=2.10,<3",
+  "uvicorn>=0.34,<1",
+]
+
+[dependency-groups]
+dev = [
+  "httpx>=0.28,<1",
+  "mypy>=1.15,<2",
+  "pre-commit>=4,<5",
+  "pytest>=8.3,<10",
+  "pytest-cov>=6,<8",
+  "ruff>=0.11,<1",
+  "types-networkx>=3.4,<4",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ee_arch_copilot"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+files = ["src", "tests"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers --strict-config --cov=ee_arch_copilot --cov-report=term-missing --cov-report=xml"
+
+[tool.coverage.run]
+branch = true
+source = ["ee_arch_copilot"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 90

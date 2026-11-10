@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@v9
+        with:
+          version: "0.13.7"
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+      - name: Install locked dependencies
+        run: uv sync --locked --dev
+      - name: Check formatting
+        run: uv run --locked ruff format --check .
+      - name: Lint
+        run: uv run --locked ruff check .
+      - name: Type check
+        run: uv run --locked mypy
+      - name: Test with coverage
+        run: uv run --locked pytest
+      - name: Build distributions
+        run: uv build

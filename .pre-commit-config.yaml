@@ -1,0 +1,20 @@
+# Local hooks use the same locked tools as CI; run `uv sync` first.
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: Ruff lint
+        entry: uv run --locked ruff check --fix
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: Ruff format
+        entry: uv run --locked ruff format
+        language: system
+        types: [python]
+      - id: mypy
+        name: mypy
+        entry: uv run --locked mypy
+        language: system
+        pass_filenames: false
+        types: [python]
