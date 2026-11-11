@@ -10,7 +10,9 @@ validation through a stateless REST API.
 All supplied architectures, requirements, speeds, and traffic demands are synthetic
 engineering test data, not OEM production specifications. Phase 2 adds persistent
 requirements retrieval and optional evidence-citing generation. Local retrieval and
-all tests run without API keys or model downloads. There is no agent orchestration.
+all tests run without API keys or model downloads. Phase 3 adds a bounded, read-only
+single agent with native tool calling. Deterministic validator findings remain authoritative;
+generated interpretations are unverified. Live provider behavior is not yet verified.
 
 ## Executive Overview
 
@@ -393,7 +395,7 @@ it needs no companion container. Run one application worker against each local s
 - Citation validity verifies references, not semantic faithfulness of every generated claim.
 - Compliance and numeric-conflict guards are English heuristics; general entailment,
   sufficiency for nonempty context, arbitrary ID grammars, and conflict reasoning require review.
-- No OCR, production TSN analysis, or agent orchestration.
+- No OCR, production TSN analysis, architecture modification, or automatic design approval.
 
 ## Roadmap and next step
 
@@ -404,5 +406,57 @@ Retrieved text should remain separate from structured constraints until reviewed
 an engineer; deterministic findings remain the source of truth for implemented checks.
 See the [Phase 2 remediation report](docs/reviews/phase2-remediation-report.md) for
 corrected defects, compatibility changes, and the measured acceptance limits.
+
+## Phase 3: read-only engineering agent
+
+`POST /api/v1/agent/analyze` combines existing hybrid retrieval, physical topology,
+path discovery, and deterministic validation through four approved Python tools.
+It accepts `question`, optional `architecture` using the complete Phase 1 schema,
+and `options` (`max_iterations`, `max_tool_calls`, `include_trace`). Omit architecture
+for requirements lookup. There are no filesystem paths, sample-ID guesses, write tools,
+background jobs, or persistent conversations in this API.
+
+To use a real compatible provider, set `AGENT_PROVIDER=openai_compatible`, `AGENT_MODEL`
+(or `LLM_MODEL`), `LLM_BASE_URL`, and, when required, `LLM_API_KEY` in your environment.
+Use a model/server supporting native Chat Completions function calling and JSON output.
+The existing HTTP infrastructure and credentials are reused; no provider SDK was added.
+Ingest documents through the existing knowledge workflow before asking retrieval questions.
+Keep provider URLs administrator-controlled. Retrieved text and relevant architecture
+tool results are sent to that provider. Local hash embeddings remain the default.
+
+With the server running, for example:
+
+```bash
+jq -n --slurpfile arch data/examples/centralized_architecture.json \
+  '{question:"Retrieve REQ-ETH-002, find the physical path from gateway to adas, and validate supported constraints.", architecture:$arch[0], options:{include_trace:true}}' \
+  | curl -sS http://127.0.0.1:8000/api/v1/agent/analyze \
+      -H 'Content-Type: application/json' --data-binary @-
+```
+
+Without any LLM credentials, run the actual orchestration workflow with the injected
+scripted test provider and an isolated synthetic index:
+
+```bash
+uv run --locked python -m ee_arch_copilot.agent.evaluation \
+  --output /tmp/agent-evaluation-scripted.json \
+  --demo-output /tmp/agent-workflow-scripted.json
+```
+
+This runs 24 tasks, including overload, missing routes, injection, invalid calls,
+conflicting requirements, and budget exhaustion. Scripts simulate model messages;
+the actual registry and Phase 1/2 tools run. Scripts are unavailable in production
+configuration. CI runs this evaluation without paid calls. Optional live evaluation
+uses `--live` and a separately named output file; it does not establish certification.
+
+`COMPLETED` means orchestration finished with evidence, not that a design passed.
+`INSUFFICIENT_EVIDENCE` includes empty retrieval, conflicting sources and collected
+`NOT_EVALUATED` findings. `PARTIAL` discloses tool failures, limits or stale sources;
+`FAILED` is an unrecoverable provider/protocol/final-output failure before useful execution.
+Only server-copied `findings[].validation.status` supplies authoritative engineering
+`PASS`, `FAIL` or `NOT_EVALUATED`. Citations and evidence identities are server-owned.
+
+See [agent architecture](docs/agent-architecture.md), [evaluation definitions](docs/agent-evaluation.md),
+and the [Phase 3 implementation report](docs/reviews/phase3-implementation-report.md)
+for limits, observed results, API errors and remaining verification work.
 
 Licensed under [Apache License 2.0](LICENSE).
