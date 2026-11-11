@@ -1,0 +1,486 @@
+{
+  "dataset_size": 24,
+  "answerable_queries": 22,
+  "no_answer_queries": 2,
+  "options": {
+    "method": "keyword",
+    "semantic_top_k": 12,
+    "keyword_top_k": 12,
+    "final_top_k": 5,
+    "rrf_constant": 60,
+    "min_similarity": 0.15,
+    "filters": {
+      "document_id": null,
+      "requirement_id": null,
+      "version": null
+    },
+    "enable_reranking": false
+  },
+  "embedding_provider": "hash:hash-token-v1:384",
+  "corpus_hashes": {
+    "ethernet": "1d41441b8400adbb7c70c673f86cb4fc010495e4ec2003d811653868fb87c8b8",
+    "overview": "9ed661ae81a1247c917413ca9f5d28e43629b711986d378e789157c0f250e5ce",
+    "soa": "d7eec17655ea096094ef99d78b317a9ee53c51433951b5c11cc1e739c31c2528",
+    "tsn": "83408cde3d03ea7718b8b625d28c8dced25e024ba1187fa40c6b5eaaade4db6f"
+  },
+  "metrics": {
+    "recall_at_k": 0.9772727272727273,
+    "precision_at_k": 0.2818181818181818,
+    "mrr": 1.0
+  },
+  "no_answer_abstention_rate": 1.0,
+  "results": [
+    {
+      "query_id": "q01",
+      "retrieved_ids": [
+        "REQ-ETH-001"
+      ],
+      "retrieved_documents": [
+        "ethernet"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q02",
+      "retrieved_ids": [
+        "REQ-SOA-015"
+      ],
+      "retrieved_documents": [
+        "soa"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q03",
+      "retrieved_ids": [
+        "REQ-TSN-008"
+      ],
+      "retrieved_documents": [
+        "tsn"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q04",
+      "retrieved_ids": [
+        "SYS-REQ-102"
+      ],
+      "retrieved_documents": [
+        "overview"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q05",
+      "retrieved_ids": [
+        "NET-REQ-042"
+      ],
+      "retrieved_documents": [
+        "overview"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q06",
+      "retrieved_ids": [
+        "REQ-ETH-002",
+        "REQ-ETH-001",
+        "SYS-REQ-101",
+        "SYS-REQ-102",
+        "REQ-CONN-002"
+      ],
+      "retrieved_documents": [
+        "ethernet",
+        "overview"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.4,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q07",
+      "retrieved_ids": [
+        "NET-REQ-042",
+        "REQ-SOA-001",
+        "REQ-ETH-003",
+        "REQ-SOA-016",
+        "REQ-SOA-002"
+      ],
+      "retrieved_documents": [
+        "ethernet",
+        "overview",
+        "soa"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.6,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q08",
+      "retrieved_ids": [
+        "REQ-SOA-015",
+        "REQ-SOA-018",
+        "REQ-SOA-017",
+        "REQ-SOA-016",
+        "REQ-SOA-003"
+      ],
+      "retrieved_documents": [
+        "soa"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.4,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q09",
+      "retrieved_ids": [
+        "REQ-ETH-008",
+        "REQ-ETH-007",
+        "SYS-REQ-102",
+        "REQ-ETH-005",
+        "REQ-SOA-015"
+      ],
+      "retrieved_documents": [
+        "ethernet",
+        "overview",
+        "soa"
+      ],
+      "metrics": {
+        "recall_at_k": 0.5,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q10",
+      "retrieved_ids": [
+        "REQ-TSN-008",
+        "REQ-TSN-001",
+        "REQ-TSN-009",
+        "REQ-TSN-002",
+        "chk-8365d8b5e276ce6555ee8a87898dc2bc"
+      ],
+      "retrieved_documents": [
+        "tsn"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q11",
+      "retrieved_ids": [
+        "REQ-TSN-001",
+        "REQ-TSN-008",
+        "REQ-TSN-002",
+        "REQ-TSN-011",
+        "chk-8365d8b5e276ce6555ee8a87898dc2bc"
+      ],
+      "retrieved_documents": [
+        "tsn"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.4,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q12",
+      "retrieved_ids": [
+        "REQ-ETH-004",
+        "REQ-ETH-003",
+        "REQ-ETH-002",
+        "REQ-ETH-005",
+        "REQ-ETH-001"
+      ],
+      "retrieved_documents": [
+        "ethernet"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.4,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q13",
+      "retrieved_ids": [
+        "REQ-ETH-001",
+        "REQ-ETH-002",
+        "REQ-ETH-005",
+        "SYS-REQ-101",
+        "REQ-CONN-001"
+      ],
+      "retrieved_documents": [
+        "ethernet",
+        "overview"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.4,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q14",
+      "retrieved_ids": [
+        "REQ-SOA-016",
+        "REQ-SOA-003",
+        "REQ-SOA-001",
+        "REQ-SOA-018",
+        "REQ-SOA-017"
+      ],
+      "retrieved_documents": [
+        "soa"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q15",
+      "retrieved_ids": [
+        "REQ-ETH-007",
+        "REQ-ETH-008",
+        "REQ-SOA-015",
+        "REQ-SOA-002",
+        "REQ-SOA-018"
+      ],
+      "retrieved_documents": [
+        "ethernet",
+        "soa"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.4,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q16",
+      "retrieved_ids": [
+        "REQ-SOA-017",
+        "REQ-SOA-016",
+        "REQ-SOA-015",
+        "REQ-SOA-018",
+        "REQ-SOA-001"
+      ],
+      "retrieved_documents": [
+        "soa"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q17",
+      "retrieved_ids": [
+        "SYS-REQ-101",
+        "REQ-CONN-002",
+        "REQ-ETH-002",
+        "SYS-REQ-102",
+        "REQ-ETH-001"
+      ],
+      "retrieved_documents": [
+        "ethernet",
+        "overview"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.4,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q18",
+      "retrieved_ids": [
+        "REQ-TSN-010",
+        "REQ-TSN-002",
+        "REQ-TEXT-001",
+        "chk-8365d8b5e276ce6555ee8a87898dc2bc",
+        "REQ-TSN-011"
+      ],
+      "retrieved_documents": [
+        "overview",
+        "tsn"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q19",
+      "retrieved_ids": [
+        "REQ-TSN-002",
+        "chk-8365d8b5e276ce6555ee8a87898dc2bc",
+        "REQ-TSN-011",
+        "REQ-TSN-001",
+        "chk-a17b6ced5cd23d80f33b002ddce44656"
+      ],
+      "retrieved_documents": [
+        "ethernet",
+        "tsn"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q20",
+      "retrieved_ids": [
+        "REQ-TSN-009",
+        "REQ-TSN-008",
+        "REQ-TSN-011",
+        "chk-8365d8b5e276ce6555ee8a87898dc2bc",
+        "REQ-BW-001"
+      ],
+      "retrieved_documents": [
+        "ethernet",
+        "tsn"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q21",
+      "retrieved_ids": [
+        "REQ-TSN-011",
+        "REQ-TSN-001",
+        "REQ-TSN-002",
+        "REQ-TSN-008",
+        "chk-8365d8b5e276ce6555ee8a87898dc2bc"
+      ],
+      "retrieved_documents": [
+        "tsn"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q22",
+      "retrieved_ids": [
+        "REQ-BW-001"
+      ],
+      "retrieved_documents": [
+        "ethernet"
+      ],
+      "metrics": {
+        "recall_at_k": 1.0,
+        "precision_at_k": 0.2,
+        "mrr": 1.0
+      },
+      "abstained": null,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q23",
+      "retrieved_ids": [],
+      "retrieved_documents": [],
+      "metrics": null,
+      "abstained": true,
+      "missing_expected_documents": []
+    },
+    {
+      "query_id": "q24",
+      "retrieved_ids": [],
+      "retrieved_documents": [],
+      "metrics": null,
+      "abstained": true,
+      "missing_expected_documents": []
+    }
+  ],
+  "failed_queries": [
+    "q09"
+  ],
+  "limitations": [
+    "Small synthetic corpus; scores do not establish production retrieval quality.",
+    "Hash embeddings are a lexical vector baseline, not learned semantic understanding.",
+    "No-answer abstention depends on thresholds; similarity is not answer confidence.",
+    "Citation checks do not measure unsupported claims or semantic faithfulness."
+  ]
+}

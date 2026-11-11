@@ -17,3 +17,4 @@ build/
 .idea/
 .vscode/
 .DS_Store
+data/vector_db/

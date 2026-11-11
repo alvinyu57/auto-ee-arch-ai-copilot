@@ -1,0 +1,2445 @@
+{
+  "dataset_sha256": "ffee2376d6b3a3b42e882e8794c77c8e0ddae10f6b08b7db4f105f2358ec7d1a",
+  "qa_dataset_sha256": "87c74b249d1dfedc8a422b95f27134494ffd77cc46a3b830832d7d0f4f36b4fd",
+  "live_embedding_tested": false,
+  "live_llm_tested": false,
+  "baselines": {
+    "keyword": {
+      "source": "docs/reviews/phase2-retrieval-keyword.json",
+      "metrics": {
+        "recall_at_k": 0.9772727272727273,
+        "precision_at_k": 0.2818181818181818,
+        "mrr": 1.0
+      },
+      "no_answer_abstention_rate": 1.0,
+      "corpus_hashes_match": true,
+      "recall_at_1": 0.7878787878787878,
+      "recall_at_3": 0.9772727272727273,
+      "recall_at_5": 0.9772727272727273,
+      "precision_at_3": 0.46969696969696967,
+      "exact_id_queries": 5,
+      "exact_requirement_id_hit_at_1": 1.0
+    },
+    "semantic": {
+      "source": "docs/reviews/phase2-retrieval-semantic.json",
+      "metrics": {
+        "recall_at_k": 0.9772727272727273,
+        "precision_at_k": 0.2818181818181818,
+        "mrr": 1.0
+      },
+      "no_answer_abstention_rate": 1.0,
+      "corpus_hashes_match": true,
+      "recall_at_1": 0.7878787878787878,
+      "recall_at_3": 0.9772727272727273,
+      "recall_at_5": 0.9772727272727273,
+      "precision_at_3": 0.46969696969696967,
+      "exact_id_queries": 5,
+      "exact_requirement_id_hit_at_1": 1.0
+    },
+    "hybrid": {
+      "source": "docs/reviews/phase2-retrieval-hybrid.json",
+      "metrics": {
+        "recall_at_k": 0.9772727272727273,
+        "precision_at_k": 0.2818181818181818,
+        "mrr": 1.0
+      },
+      "no_answer_abstention_rate": 1.0,
+      "corpus_hashes_match": true,
+      "recall_at_1": 0.7878787878787878,
+      "recall_at_3": 0.9772727272727273,
+      "recall_at_5": 0.9772727272727273,
+      "precision_at_3": 0.46969696969696967,
+      "exact_id_queries": 5,
+      "exact_requirement_id_hit_at_1": 1.0
+    }
+  },
+  "retrieval": {
+    "keyword": {
+      "dataset_sha256": "ffee2376d6b3a3b42e882e8794c77c8e0ddae10f6b08b7db4f105f2358ec7d1a",
+      "dataset_size": 24,
+      "answerable_queries": 22,
+      "no_answer_queries": 2,
+      "options": {
+        "method": "keyword",
+        "semantic_top_k": 12,
+        "keyword_top_k": 12,
+        "final_top_k": 5,
+        "rrf_constant": 60,
+        "min_similarity": 0.15,
+        "filters": {
+          "document_id": null,
+          "requirement_id": null,
+          "version": null
+        },
+        "enable_reranking": false
+      },
+      "embedding_provider": "hash:hash-token-v1:384",
+      "corpus_hashes": {
+        "ethernet": "1d41441b8400adbb7c70c673f86cb4fc010495e4ec2003d811653868fb87c8b8",
+        "overview": "9ed661ae81a1247c917413ca9f5d28e43629b711986d378e789157c0f250e5ce",
+        "soa": "d7eec17655ea096094ef99d78b317a9ee53c51433951b5c11cc1e739c31c2528",
+        "tsn": "83408cde3d03ea7718b8b625d28c8dced25e024ba1187fa40c6b5eaaade4db6f"
+      },
+      "metrics": {
+        "recall_at_k": 0.9772727272727273,
+        "precision_at_k": 0.2818181818181818,
+        "mrr": 1.0
+      },
+      "recall_at_1": 0.7878787878787878,
+      "recall_at_3": 0.9772727272727273,
+      "recall_at_5": 0.9772727272727273,
+      "precision_at_3": 0.46969696969696967,
+      "mrr_within_5": 1.0,
+      "exact_id_queries": 5,
+      "exact_requirement_id_hit_at_1": 1.0,
+      "no_answer_abstention_rate": 1.0,
+      "results": [
+        {
+          "query_id": "q01",
+          "retrieved_ids": [
+            "REQ-ETH-001"
+          ],
+          "retrieved_documents": [
+            "ethernet"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q02",
+          "retrieved_ids": [
+            "REQ-SOA-015"
+          ],
+          "retrieved_documents": [
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q03",
+          "retrieved_ids": [
+            "REQ-TSN-008"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q04",
+          "retrieved_ids": [
+            "SYS-REQ-102"
+          ],
+          "retrieved_documents": [
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q05",
+          "retrieved_ids": [
+            "NET-REQ-042"
+          ],
+          "retrieved_documents": [
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q06",
+          "retrieved_ids": [
+            "REQ-ETH-002",
+            "REQ-ETH-001",
+            "SYS-REQ-101",
+            "SYS-REQ-102",
+            "REQ-CONN-002"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q07",
+          "retrieved_ids": [
+            "NET-REQ-042",
+            "REQ-SOA-001",
+            "REQ-ETH-003",
+            "REQ-SOA-016",
+            "REQ-SOA-002"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview",
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.6,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q08",
+          "retrieved_ids": [
+            "REQ-SOA-015",
+            "REQ-SOA-018",
+            "REQ-SOA-017",
+            "REQ-SOA-016",
+            "REQ-SOA-003"
+          ],
+          "retrieved_documents": [
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q09",
+          "retrieved_ids": [
+            "REQ-ETH-008",
+            "REQ-ETH-007",
+            "SYS-REQ-102",
+            "REQ-ETH-005",
+            "REQ-SOA-015"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview",
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 0.5,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q10",
+          "retrieved_ids": [
+            "REQ-TSN-008",
+            "REQ-TSN-001",
+            "REQ-TSN-009",
+            "REQ-TSN-002",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q11",
+          "retrieved_ids": [
+            "REQ-TSN-001",
+            "REQ-TSN-008",
+            "REQ-TSN-002",
+            "REQ-TSN-011",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q12",
+          "retrieved_ids": [
+            "REQ-ETH-004",
+            "REQ-ETH-003",
+            "REQ-ETH-002",
+            "REQ-ETH-005",
+            "REQ-ETH-001"
+          ],
+          "retrieved_documents": [
+            "ethernet"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q13",
+          "retrieved_ids": [
+            "REQ-ETH-001",
+            "REQ-ETH-002",
+            "REQ-ETH-005",
+            "SYS-REQ-101",
+            "REQ-CONN-001"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q14",
+          "retrieved_ids": [
+            "REQ-SOA-016",
+            "REQ-SOA-003",
+            "REQ-SOA-001",
+            "REQ-SOA-018",
+            "REQ-SOA-017"
+          ],
+          "retrieved_documents": [
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q15",
+          "retrieved_ids": [
+            "REQ-ETH-007",
+            "REQ-ETH-008",
+            "REQ-SOA-015",
+            "REQ-SOA-002",
+            "REQ-SOA-018"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q16",
+          "retrieved_ids": [
+            "REQ-SOA-017",
+            "REQ-SOA-016",
+            "REQ-SOA-015",
+            "REQ-SOA-018",
+            "REQ-SOA-001"
+          ],
+          "retrieved_documents": [
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q17",
+          "retrieved_ids": [
+            "SYS-REQ-101",
+            "REQ-CONN-002",
+            "REQ-ETH-002",
+            "SYS-REQ-102",
+            "REQ-ETH-001"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q18",
+          "retrieved_ids": [
+            "REQ-TSN-010",
+            "REQ-TSN-002",
+            "REQ-TEXT-001",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc",
+            "REQ-TSN-011"
+          ],
+          "retrieved_documents": [
+            "overview",
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q19",
+          "retrieved_ids": [
+            "REQ-TSN-002",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc",
+            "REQ-TSN-011",
+            "REQ-TSN-001",
+            "chk-a17b6ced5cd23d80f33b002ddce44656"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q20",
+          "retrieved_ids": [
+            "REQ-TSN-009",
+            "REQ-TSN-008",
+            "REQ-TSN-011",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc",
+            "REQ-BW-001"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q21",
+          "retrieved_ids": [
+            "REQ-TSN-011",
+            "REQ-TSN-001",
+            "REQ-TSN-002",
+            "REQ-TSN-008",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q22",
+          "retrieved_ids": [
+            "REQ-BW-001"
+          ],
+          "retrieved_documents": [
+            "ethernet"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q23",
+          "retrieved_ids": [],
+          "retrieved_documents": [],
+          "metrics": null,
+          "abstained": true,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q24",
+          "retrieved_ids": [],
+          "retrieved_documents": [],
+          "metrics": null,
+          "abstained": true,
+          "missing_expected_documents": []
+        }
+      ],
+      "failed_queries": [
+        "q09"
+      ],
+      "limitations": [
+        "Small synthetic corpus; scores do not establish production retrieval quality.",
+        "Hash embeddings are a lexical vector baseline, not learned semantic understanding.",
+        "No-answer abstention depends on thresholds; similarity is not answer confidence.",
+        "Citation checks do not measure unsupported claims or semantic faithfulness."
+      ]
+    },
+    "semantic": {
+      "dataset_sha256": "ffee2376d6b3a3b42e882e8794c77c8e0ddae10f6b08b7db4f105f2358ec7d1a",
+      "dataset_size": 24,
+      "answerable_queries": 22,
+      "no_answer_queries": 2,
+      "options": {
+        "method": "semantic",
+        "semantic_top_k": 12,
+        "keyword_top_k": 12,
+        "final_top_k": 5,
+        "rrf_constant": 60,
+        "min_similarity": 0.15,
+        "filters": {
+          "document_id": null,
+          "requirement_id": null,
+          "version": null
+        },
+        "enable_reranking": false
+      },
+      "embedding_provider": "hash:hash-token-v1:384",
+      "corpus_hashes": {
+        "ethernet": "1d41441b8400adbb7c70c673f86cb4fc010495e4ec2003d811653868fb87c8b8",
+        "overview": "9ed661ae81a1247c917413ca9f5d28e43629b711986d378e789157c0f250e5ce",
+        "soa": "d7eec17655ea096094ef99d78b317a9ee53c51433951b5c11cc1e739c31c2528",
+        "tsn": "83408cde3d03ea7718b8b625d28c8dced25e024ba1187fa40c6b5eaaade4db6f"
+      },
+      "metrics": {
+        "recall_at_k": 0.9772727272727273,
+        "precision_at_k": 0.2818181818181818,
+        "mrr": 1.0
+      },
+      "recall_at_1": 0.7878787878787878,
+      "recall_at_3": 0.9772727272727273,
+      "recall_at_5": 0.9772727272727273,
+      "precision_at_3": 0.46969696969696967,
+      "mrr_within_5": 1.0,
+      "exact_id_queries": 5,
+      "exact_requirement_id_hit_at_1": 1.0,
+      "no_answer_abstention_rate": 1.0,
+      "results": [
+        {
+          "query_id": "q01",
+          "retrieved_ids": [
+            "REQ-ETH-001"
+          ],
+          "retrieved_documents": [
+            "ethernet"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q02",
+          "retrieved_ids": [
+            "REQ-SOA-015"
+          ],
+          "retrieved_documents": [
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q03",
+          "retrieved_ids": [
+            "REQ-TSN-008"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q04",
+          "retrieved_ids": [
+            "SYS-REQ-102"
+          ],
+          "retrieved_documents": [
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q05",
+          "retrieved_ids": [
+            "NET-REQ-042"
+          ],
+          "retrieved_documents": [
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q06",
+          "retrieved_ids": [
+            "REQ-ETH-002",
+            "REQ-ETH-001",
+            "SYS-REQ-101",
+            "SYS-REQ-102",
+            "REQ-ETH-007"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q07",
+          "retrieved_ids": [
+            "NET-REQ-042",
+            "REQ-ETH-003",
+            "REQ-SOA-001",
+            "REQ-SOA-016",
+            "REQ-ETH-007"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview",
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.6,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q08",
+          "retrieved_ids": [
+            "REQ-SOA-015",
+            "REQ-SOA-018",
+            "REQ-SOA-017",
+            "REQ-SOA-016",
+            "REQ-SOA-001"
+          ],
+          "retrieved_documents": [
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q09",
+          "retrieved_ids": [
+            "REQ-ETH-008",
+            "REQ-ETH-005",
+            "REQ-ETH-007",
+            "SYS-REQ-102",
+            "REQ-ETH-003"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 0.5,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q10",
+          "retrieved_ids": [
+            "REQ-TSN-008",
+            "REQ-TSN-001"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q11",
+          "retrieved_ids": [
+            "REQ-TSN-001",
+            "REQ-TSN-008",
+            "REQ-TSN-002",
+            "REQ-TSN-011"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q12",
+          "retrieved_ids": [
+            "REQ-ETH-004",
+            "REQ-ETH-003",
+            "REQ-ETH-002"
+          ],
+          "retrieved_documents": [
+            "ethernet"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q13",
+          "retrieved_ids": [
+            "REQ-ETH-001",
+            "REQ-ETH-002",
+            "SYS-REQ-101",
+            "REQ-ETH-005",
+            "SYS-REQ-102"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q14",
+          "retrieved_ids": [
+            "REQ-SOA-016",
+            "REQ-SOA-017",
+            "REQ-SOA-001"
+          ],
+          "retrieved_documents": [
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q15",
+          "retrieved_ids": [
+            "REQ-ETH-007",
+            "REQ-ETH-008",
+            "REQ-SOA-015",
+            "REQ-SOA-002",
+            "REQ-TSN-008"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "soa",
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q16",
+          "retrieved_ids": [
+            "REQ-SOA-017",
+            "REQ-SOA-015",
+            "REQ-SOA-016",
+            "REQ-SOA-001",
+            "REQ-SOA-018"
+          ],
+          "retrieved_documents": [
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q17",
+          "retrieved_ids": [
+            "SYS-REQ-101",
+            "REQ-CONN-002",
+            "REQ-ETH-002",
+            "SYS-REQ-102",
+            "REQ-SOA-003"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview",
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q18",
+          "retrieved_ids": [
+            "REQ-TSN-010",
+            "REQ-TSN-002",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc",
+            "REQ-TSN-011",
+            "REQ-TSN-009"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q19",
+          "retrieved_ids": [
+            "REQ-TSN-002",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q20",
+          "retrieved_ids": [
+            "REQ-TSN-009",
+            "REQ-TSN-008",
+            "REQ-BW-001"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q21",
+          "retrieved_ids": [
+            "REQ-TSN-011",
+            "REQ-TSN-001",
+            "REQ-TSN-002"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q22",
+          "retrieved_ids": [
+            "REQ-BW-001"
+          ],
+          "retrieved_documents": [
+            "ethernet"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q23",
+          "retrieved_ids": [],
+          "retrieved_documents": [],
+          "metrics": null,
+          "abstained": true,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q24",
+          "retrieved_ids": [],
+          "retrieved_documents": [],
+          "metrics": null,
+          "abstained": true,
+          "missing_expected_documents": []
+        }
+      ],
+      "failed_queries": [
+        "q09"
+      ],
+      "limitations": [
+        "Small synthetic corpus; scores do not establish production retrieval quality.",
+        "Hash embeddings are a lexical vector baseline, not learned semantic understanding.",
+        "No-answer abstention depends on thresholds; similarity is not answer confidence.",
+        "Citation checks do not measure unsupported claims or semantic faithfulness."
+      ]
+    },
+    "hybrid": {
+      "dataset_sha256": "ffee2376d6b3a3b42e882e8794c77c8e0ddae10f6b08b7db4f105f2358ec7d1a",
+      "dataset_size": 24,
+      "answerable_queries": 22,
+      "no_answer_queries": 2,
+      "options": {
+        "method": "hybrid",
+        "semantic_top_k": 12,
+        "keyword_top_k": 12,
+        "final_top_k": 5,
+        "rrf_constant": 60,
+        "min_similarity": 0.15,
+        "filters": {
+          "document_id": null,
+          "requirement_id": null,
+          "version": null
+        },
+        "enable_reranking": false
+      },
+      "embedding_provider": "hash:hash-token-v1:384",
+      "corpus_hashes": {
+        "ethernet": "1d41441b8400adbb7c70c673f86cb4fc010495e4ec2003d811653868fb87c8b8",
+        "overview": "9ed661ae81a1247c917413ca9f5d28e43629b711986d378e789157c0f250e5ce",
+        "soa": "d7eec17655ea096094ef99d78b317a9ee53c51433951b5c11cc1e739c31c2528",
+        "tsn": "83408cde3d03ea7718b8b625d28c8dced25e024ba1187fa40c6b5eaaade4db6f"
+      },
+      "metrics": {
+        "recall_at_k": 0.9772727272727273,
+        "precision_at_k": 0.2818181818181818,
+        "mrr": 1.0
+      },
+      "recall_at_1": 0.7878787878787878,
+      "recall_at_3": 0.9772727272727273,
+      "recall_at_5": 0.9772727272727273,
+      "precision_at_3": 0.46969696969696967,
+      "mrr_within_5": 1.0,
+      "exact_id_queries": 5,
+      "exact_requirement_id_hit_at_1": 1.0,
+      "no_answer_abstention_rate": 1.0,
+      "results": [
+        {
+          "query_id": "q01",
+          "retrieved_ids": [
+            "REQ-ETH-001"
+          ],
+          "retrieved_documents": [
+            "ethernet"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q02",
+          "retrieved_ids": [
+            "REQ-SOA-015"
+          ],
+          "retrieved_documents": [
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q03",
+          "retrieved_ids": [
+            "REQ-TSN-008"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q04",
+          "retrieved_ids": [
+            "SYS-REQ-102"
+          ],
+          "retrieved_documents": [
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q05",
+          "retrieved_ids": [
+            "NET-REQ-042"
+          ],
+          "retrieved_documents": [
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q06",
+          "retrieved_ids": [
+            "REQ-ETH-002",
+            "REQ-ETH-001",
+            "SYS-REQ-101",
+            "SYS-REQ-102",
+            "REQ-ETH-007"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q07",
+          "retrieved_ids": [
+            "NET-REQ-042",
+            "REQ-ETH-003",
+            "REQ-SOA-001",
+            "REQ-SOA-016",
+            "REQ-ETH-007"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview",
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.6,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q08",
+          "retrieved_ids": [
+            "REQ-SOA-015",
+            "REQ-SOA-018",
+            "REQ-SOA-017",
+            "REQ-SOA-016",
+            "REQ-SOA-001"
+          ],
+          "retrieved_documents": [
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q09",
+          "retrieved_ids": [
+            "REQ-ETH-008",
+            "REQ-ETH-007",
+            "REQ-ETH-005",
+            "SYS-REQ-102",
+            "REQ-SOA-015"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview",
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 0.5,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q10",
+          "retrieved_ids": [
+            "REQ-TSN-008",
+            "REQ-TSN-001",
+            "REQ-TSN-009",
+            "REQ-TSN-002",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q11",
+          "retrieved_ids": [
+            "REQ-TSN-001",
+            "REQ-TSN-008",
+            "REQ-TSN-002",
+            "REQ-TSN-011",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q12",
+          "retrieved_ids": [
+            "REQ-ETH-004",
+            "REQ-ETH-003",
+            "REQ-ETH-002",
+            "REQ-ETH-005",
+            "REQ-ETH-001"
+          ],
+          "retrieved_documents": [
+            "ethernet"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q13",
+          "retrieved_ids": [
+            "REQ-ETH-001",
+            "REQ-ETH-002",
+            "REQ-ETH-005",
+            "SYS-REQ-101",
+            "SYS-REQ-102"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q14",
+          "retrieved_ids": [
+            "REQ-SOA-016",
+            "REQ-SOA-001",
+            "REQ-SOA-017",
+            "REQ-SOA-003",
+            "REQ-SOA-018"
+          ],
+          "retrieved_documents": [
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q15",
+          "retrieved_ids": [
+            "REQ-ETH-007",
+            "REQ-ETH-008",
+            "REQ-SOA-015",
+            "REQ-SOA-002",
+            "REQ-TSN-008"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "soa",
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q16",
+          "retrieved_ids": [
+            "REQ-SOA-017",
+            "REQ-SOA-015",
+            "REQ-SOA-016",
+            "REQ-SOA-001",
+            "REQ-SOA-018"
+          ],
+          "retrieved_documents": [
+            "soa"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q17",
+          "retrieved_ids": [
+            "SYS-REQ-101",
+            "REQ-CONN-002",
+            "REQ-ETH-002",
+            "SYS-REQ-102",
+            "REQ-ETH-001"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "overview"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.4,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q18",
+          "retrieved_ids": [
+            "REQ-TSN-010",
+            "REQ-TSN-002",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc",
+            "REQ-TEXT-001",
+            "REQ-TSN-011"
+          ],
+          "retrieved_documents": [
+            "overview",
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q19",
+          "retrieved_ids": [
+            "REQ-TSN-002",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc",
+            "REQ-TSN-011",
+            "REQ-TSN-001",
+            "chk-a17b6ced5cd23d80f33b002ddce44656"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q20",
+          "retrieved_ids": [
+            "REQ-TSN-009",
+            "REQ-TSN-008",
+            "REQ-BW-001",
+            "REQ-TSN-011",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc"
+          ],
+          "retrieved_documents": [
+            "ethernet",
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q21",
+          "retrieved_ids": [
+            "REQ-TSN-011",
+            "REQ-TSN-001",
+            "REQ-TSN-002",
+            "REQ-TSN-008",
+            "chk-8365d8b5e276ce6555ee8a87898dc2bc"
+          ],
+          "retrieved_documents": [
+            "tsn"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q22",
+          "retrieved_ids": [
+            "REQ-BW-001"
+          ],
+          "retrieved_documents": [
+            "ethernet"
+          ],
+          "metrics": {
+            "recall_at_k": 1.0,
+            "precision_at_k": 0.2,
+            "mrr": 1.0
+          },
+          "abstained": null,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q23",
+          "retrieved_ids": [],
+          "retrieved_documents": [],
+          "metrics": null,
+          "abstained": true,
+          "missing_expected_documents": []
+        },
+        {
+          "query_id": "q24",
+          "retrieved_ids": [],
+          "retrieved_documents": [],
+          "metrics": null,
+          "abstained": true,
+          "missing_expected_documents": []
+        }
+      ],
+      "failed_queries": [
+        "q09"
+      ],
+      "limitations": [
+        "Small synthetic corpus; scores do not establish production retrieval quality.",
+        "Hash embeddings are a lexical vector baseline, not learned semantic understanding.",
+        "No-answer abstention depends on thresholds; similarity is not answer confidence.",
+        "Citation checks do not measure unsupported claims or semantic faithfulness."
+      ]
+    }
+  },
+  "controlled_generation": {
+    "model": "controlled-excerpt-only",
+    "cases": [
+      {
+        "method": "keyword",
+        "query_id": "qa01",
+        "context_chunk_ids": [
+          "chk-64cddad02a1f385ca0c648fe2026b146",
+          "chk-684c8762d3ae09db2ab2fb3f2ccaedb5",
+          "chk-716ec627ad79c5f7e861f2b63ba9c17e",
+          "chk-d719d644605269cf351deb86584673b7",
+          "chk-e5aa8894b449265ab073c13dcd53d904"
+        ],
+        "response": {
+          "answer": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable. [S1]",
+          "citations": [
+            {
+              "citation_id": "S1",
+              "chunk_id": "chk-684c8762d3ae09db2ab2fb3f2ccaedb5",
+              "document_id": "ethernet",
+              "filename": "ethernet.md",
+              "document_version": "1.0",
+              "requirement_id": "REQ-ETH-002",
+              "section": "Automotive Ethernet Architecture Requirements / Physical Ethernet interfaces",
+              "location": {
+                "start_offset": 517,
+                "end_offset": 827,
+                "start_line": 14,
+                "end_line": 18,
+                "page": null,
+                "json_pointer": null,
+                "text_start_offset": 0,
+                "text_end_offset": 310
+              },
+              "quote": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable."
+            }
+          ],
+          "referenced_requirement_ids": [
+            "REQ-ETH-002"
+          ],
+          "evidence_status": "cited",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Source references passed bounded identifier checks. Claims remain unverified; semantic support, evidence sufficiency, and general conflict detection are not proven. Engineering validation was not performed.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "keyword",
+        "query_id": "qa02",
+        "context_chunk_ids": [
+          "chk-1ff0eb9e3753e49fac9894785bdafc69",
+          "chk-6d7b8e1d39f9411968230bc2521d8905",
+          "chk-a460a655bb265f73b9f0e29b161a2266",
+          "chk-afd48fa96d5dfc837793858d235ad4df",
+          "chk-ed0378c4e9cfe46bc8df1dd594888e56"
+        ],
+        "response": {
+          "answer": "REQ-SOA-016:\nThe svc-camera SOME/IP interface shall use synthetic service identifier 0x1234.\nProvider front-camera and consumer adas shall agree on the service identifier and\ninterface version before communication is enabled. [S1]",
+          "citations": [
+            {
+              "citation_id": "S1",
+              "chunk_id": "chk-a460a655bb265f73b9f0e29b161a2266",
+              "document_id": "soa",
+              "filename": "soa.md",
+              "document_version": "1.0",
+              "requirement_id": "REQ-SOA-016",
+              "section": "SOA Communication Requirements / Service discovery and availability",
+              "location": {
+                "start_offset": 1409,
+                "end_offset": 1634,
+                "start_line": 36,
+                "end_line": 39,
+                "page": null,
+                "json_pointer": null,
+                "text_start_offset": 0,
+                "text_end_offset": 225
+              },
+              "quote": "REQ-SOA-016:\nThe svc-camera SOME/IP interface shall use synthetic service identifier 0x1234.\nProvider front-camera and consumer adas shall agree on the service identifier and\ninterface version before communication is enabled."
+            }
+          ],
+          "referenced_requirement_ids": [
+            "REQ-SOA-016"
+          ],
+          "evidence_status": "cited",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Source references passed bounded identifier checks. Claims remain unverified; semantic support, evidence sufficiency, and general conflict detection are not proven. Engineering validation was not performed.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "keyword",
+        "query_id": "qa03",
+        "context_chunk_ids": [
+          "chk-7956e2edd121fa6b00617ff195bbf7e2",
+          "chk-8365d8b5e276ce6555ee8a87898dc2bc",
+          "chk-a86a44107261645b17eb5a5876a6f46a",
+          "chk-e993072449679d70c1668c8e2ce87380",
+          "chk-ff05c9eeb047aa8e564f24de7712362c"
+        ],
+        "response": {
+          "answer": "REQ-TSN-010:\nThe proposed maximum end-to-end latency for svc-camera from front-camera to adas\nshall be 5 ms in the synthetic TSN operating mode. This is a design constraint,\nnot a computed worst-case latency result or evidence of compliance. [S1]",
+          "citations": [
+            {
+              "citation_id": "S1",
+              "chunk_id": "chk-ff05c9eeb047aa8e564f24de7712362c",
+              "document_id": "tsn",
+              "filename": "tsn.md",
+              "document_version": "1.0",
+              "requirement_id": "REQ-TSN-010",
+              "section": "TSN Architecture Guidelines / Latency and degraded operation",
+              "location": {
+                "start_offset": 1283,
+                "end_offset": 1524,
+                "start_line": 33,
+                "end_line": 36,
+                "page": null,
+                "json_pointer": null,
+                "text_start_offset": 0,
+                "text_end_offset": 241
+              },
+              "quote": "REQ-TSN-010:\nThe proposed maximum end-to-end latency for svc-camera from front-camera to adas\nshall be 5 ms in the synthetic TSN operating mode. This is a design constraint,\nnot a computed worst-case latency result or evidence of compliance."
+            }
+          ],
+          "referenced_requirement_ids": [
+            "REQ-TSN-010"
+          ],
+          "evidence_status": "cited",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Source references passed bounded identifier checks. Claims remain unverified; semantic support, evidence sufficiency, and general conflict detection are not proven. Engineering validation was not performed.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "keyword",
+        "query_id": "qa04",
+        "context_chunk_ids": [
+          "chk-4c0d84d689cf9c21cb07beabb69be80d",
+          "chk-4d6acef71343eced9dc8862acd88cc72",
+          "chk-5e925b028751b512fb616d76063a435c",
+          "chk-6d7b8e1d39f9411968230bc2521d8905",
+          "chk-a17b6ced5cd23d80f33b002ddce44656"
+        ],
+        "response": {
+          "answer": "REQ-ETH-008:\nVLAN 30 shall identify infotainment communication. The camera port p4 shall\ndeclare only VLAN 20, and the infotainment port p3 shall declare only VLAN 30.\nVLAN separation between camera and infotainment requires a reviewed switch policy;\nit is not verified by the Phase 1 topology model. [S1]",
+          "citations": [
+            {
+              "citation_id": "S1",
+              "chunk_id": "chk-5e925b028751b512fb616d76063a435c",
+              "document_id": "ethernet",
+              "filename": "ethernet.md",
+              "document_version": "1.0",
+              "requirement_id": "REQ-ETH-008",
+              "section": "Automotive Ethernet Architecture Requirements / Switching and VLAN segmentation",
+              "location": {
+                "start_offset": 1790,
+                "end_offset": 2090,
+                "start_line": 44,
+                "end_line": 48,
+                "page": null,
+                "json_pointer": null,
+                "text_start_offset": 0,
+                "text_end_offset": 300
+              },
+              "quote": "REQ-ETH-008:\nVLAN 30 shall identify infotainment communication. The camera port p4 shall\ndeclare only VLAN 20, and the infotainment port p3 shall declare only VLAN 30.\nVLAN separation between camera and infotainment requires a reviewed switch policy;\nit is not verified by the Phase 1 topology model."
+            }
+          ],
+          "referenced_requirement_ids": [
+            "REQ-ETH-008"
+          ],
+          "evidence_status": "cited",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Source references passed bounded identifier checks. Claims remain unverified; semantic support, evidence sufficiency, and general conflict detection are not proven. Engineering validation was not performed.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "keyword",
+        "query_id": "qa05",
+        "context_chunk_ids": [],
+        "response": {
+          "answer": "The answer cannot be determined from the indexed documents.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "insufficient",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "No sufficient retrieved evidence supports an answer.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "keyword",
+        "query_id": "qa06",
+        "context_chunk_ids": [],
+        "response": {
+          "answer": "The answer cannot be determined from the indexed documents.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "insufficient",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "No sufficient retrieved evidence supports an answer.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "semantic",
+        "query_id": "qa01",
+        "context_chunk_ids": [
+          "chk-54ebf1d396d262bf0fb4d574fad9cea7",
+          "chk-64cddad02a1f385ca0c648fe2026b146",
+          "chk-684c8762d3ae09db2ab2fb3f2ccaedb5",
+          "chk-c846598d822cc03880c5d89fb5383b59",
+          "chk-e5aa8894b449265ab073c13dcd53d904"
+        ],
+        "response": {
+          "answer": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable. [S1]",
+          "citations": [
+            {
+              "citation_id": "S1",
+              "chunk_id": "chk-684c8762d3ae09db2ab2fb3f2ccaedb5",
+              "document_id": "ethernet",
+              "filename": "ethernet.md",
+              "document_version": "1.0",
+              "requirement_id": "REQ-ETH-002",
+              "section": "Automotive Ethernet Architecture Requirements / Physical Ethernet interfaces",
+              "location": {
+                "start_offset": 517,
+                "end_offset": 827,
+                "start_line": 14,
+                "end_line": 18,
+                "page": null,
+                "json_pointer": null,
+                "text_start_offset": 0,
+                "text_end_offset": 310
+              },
+              "quote": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable."
+            }
+          ],
+          "referenced_requirement_ids": [
+            "REQ-ETH-002"
+          ],
+          "evidence_status": "cited",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Source references passed bounded identifier checks. Claims remain unverified; semantic support, evidence sufficiency, and general conflict detection are not proven. Engineering validation was not performed.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "semantic",
+        "query_id": "qa02",
+        "context_chunk_ids": [
+          "chk-414c0a80cef22ce63c8d7ba7b8915a72",
+          "chk-6d7b8e1d39f9411968230bc2521d8905",
+          "chk-a460a655bb265f73b9f0e29b161a2266",
+          "chk-afd48fa96d5dfc837793858d235ad4df"
+        ],
+        "response": {
+          "answer": "REQ-SOA-016:\nThe svc-camera SOME/IP interface shall use synthetic service identifier 0x1234.\nProvider front-camera and consumer adas shall agree on the service identifier and\ninterface version before communication is enabled. [S1]",
+          "citations": [
+            {
+              "citation_id": "S1",
+              "chunk_id": "chk-a460a655bb265f73b9f0e29b161a2266",
+              "document_id": "soa",
+              "filename": "soa.md",
+              "document_version": "1.0",
+              "requirement_id": "REQ-SOA-016",
+              "section": "SOA Communication Requirements / Service discovery and availability",
+              "location": {
+                "start_offset": 1409,
+                "end_offset": 1634,
+                "start_line": 36,
+                "end_line": 39,
+                "page": null,
+                "json_pointer": null,
+                "text_start_offset": 0,
+                "text_end_offset": 225
+              },
+              "quote": "REQ-SOA-016:\nThe svc-camera SOME/IP interface shall use synthetic service identifier 0x1234.\nProvider front-camera and consumer adas shall agree on the service identifier and\ninterface version before communication is enabled."
+            }
+          ],
+          "referenced_requirement_ids": [
+            "REQ-SOA-016"
+          ],
+          "evidence_status": "cited",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Source references passed bounded identifier checks. Claims remain unverified; semantic support, evidence sufficiency, and general conflict detection are not proven. Engineering validation was not performed.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "semantic",
+        "query_id": "qa03",
+        "context_chunk_ids": [
+          "chk-7956e2edd121fa6b00617ff195bbf7e2",
+          "chk-8365d8b5e276ce6555ee8a87898dc2bc",
+          "chk-a86a44107261645b17eb5a5876a6f46a",
+          "chk-e993072449679d70c1668c8e2ce87380",
+          "chk-ff05c9eeb047aa8e564f24de7712362c"
+        ],
+        "response": {
+          "answer": "REQ-TSN-010:\nThe proposed maximum end-to-end latency for svc-camera from front-camera to adas\nshall be 5 ms in the synthetic TSN operating mode. This is a design constraint,\nnot a computed worst-case latency result or evidence of compliance. [S1]",
+          "citations": [
+            {
+              "citation_id": "S1",
+              "chunk_id": "chk-ff05c9eeb047aa8e564f24de7712362c",
+              "document_id": "tsn",
+              "filename": "tsn.md",
+              "document_version": "1.0",
+              "requirement_id": "REQ-TSN-010",
+              "section": "TSN Architecture Guidelines / Latency and degraded operation",
+              "location": {
+                "start_offset": 1283,
+                "end_offset": 1524,
+                "start_line": 33,
+                "end_line": 36,
+                "page": null,
+                "json_pointer": null,
+                "text_start_offset": 0,
+                "text_end_offset": 241
+              },
+              "quote": "REQ-TSN-010:\nThe proposed maximum end-to-end latency for svc-camera from front-camera to adas\nshall be 5 ms in the synthetic TSN operating mode. This is a design constraint,\nnot a computed worst-case latency result or evidence of compliance."
+            }
+          ],
+          "referenced_requirement_ids": [
+            "REQ-TSN-010"
+          ],
+          "evidence_status": "cited",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Source references passed bounded identifier checks. Claims remain unverified; semantic support, evidence sufficiency, and general conflict detection are not proven. Engineering validation was not performed.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "semantic",
+        "query_id": "qa04",
+        "context_chunk_ids": [
+          "chk-4d6acef71343eced9dc8862acd88cc72",
+          "chk-5e925b028751b512fb616d76063a435c"
+        ],
+        "response": {
+          "answer": "REQ-ETH-008:\nVLAN 30 shall identify infotainment communication. The camera port p4 shall\ndeclare only VLAN 20, and the infotainment port p3 shall declare only VLAN 30.\nVLAN separation between camera and infotainment requires a reviewed switch policy;\nit is not verified by the Phase 1 topology model. [S1]",
+          "citations": [
+            {
+              "citation_id": "S1",
+              "chunk_id": "chk-5e925b028751b512fb616d76063a435c",
+              "document_id": "ethernet",
+              "filename": "ethernet.md",
+              "document_version": "1.0",
+              "requirement_id": "REQ-ETH-008",
+              "section": "Automotive Ethernet Architecture Requirements / Switching and VLAN segmentation",
+              "location": {
+                "start_offset": 1790,
+                "end_offset": 2090,
+                "start_line": 44,
+                "end_line": 48,
+                "page": null,
+                "json_pointer": null,
+                "text_start_offset": 0,
+                "text_end_offset": 300
+              },
+              "quote": "REQ-ETH-008:\nVLAN 30 shall identify infotainment communication. The camera port p4 shall\ndeclare only VLAN 20, and the infotainment port p3 shall declare only VLAN 30.\nVLAN separation between camera and infotainment requires a reviewed switch policy;\nit is not verified by the Phase 1 topology model."
+            }
+          ],
+          "referenced_requirement_ids": [
+            "REQ-ETH-008"
+          ],
+          "evidence_status": "cited",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Source references passed bounded identifier checks. Claims remain unverified; semantic support, evidence sufficiency, and general conflict detection are not proven. Engineering validation was not performed.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "semantic",
+        "query_id": "qa05",
+        "context_chunk_ids": [],
+        "response": {
+          "answer": "The answer cannot be determined from the indexed documents.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "insufficient",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "No sufficient retrieved evidence supports an answer.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "semantic",
+        "query_id": "qa06",
+        "context_chunk_ids": [],
+        "response": {
+          "answer": "The answer cannot be determined from the indexed documents.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "insufficient",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "No sufficient retrieved evidence supports an answer.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "hybrid",
+        "query_id": "qa01",
+        "context_chunk_ids": [
+          "chk-64cddad02a1f385ca0c648fe2026b146",
+          "chk-684c8762d3ae09db2ab2fb3f2ccaedb5",
+          "chk-c846598d822cc03880c5d89fb5383b59",
+          "chk-d719d644605269cf351deb86584673b7",
+          "chk-e5aa8894b449265ab073c13dcd53d904"
+        ],
+        "response": {
+          "answer": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable. [S1]",
+          "citations": [
+            {
+              "citation_id": "S1",
+              "chunk_id": "chk-684c8762d3ae09db2ab2fb3f2ccaedb5",
+              "document_id": "ethernet",
+              "filename": "ethernet.md",
+              "document_version": "1.0",
+              "requirement_id": "REQ-ETH-002",
+              "section": "Automotive Ethernet Architecture Requirements / Physical Ethernet interfaces",
+              "location": {
+                "start_offset": 517,
+                "end_offset": 827,
+                "start_line": 14,
+                "end_line": 18,
+                "page": null,
+                "json_pointer": null,
+                "text_start_offset": 0,
+                "text_end_offset": 310
+              },
+              "quote": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable."
+            }
+          ],
+          "referenced_requirement_ids": [
+            "REQ-ETH-002"
+          ],
+          "evidence_status": "cited",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Source references passed bounded identifier checks. Claims remain unverified; semantic support, evidence sufficiency, and general conflict detection are not proven. Engineering validation was not performed.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "hybrid",
+        "query_id": "qa02",
+        "context_chunk_ids": [
+          "chk-414c0a80cef22ce63c8d7ba7b8915a72",
+          "chk-6d7b8e1d39f9411968230bc2521d8905",
+          "chk-a460a655bb265f73b9f0e29b161a2266",
+          "chk-afd48fa96d5dfc837793858d235ad4df",
+          "chk-ed0378c4e9cfe46bc8df1dd594888e56"
+        ],
+        "response": {
+          "answer": "REQ-SOA-016:\nThe svc-camera SOME/IP interface shall use synthetic service identifier 0x1234.\nProvider front-camera and consumer adas shall agree on the service identifier and\ninterface version before communication is enabled. [S1]",
+          "citations": [
+            {
+              "citation_id": "S1",
+              "chunk_id": "chk-a460a655bb265f73b9f0e29b161a2266",
+              "document_id": "soa",
+              "filename": "soa.md",
+              "document_version": "1.0",
+              "requirement_id": "REQ-SOA-016",
+              "section": "SOA Communication Requirements / Service discovery and availability",
+              "location": {
+                "start_offset": 1409,
+                "end_offset": 1634,
+                "start_line": 36,
+                "end_line": 39,
+                "page": null,
+                "json_pointer": null,
+                "text_start_offset": 0,
+                "text_end_offset": 225
+              },
+              "quote": "REQ-SOA-016:\nThe svc-camera SOME/IP interface shall use synthetic service identifier 0x1234.\nProvider front-camera and consumer adas shall agree on the service identifier and\ninterface version before communication is enabled."
+            }
+          ],
+          "referenced_requirement_ids": [
+            "REQ-SOA-016"
+          ],
+          "evidence_status": "cited",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Source references passed bounded identifier checks. Claims remain unverified; semantic support, evidence sufficiency, and general conflict detection are not proven. Engineering validation was not performed.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "hybrid",
+        "query_id": "qa03",
+        "context_chunk_ids": [
+          "chk-7956e2edd121fa6b00617ff195bbf7e2",
+          "chk-8365d8b5e276ce6555ee8a87898dc2bc",
+          "chk-a86a44107261645b17eb5a5876a6f46a",
+          "chk-e993072449679d70c1668c8e2ce87380",
+          "chk-ff05c9eeb047aa8e564f24de7712362c"
+        ],
+        "response": {
+          "answer": "REQ-TSN-010:\nThe proposed maximum end-to-end latency for svc-camera from front-camera to adas\nshall be 5 ms in the synthetic TSN operating mode. This is a design constraint,\nnot a computed worst-case latency result or evidence of compliance. [S1]",
+          "citations": [
+            {
+              "citation_id": "S1",
+              "chunk_id": "chk-ff05c9eeb047aa8e564f24de7712362c",
+              "document_id": "tsn",
+              "filename": "tsn.md",
+              "document_version": "1.0",
+              "requirement_id": "REQ-TSN-010",
+              "section": "TSN Architecture Guidelines / Latency and degraded operation",
+              "location": {
+                "start_offset": 1283,
+                "end_offset": 1524,
+                "start_line": 33,
+                "end_line": 36,
+                "page": null,
+                "json_pointer": null,
+                "text_start_offset": 0,
+                "text_end_offset": 241
+              },
+              "quote": "REQ-TSN-010:\nThe proposed maximum end-to-end latency for svc-camera from front-camera to adas\nshall be 5 ms in the synthetic TSN operating mode. This is a design constraint,\nnot a computed worst-case latency result or evidence of compliance."
+            }
+          ],
+          "referenced_requirement_ids": [
+            "REQ-TSN-010"
+          ],
+          "evidence_status": "cited",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Source references passed bounded identifier checks. Claims remain unverified; semantic support, evidence sufficiency, and general conflict detection are not proven. Engineering validation was not performed.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "hybrid",
+        "query_id": "qa04",
+        "context_chunk_ids": [
+          "chk-4c0d84d689cf9c21cb07beabb69be80d",
+          "chk-4d6acef71343eced9dc8862acd88cc72",
+          "chk-5e925b028751b512fb616d76063a435c",
+          "chk-6d7b8e1d39f9411968230bc2521d8905",
+          "chk-a17b6ced5cd23d80f33b002ddce44656"
+        ],
+        "response": {
+          "answer": "REQ-ETH-008:\nVLAN 30 shall identify infotainment communication. The camera port p4 shall\ndeclare only VLAN 20, and the infotainment port p3 shall declare only VLAN 30.\nVLAN separation between camera and infotainment requires a reviewed switch policy;\nit is not verified by the Phase 1 topology model. [S1]",
+          "citations": [
+            {
+              "citation_id": "S1",
+              "chunk_id": "chk-5e925b028751b512fb616d76063a435c",
+              "document_id": "ethernet",
+              "filename": "ethernet.md",
+              "document_version": "1.0",
+              "requirement_id": "REQ-ETH-008",
+              "section": "Automotive Ethernet Architecture Requirements / Switching and VLAN segmentation",
+              "location": {
+                "start_offset": 1790,
+                "end_offset": 2090,
+                "start_line": 44,
+                "end_line": 48,
+                "page": null,
+                "json_pointer": null,
+                "text_start_offset": 0,
+                "text_end_offset": 300
+              },
+              "quote": "REQ-ETH-008:\nVLAN 30 shall identify infotainment communication. The camera port p4 shall\ndeclare only VLAN 20, and the infotainment port p3 shall declare only VLAN 30.\nVLAN separation between camera and infotainment requires a reviewed switch policy;\nit is not verified by the Phase 1 topology model."
+            }
+          ],
+          "referenced_requirement_ids": [
+            "REQ-ETH-008"
+          ],
+          "evidence_status": "cited",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Source references passed bounded identifier checks. Claims remain unverified; semantic support, evidence sufficiency, and general conflict detection are not proven. Engineering validation was not performed.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "hybrid",
+        "query_id": "qa05",
+        "context_chunk_ids": [],
+        "response": {
+          "answer": "The answer cannot be determined from the indexed documents.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "insufficient",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "No sufficient retrieved evidence supports an answer.",
+          "model": "controlled-excerpt-only"
+        }
+      },
+      {
+        "method": "hybrid",
+        "query_id": "qa06",
+        "context_chunk_ids": [],
+        "response": {
+          "answer": "The answer cannot be determined from the indexed documents.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "insufficient",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "No sufficient retrieved evidence supports an answer.",
+          "model": "controlled-excerpt-only"
+        }
+      }
+    ],
+    "rejected_cases": [
+      {
+        "method": "keyword",
+        "input": "Invented [S99]",
+        "response": {
+          "answer": "The generated answer was rejected because citation validation failed.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "invalid_citations",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Citations and requirement references must resolve to retrieved chunks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "keyword",
+        "input": "REQ-FAKE-999 [S1]",
+        "response": {
+          "answer": "The generated answer was rejected because citation validation failed.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "invalid_citations",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Citations and requirement references must resolve to retrieved chunks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "keyword",
+        "input": "req-eth-999 [S1]",
+        "response": {
+          "answer": "The generated answer was rejected because citation validation failed.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "invalid_citations",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Citations and requirement references must resolve to retrieved chunks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "keyword",
+        "input": "custom:999 [S1]",
+        "response": {
+          "answer": "The generated answer was rejected because citation validation failed.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "invalid_citations",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Citations and requirement references must resolve to retrieved chunks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "keyword",
+        "input": "All architecture checks passed. [S1]",
+        "response": {
+          "answer": "Generated verification claims were withheld. Run the deterministic validation tools and review their findings separately.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "unsupported_claims",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Phase 2 has no deterministic validation evidence. Citation membership cannot establish architecture compliance or passing checks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "keyword",
+        "input": "The architecture meets all TSN latency requirements. [S1]",
+        "response": {
+          "answer": "Generated verification claims were withheld. Run the deterministic validation tools and review their findings separately.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "unsupported_claims",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Phase 2 has no deterministic validation evidence. Citation membership cannot establish architecture compliance or passing checks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "semantic",
+        "input": "Invented [S99]",
+        "response": {
+          "answer": "The generated answer was rejected because citation validation failed.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "invalid_citations",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Citations and requirement references must resolve to retrieved chunks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "semantic",
+        "input": "REQ-FAKE-999 [S1]",
+        "response": {
+          "answer": "The generated answer was rejected because citation validation failed.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "invalid_citations",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Citations and requirement references must resolve to retrieved chunks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "semantic",
+        "input": "req-eth-999 [S1]",
+        "response": {
+          "answer": "The generated answer was rejected because citation validation failed.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "invalid_citations",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Citations and requirement references must resolve to retrieved chunks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "semantic",
+        "input": "custom:999 [S1]",
+        "response": {
+          "answer": "The generated answer was rejected because citation validation failed.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "invalid_citations",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Citations and requirement references must resolve to retrieved chunks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "semantic",
+        "input": "All architecture checks passed. [S1]",
+        "response": {
+          "answer": "Generated verification claims were withheld. Run the deterministic validation tools and review their findings separately.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "unsupported_claims",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Phase 2 has no deterministic validation evidence. Citation membership cannot establish architecture compliance or passing checks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "semantic",
+        "input": "The architecture meets all TSN latency requirements. [S1]",
+        "response": {
+          "answer": "Generated verification claims were withheld. Run the deterministic validation tools and review their findings separately.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "unsupported_claims",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Phase 2 has no deterministic validation evidence. Citation membership cannot establish architecture compliance or passing checks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "hybrid",
+        "input": "Invented [S99]",
+        "response": {
+          "answer": "The generated answer was rejected because citation validation failed.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "invalid_citations",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Citations and requirement references must resolve to retrieved chunks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "hybrid",
+        "input": "REQ-FAKE-999 [S1]",
+        "response": {
+          "answer": "The generated answer was rejected because citation validation failed.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "invalid_citations",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Citations and requirement references must resolve to retrieved chunks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "hybrid",
+        "input": "req-eth-999 [S1]",
+        "response": {
+          "answer": "The generated answer was rejected because citation validation failed.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "invalid_citations",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Citations and requirement references must resolve to retrieved chunks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "hybrid",
+        "input": "custom:999 [S1]",
+        "response": {
+          "answer": "The generated answer was rejected because citation validation failed.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "invalid_citations",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Citations and requirement references must resolve to retrieved chunks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "hybrid",
+        "input": "All architecture checks passed. [S1]",
+        "response": {
+          "answer": "Generated verification claims were withheld. Run the deterministic validation tools and review their findings separately.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "unsupported_claims",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Phase 2 has no deterministic validation evidence. Citation membership cannot establish architecture compliance or passing checks.",
+          "model": "controlled-adversarial"
+        }
+      },
+      {
+        "method": "hybrid",
+        "input": "The architecture meets all TSN latency requirements. [S1]",
+        "response": {
+          "answer": "Generated verification claims were withheld. Run the deterministic validation tools and review their findings separately.",
+          "citations": [],
+          "referenced_requirement_ids": [],
+          "evidence_status": "unsupported_claims",
+          "claim_status": "unverified",
+          "engineering_validation": "not_performed",
+          "reference_validation": "bounded",
+          "explanation": "Phase 2 has no deterministic validation evidence. Citation membership cannot establish architecture compliance or passing checks.",
+          "model": "controlled-adversarial"
+        }
+      }
+    ],
+    "emitted_citations": 12,
+    "invalid_citations": 0,
+    "invalid_citation_rate": 0.0,
+    "no_evidence_cases": 6,
+    "no_evidence_correct": 6,
+    "no_evidence_accuracy": 1.0,
+    "limitations": [
+      "Excerpt-only provider tests source plumbing, not answer quality or entailment.",
+      "No-evidence cases cover the two original golden negatives in each retrieval mode.",
+      "Nonempty but insufficient evidence still requires model judgment and human review."
+    ]
+  }
+}

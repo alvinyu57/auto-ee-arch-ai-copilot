@@ -14,7 +14,7 @@ async def test_health_and_openapi(client: AsyncClient) -> None:
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "version": "0.1.0", "phase": 1}
     schema = (await client.get("/openapi.json")).json()
-    assert set(schema["paths"]) == {
+    assert set(schema["paths"]) >= {
         "/health",
         "/api/v1/architectures/validate",
         "/api/v1/architectures/topology",

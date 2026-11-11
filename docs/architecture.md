@@ -13,7 +13,8 @@ flowchart LR
 `domain/models` defines serializable data and structural invariants. Models reject
 invalid references before the analysis services run. They depend on Pydantic, not
 FastAPI or NetworkX. No database, dependency injection framework, repository interface,
-or speculative provider abstraction is necessary in Phase 1.
+or speculative provider abstraction was necessary in Phase 1. Phase 2 adds the concrete
+`rag` adapters without changing these domain models or validator semantics.
 
 `services/topology.py` builds one undirected multigraph per request. Nodes are ECUs
 and switches. Edges retain link IDs, endpoint interfaces, technology, nominal capacity,
@@ -106,10 +107,18 @@ remains `NOT_EVALUATED` in Phase 1, including when devices appear physically dis
 
 ## Extension points
 
-Add infrastructure adapters when Phase 2 introduces document sources and retrieval
-storage. Keep document parsing, provenance, retrieval, and provider calls outside the
-domain model modules. Define the smallest provider contracts needed by those real
-implementations rather than creating unused interfaces now.
+Phase 2 implements document parsing, provenance, embeddings, retrieval, local persistence,
+and optional generation in `rag`. The knowledge router calls `KnowledgeService` directly.
+The source catalog and Chroma live under `VECTOR_DB_PATH`; architecture requests remain
+stateless. Knowledge service construction is lazy, and LLM configuration is checked only
+by generation. The existing `/health` payload is preserved for compatibility.
+
+The RAG service does not import NetworkX, `ArchitectureValidator`, or Phase 1 models.
+Requirement IDs are machine-readable strings and can be joined to Phase 1 requirement
+IDs by a future agent. Identical IDs do not imply that the prose has become an approved
+structured constraint. Neither retrieval nor generation runs a validator, modifies
+architecture data, or changes existing findings. See [RAG architecture](rag-architecture.md)
+and [ADR 0002](decisions/0002-requirements-rag.md).
 
 Future tools can call `TopologyService` and `ArchitectureValidator` directly without
 HTTP. Tool calling must preserve typed inputs, validate proposed model changes, and
@@ -117,8 +126,18 @@ surface deterministic evidence separately from generated commentary. Retrieval c
 should identify document version and source location; model-generated constraints need
 review before becoming machine-verifiable engineering inputs.
 
+The corrected Phase 2 `ask` boundary revalidates source revisions after generation.
+Consumers must handle `stale_evidence`, `unsupported_claims`, and `conflicting_evidence`
+as well as the original citation/insufficient statuses. Every generated response is
+typed as `claim_status=unverified` and `engineering_validation=not_performed`; only
+the deterministic service can supply its own validation findings. Bounded conflict and
+claim guards do not establish semantic support. Explicit document IDs are required
+for replacing an existing filename-derived source (HTTP 409 otherwise). See the
+[remediation report](reviews/phase2-remediation-report.md) for tested integration limits.
+
 Future VLAN/forwarding rules should have separate query/result types, not change the
 meaning of `connectivity_scope: physical`. A richer traffic model can add frame overhead,
 multicast, background flows, shared buses, and routing policy with explicit assumptions.
 Reports can consume `ValidationReport` without embedding report presentation into rules.
-Authentication, persistence, observability, and cloud deployment belong to later adapters.
+Authentication, operational observability, and cloud deployment belong to later adapters.
+Phase 2 persistence is limited to the local knowledge store.
