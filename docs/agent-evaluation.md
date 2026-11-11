@@ -129,8 +129,11 @@ live model is not receiving those forced protocol replies. Live results are labe
 The command exits nonzero when an expected outcome is missing. Configure both explicit
 token prices only if cost estimates for that configured model are desired.
 
-Current environment: **live tool-calling behavior NOT VERIFIED**. No agent provider,
-model or credential was configured. Scripted evaluation and mock HTTP tests do not
+Current environment: **live tool-calling behavior NOT VERIFIED**. The initial verification
+had no configured provider/model/credential. A later `gpt-6.1-terra` configuration passed
+model metadata access, but generation returned OpenAI HTTP 429 `credit_balance_exhausted`.
+See the [provider connectivity follow-up](reviews/agent-provider-connectivity-report.md).
+Scripted evaluation and mock HTTP tests do not
 establish actual LLM tool-selection quality, source sufficiency or interpretation
 faithfulness. Before full end-to-end acceptance, run the combined workflow against a
 real configured provider and review its findings, source relevance, unsupported

@@ -418,11 +418,42 @@ background jobs, or persistent conversations in this API.
 
 To use a real compatible provider, set `AGENT_PROVIDER=openai_compatible`, `AGENT_MODEL`
 (or `LLM_MODEL`), `LLM_BASE_URL`, and, when required, `LLM_API_KEY` in your environment.
-Use a model/server supporting native Chat Completions function calling and JSON output.
+`AGENT_API_MODE=auto` uses the Responses API for `api.openai.com` and Chat Completions
+for other compatible servers. Override it with `responses` or `chat_completions` when
+using a proxy with a specific API dialect. The selected model/server must support native
+function calling and structured JSON output. In particular,
+[`gpt-6.1-terra` requires Responses for tool calling](https://developers.openai.com/api/docs/models/gpt-6.1-terra).
 The existing HTTP infrastructure and credentials are reused; no provider SDK was added.
 Ingest documents through the existing knowledge workflow before asking retrieval questions.
 Keep provider URLs administrator-controlled. Retrieved text and relevant architecture
 tool results are sent to that provider. Local hash embeddings remain the default.
+
+For example, an OpenAI-hosted agent can use:
+
+```dotenv
+AGENT_PROVIDER=openai_compatible
+AGENT_MODEL=gpt-6.1-terra
+AGENT_API_MODE=auto
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_API_KEY=your-api-key
+```
+
+Run the server from this repository's root directory so `Settings` can find `.env`.
+**Restart Uvicorn after editing `.env`**: settings are captured when the application
+starts, and `--reload` normally watches Python files rather than `.env`. If a fresh
+`Settings()` sees the configured model but the running API returns configuration 503,
+restart the server with `uv run --locked uvicorn ee_arch_copilot.main:app --reload`.
+Shell environment variables take precedence over `.env`; remove stale exported values
+if restarting still reports a disabled provider or empty model. Configuration errors
+occur before a request is sent to the model. Keep the existing embedding/index settings;
+`LLM_PROVIDER` separately controls Phase 2 `/knowledge/ask`.
+
+If the upstream provider rejects a request, inspect
+`execution_metadata.provider_http_status` and `provider_error_code` in the structured
+agent response. For example, OpenAI HTTP 429 with `credit_balance_exhausted` requires
+API credits for the organization associated with the key; restarting the app does not
+restore credits. Known provider codes are allowlisted, and raw provider messages or
+credentials are never echoed. See the [OpenAI error guide](https://developers.openai.com/api/docs/guides/error-codes).
 
 With the server running, for example:
 

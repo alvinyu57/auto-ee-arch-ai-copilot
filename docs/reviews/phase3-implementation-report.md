@@ -21,6 +21,12 @@ provider call was attempted. A real adapter is implemented and its native HTTP p
 is tested with mocked transport, but that does not establish actual LLM selection quality.
 Full live end-to-end acceptance remains pending a configured real-provider demonstration.
 
+Follow-up: [provider connectivity diagnosis](agent-provider-connectivity-report.md) adds
+Responses support for the subsequently configured `gpt-6.1-terra` model. Model metadata
+access succeeded, but live generation is blocked by OpenAI `credit_balance_exhausted`.
+That report contains the later 379-test regression results; the measurements below
+remain the initial Phase 3 baseline.
+
 ## Architecture
 
 The workflow is:

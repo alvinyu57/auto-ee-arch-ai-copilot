@@ -180,12 +180,29 @@ The defaults and validated ranges are defined in `core/settings.py` and `.env.ex
 uses `AGENT_MODEL` with `LLM_MODEL` fallback and existing `LLM_BASE_URL`, `LLM_API_KEY` and
 `PROVIDER_TIMEOUT_SECONDS`. URLs must be trusted HTTP(S) endpoints without embedded
 credentials. No API keys are sent to the LLM as prompt content. HTTP redirects are disabled.
-The compatible server must support `/chat/completions`, native function calls,
-`response_format=json_object`, and `max_tokens`. Servers/models with other dialects
-need an explicit adapter. See the [official function-calling protocol](https://developers.openai.com/api/docs/guides/function-calling).
+`AGENT_API_MODE=auto` selects `/responses` for the official `api.openai.com` host and
+`/chat/completions` for other compatible endpoints. Explicit `responses` and
+`chat_completions` values support proxies with either dialect. The Responses path uses
+flat function definitions, strict final JSON Schema, `max_output_tokens`, and native
+`function_call_output` items correlated by `call_id`. With `store=false`, native output
+items, including encrypted reasoning and assistant phase metadata, are replayed in their
+original order on subsequent calls. They remain internal to the bounded request history
+and are not returned in response evidence or logs. The adapter has no shared conversation
+cache, preserving request isolation. See [OpenAI reasoning continuation](https://developers.openai.com/api/docs/guides/reasoning).
+
+The Chat Completions path retains `response_format=json_object` and `max_tokens` for
+compatible local/third-party servers. Models such as
+[`gpt-6.1-terra`](https://developers.openai.com/api/docs/models/gpt-6.1-terra) require Responses
+for tool calling. Both modes use the same registry, policies, HTTP size/time limits,
+credentials and token accounting. Phase 2 generation retains its existing separate
+configuration. Restart the application after changing `.env`: settings are loaded at
+startup relative to the working directory; Python reload watching does not normally
+include dotenv files. Exported shell values override the file. No dotenv content or
+secret values are included in configuration errors.
 
 | Policy setting | Default | Trade-off |
 | --- | --- | --- |
+| `AGENT_API_MODE` | auto | Responses for official OpenAI; Chat Completions elsewhere, with explicit overrides for proxies |
 | `AGENT_MAX_ITERATIONS` | 6 | More rounds permit discovery/refinement but increase latency and cost; output repair also consumes rounds |
 | `AGENT_MAX_TOOL_CALLS` | 10 | Includes denied/invalid admitted calls; higher values permit more reads |
 | `AGENT_TIMEOUT_SECONDS` | 60 | End-to-end caller deadline, including source recheck |
@@ -211,6 +228,14 @@ Token totals are null unless every LLM iteration reports usage. Cost is null unl
 complete usage and both explicit USD-per-million input/output prices are configured.
 Prices are administrator-provided estimates; there is no built-in price table or claim
 of exact billing. Tracing can be disabled independently of usage aggregation.
+
+`execution_metadata.provider_http_status` and `provider_error_code` preserve safe upstream
+diagnostics for failed model calls. Only allowlisted codes (such as
+`credit_balance_exhausted`, `insufficient_quota`, `model_not_found` and rate/spend-limit
+codes) are returned; provider messages, prompts, body fields and arbitrary codes are
+withheld. The async HTTP helper bounds error bodies before reading their code. A failed
+upstream call still produces the existing FAILED/PARTIAL agent status and 502/200 HTTP
+contract, with the original upstream status available separately in metadata.
 
 ## Security limits and Phase 4 extension points
 

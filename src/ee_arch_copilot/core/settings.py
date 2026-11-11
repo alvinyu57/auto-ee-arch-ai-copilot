@@ -39,6 +39,7 @@ class Settings(BaseSettings):
     max_request_bytes: int = Field(default=1_100_000, ge=1000, le=10_000_000)
     agent_provider: Literal["none", "openai_compatible"] = "none"
     agent_model: str = ""
+    agent_api_mode: Literal["auto", "chat_completions", "responses"] = "auto"
     agent_max_iterations: int = Field(default=6, ge=1, le=20)
     agent_max_tool_calls: int = Field(default=10, ge=1, le=50)
     agent_timeout_seconds: float = Field(default=60, gt=0, le=300)

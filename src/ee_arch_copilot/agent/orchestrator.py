@@ -23,6 +23,7 @@ from ee_arch_copilot.agent.providers import AgentProvider
 from ee_arch_copilot.agent.tools.adapters import EngineeringTools, TopologyResult, ValidationResult
 from ee_arch_copilot.agent.tools.registry import ToolRegistry, engineering_registry, json_bytes
 from ee_arch_copilot.core.settings import Settings
+from ee_arch_copilot.rag.errors import ProviderError
 from ee_arch_copilot.rag.service import KnowledgeService
 
 LIMITATIONS = [
@@ -76,6 +77,7 @@ class AgentOrchestrator:
         final: ModelFinal | None = None
         reason, iterations, calls, invalid_finals = "iteration_limit", 0, 0, 0
         truncated = False
+        provider_error: ProviderError | None = None
         for iteration in range(1, policy.max_iterations + 1):
             remaining = deadline - monotonic()
             if remaining <= 0:
@@ -96,6 +98,10 @@ class AgentOrchestrator:
             except TimeoutError:
                 reason = "provider_timeout"
                 trace.record("llm", iteration, (monotonic() - started) * 1000, "TIMEOUT")
+                break
+            except ProviderError as error:
+                provider_error, reason = error, "provider_error"
+                trace.record("llm", iteration, (monotonic() - started) * 1000, "ERROR")
                 break
             except Exception:
                 reason = "provider_error"
@@ -296,6 +302,15 @@ class AgentOrchestrator:
         questions = list(final.unresolved_questions) if final else []
         if incomplete:
             questions.append(f"Analysis incomplete: {reason}.")
+        if provider_error and provider_error.code:
+            questions.append(
+                f"Model provider rejected the request: {provider_error.code} "
+                f"(HTTP {provider_error.http_status})."
+            )
+            if provider_error.code in {"credit_balance_exhausted", "insufficient_quota"}:
+                questions.append(
+                    "Check API billing and credits for the organization associated with this key."
+                )
         if freshness_issue:
             questions.append(f"Requirement evidence withheld: {freshness_issue}.")
         for execution in errors:
@@ -335,6 +350,12 @@ class AgentOrchestrator:
                     "Its original_report_status refers to the full declared-model report, "
                     "not the selected rule subset."
                 )
+        metadata = trace.metadata(
+            self.provider.model, iterations, calls, reason, request.options.include_trace
+        )
+        if provider_error:
+            metadata.provider_error_code = provider_error.code
+            metadata.provider_http_status = provider_error.http_status
         return AgentResponse(
             request_id=trace.request_id,
             status=status,
@@ -345,8 +366,6 @@ class AgentOrchestrator:
             citations=evidence.citations(),
             evidence=list(evidence.records.values()),
             tool_executions=executions,
-            execution_metadata=trace.metadata(
-                self.provider.model, iterations, calls, reason, request.options.include_trace
-            ),
+            execution_metadata=metadata,
             limitations=limitations,
         )

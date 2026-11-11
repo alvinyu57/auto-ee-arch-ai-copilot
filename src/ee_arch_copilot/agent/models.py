@@ -114,6 +114,8 @@ class ExecutionMetadata(DomainModel):
     usage_complete: bool
     estimated_cost_usd: float | None
     stop_reason: str
+    provider_error_code: str | None = None
+    provider_http_status: int | None = None
     trace: list[TraceEvent] = Field(default_factory=list)
 
 

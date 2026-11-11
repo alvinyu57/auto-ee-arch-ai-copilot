@@ -29,9 +29,7 @@ def get_agent_provider(request: Request) -> AgentProvider:
     try:
         return CompatibleAgentProvider(request.app.state.settings)
     except ConfigurationError as error:
-        raise HTTPException(
-            503, "Agent unavailable: configure AGENT_PROVIDER and AGENT_MODEL / LLM_MODEL"
-        ) from error
+        raise HTTPException(503, f"Agent unavailable: {error}") from error
 
 
 @router.post("/analyze", response_model=AgentResponse)

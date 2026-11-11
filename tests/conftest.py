@@ -1,4 +1,5 @@
 import json
+import os
 from collections.abc import AsyncIterator
 from pathlib import Path
 from typing import Any, cast
@@ -6,11 +7,21 @@ from typing import Any, cast
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from ee_arch_copilot.core.settings import Settings
 from ee_arch_copilot.domain.models import Architecture
 from ee_arch_copilot.main import create_app
 
 Payload = dict[str, Any]
 EXAMPLES = Path(__file__).resolve().parents[1] / "data" / "examples"
+
+
+@pytest.fixture(autouse=True)
+def isolated_configuration(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Local unit tests must not use a developer's live credentials, index, or budgets.
+    for key in tuple(os.environ):
+        if key.casefold() in Settings.model_fields:
+            monkeypatch.delenv(key)
+    monkeypatch.setitem(Settings.model_config, "env_file", None)
 
 
 @pytest.fixture

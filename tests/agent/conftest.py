@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 import pytest
@@ -12,15 +11,6 @@ from ee_arch_copilot.core.settings import Settings
 from ee_arch_copilot.domain.models import Architecture
 from ee_arch_copilot.rag.models import DocumentInput
 from ee_arch_copilot.rag.service import KnowledgeService
-
-
-@pytest.fixture(autouse=True)
-def isolated_agent_configuration(monkeypatch: pytest.MonkeyPatch) -> None:
-    # Offline tests must not inherit a developer's paid provider or execution budgets.
-    for key in tuple(os.environ):
-        if key.casefold() in Settings.model_fields:
-            monkeypatch.delenv(key)
-    monkeypatch.setitem(Settings.model_config, "env_file", None)
 
 
 @pytest.fixture
