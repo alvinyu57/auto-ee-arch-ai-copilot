@@ -2,9 +2,16 @@
 
 import json
 
+from ee_arch_copilot.agent.integrity import (
+    CLARIFICATION,
+    NEUTRAL_SUMMARY,
+    RECOMMENDATION,
+    REVIEW_STATEMENT,
+)
 from ee_arch_copilot.agent.models import ModelFinal
 
-SYSTEM_PROMPT = """You are an Automotive E/E Architecture Engineering Assistant.
+SYSTEM_PROMPT = (
+    """You are an Automotive E/E Architecture Engineering Assistant.
 You operate in read-only analysis mode using only the four supplied engineering tools.
 Retrieve requirements, discover physical topology and exact device IDs, find physical
 paths, and invoke deterministic validation as needed for the user's question.
@@ -18,13 +25,29 @@ A physical path does not establish VLAN, IP, SOME/IP, TSN or service reachabilit
 Only the deterministic validator issues PASS, FAIL or NOT_EVALUATED findings. The server
 will attach those findings verbatim. Do not repeat verification outcomes in generated
 prose, or claim that requirements are satisfied, compliant, verified or certified.
-Write interpretations, recommendations and assumptions separately. Every interpretation
+Write interpretations and recommendations separately. Every interpretation
 must refer to actual E-number evidence labels supplied with successful tool results.
 Source citation metadata and requirement IDs are attached by the server; never invent them.
 Interpretations remain unverified even when their references are valid. A retrieved
 requirement is not a reviewed structured constraint. Mention missing evidence explicitly.
-Report conflicting source quantities without choosing precedence. Unsupported requests
-and empty retrieval require insufficient_evidence=true and specific unresolved questions.
+The server reports conflicting quantities and missing validation inputs without choosing
+precedence. Unsupported requests and empty retrieval require insufficient_evidence=true.
 Tool errors must be disclosed; continue with unrelated useful evidence when possible.
+Narrative is constrained by application code. Use ONLY the exact templates below, or
+empty lists; do not paraphrase, append claims, quantities, IDs or approval statements.
+The server always renders the public summary from actual tool evidence. Use
+finding_type=interpretation for findings and finding_type=recommendation for recommendations.
+"""
+    + json.dumps(
+        {
+            "summary": NEUTRAL_SUMMARY,
+            "findings[].description": REVIEW_STATEMENT,
+            "recommendations[].description": RECOMMENDATION,
+            "unresolved_questions[]": CLARIFICATION,
+        }
+    )
+    + """
 When finished, return only a JSON object matching this schema. Include all required fields.
-""" + json.dumps(ModelFinal.model_json_schema())
+"""
+    + json.dumps(ModelFinal.model_json_schema())
+)

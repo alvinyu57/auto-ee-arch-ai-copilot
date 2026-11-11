@@ -83,6 +83,14 @@ This verifies wire integration, not a real external model.
   each collected validation record survives in the response. Cases without
   returned validation evidence are excluded; their value is null, not an invented PASS.
   Required outcomes/coverage remain separate completion checks.
+- **Conclusion integrity:** fraction whose headline matches the server rendering of the
+  collected evidence and whose generated findings/recommendations obey the controlled
+  narrative policy. This is scored separately from reference membership and exact
+  validator-oracle preservation; all three are required for task completion. Tampered
+  approval and measured-latency summaries fail even with valid citations/statuses.
+- **Output rejection / fallback cases:** counts of tasks with rejected final attempts or
+  fallback use, respectively. A repaired task still reports its rejection. The report also
+  records provider/model/protocol and execution bounds without credentials.
 - **Efficiency:** arithmetic means of provider iterations, admitted tool attempts and
   end-to-end request latency. Token totals/cost remain null when usage/pricing is missing.
   The report includes usage-observed case count and all individual case outcomes.
@@ -110,6 +118,25 @@ correct selections. Report latency is a local scripted-protocol measurement and 
 by machine/cache state. It is not a real-model latency or reasoning-quality benchmark.
 No live and scripted results are combined.
 
+## Phase 3 remediation verification
+
+The independent audit's D-P3-001 (contradictory approval) and D-P3-002 (invented measured
+latency) are reproduced in `tests/agent/test_response_integrity.py` through the public
+REST path. Additional cases cover FAIL/NOT_EVALUATED presented as PASS, all-PASS production
+approval, unsupported TSN/VLAN claims, invented rules/citations, mixed results, no validation,
+bounded repeated rejection, retrieved injection, contradictions in recommendations and
+questions, correctly scoped PASS, valid negated compliance language and foreign-request
+evidence. They assert externally visible results and compare exact findings to the real
+validator. Unknown prose is withheld; the tests do not claim arbitrary semantic entailment.
+
+The original independent I33 scenario was rerun first, then all 33 original gold outcomes
+were rerun unchanged: **33/33 passed**, compared with **32/33** before remediation.
+Supplementary runs passed **35/35 boundaries**, **14/14 provenance/context/API** and
+**3/3 controlled-clock** checks. The existing scripted evaluator still passes **24/24**,
+with **24/24 conclusion integrity**. Detailed measured results, the pre-fix failures and
+reproducibility evidence are in the [remediation report](reviews/phase3-remediation-report.md)
+and [evidence record](reviews/phase3-remediation-evidence.json).
+
 ## Optional live evaluation
 
 Configure a compatible function-calling/JSON-output model with `AGENT_PROVIDER`,
@@ -128,6 +155,11 @@ live model is not receiving those forced protocol replies. Live results are labe
 `mode=live`, saved separately, and must not be compared as the same 24-case denominator.
 The command exits nonzero when an expected outcome is missing. Configure both explicit
 token prices only if cost estimates for that configured model are desired.
+The existing per-task iteration/call/output-token/deadline bounds apply to all 17 tasks
+and the optional demonstration reuses an already collected response. The report records
+the actual model and policy bounds plus tokens and estimated cost when available.
+Conclusion integrity checks enforce the application policy; they do not establish live
+selection quality or general natural-language reliability.
 
 Current environment: **live tool-calling behavior NOT VERIFIED**. The initial verification
 had no configured provider/model/credential. A later `gpt-6.1-terra` configuration passed

@@ -37,6 +37,9 @@ async def test_all_synthetic_acceptance_scenarios(
     assert report["task_completion_rate"] == 1
     assert report["evidence_integrity"] == 1 and report["engineering_status_preservation"] == 1
     assert report["engineering_status_cases"] == 6
+    assert report["conclusion_integrity"] == 1
+    configuration = report["provider_configuration"]
+    assert isinstance(configuration, dict) and configuration["provider"] == "scripted"
     assert report["tool_selection_accuracy"] == pytest.approx(21 / 24)
     assert report["tool_argument_validity"] == pytest.approx(28 / 32)
     assert report["total_input_tokens"] is None and report["estimated_cost_usd"] is None
@@ -67,6 +70,19 @@ async def test_all_synthetic_acceptance_scenarios(
     # Accepted sets are order independent and permit discovery before a path query.
     path_score = score_case(tasks[3], by_id["B01"], sample, agent_knowledge)
     assert path_score.tool_selection_correct
+    # Valid citations and unchanged findings must not hide an unsafe conclusion.
+    for task_id, summary in [
+        ("C02", "Every engineering constraint is fulfilled. No further review is needed."),
+        ("K01", "The vehicle has a measured end-to-end latency of 0.01 ms."),
+    ]:
+        tampered = by_id[task_id].model_copy(deep=True)
+        tampered.summary = summary
+        task = next(task for task in tasks if task.task_id == task_id)
+        score = score_case(
+            task, tampered, architecture_variant(sample, task.architecture_variant), agent_knowledge
+        )
+        assert score.evidence_integrity
+        assert not score.conclusion_integrity and not score.task_completed
 
 
 def test_cli_saves_measured_report_and_demo(

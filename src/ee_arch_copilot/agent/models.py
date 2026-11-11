@@ -93,7 +93,7 @@ class ToolExecution(DomainModel):
 class TraceEvent(DomainModel):
     request_id: str
     trace_id: str
-    event: Literal["llm", "tool", "final"]
+    event: Literal["llm", "tool", "integrity", "final"]
     iteration: int
     duration_ms: float
     status: str
@@ -119,6 +119,15 @@ class ExecutionMetadata(DomainModel):
     trace: list[TraceEvent] = Field(default_factory=list)
 
 
+class EvidenceIntegrity(DomainModel):
+    summary_authority: Literal["server"] = "server"
+    narrative_policy: Literal["controlled_templates"] = "controlled_templates"
+    approval: Literal["NOT_AUTHORIZED"] = "NOT_AUTHORIZED"
+    rejected_final_attempts: int = 0
+    failure_categories: list[str] = Field(default_factory=list)
+    fallback_used: bool = False
+
+
 class AgentResponse(DomainModel):
     request_id: str
     status: AgentStatus
@@ -131,3 +140,4 @@ class AgentResponse(DomainModel):
     tool_executions: list[ToolExecution]
     execution_metadata: ExecutionMetadata
     limitations: list[str]
+    evidence_integrity: EvidenceIntegrity = Field(default_factory=EvidenceIntegrity)

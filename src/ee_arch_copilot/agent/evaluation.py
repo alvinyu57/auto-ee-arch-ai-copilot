@@ -14,6 +14,12 @@ from typing import Literal
 
 from pydantic import Field
 
+from ee_arch_copilot.agent.evidence import EvidenceStore
+from ee_arch_copilot.agent.integrity import (
+    RECOMMENDATION,
+    REVIEW_STATEMENT,
+    EngineeringResponseVerifier,
+)
 from ee_arch_copilot.agent.models import AgentResponse, AgentStatus, AnalyzeRequest
 from ee_arch_copilot.agent.orchestrator import AgentOrchestrator
 from ee_arch_copilot.agent.providers import AgentProvider, CompatibleAgentProvider, ProviderReply
@@ -63,6 +69,9 @@ class CaseScore(DomainModel):
     task_completed: bool
     evidence_integrity: bool
     engineering_status_preserved: bool | None
+    conclusion_integrity: bool
+    output_rejected: bool
+    fallback_used: bool
     agent_status: AgentStatus
     iterations: int
     tool_calls: int
@@ -270,7 +279,30 @@ def score_case(
     integrity &= {
         record.evidence_id for record in response.evidence if record.kind == "requirement"
     } == {cite.citation_id for cite in response.citations}
-    completed = response.status in task.expected_statuses and integrity and preserved
+    ledger = EvidenceStore()
+    ledger.commit(response.evidence)
+    expected_summary = EngineeringResponseVerifier(ledger).summary(response.tool_executions)
+    if response.execution_metadata.stop_reason != "final_response":
+        expected_summary = "Analysis incomplete; review unresolved checks. " + expected_summary
+    if ledger.conflict_references():
+        expected_summary = (
+            "Potential conflicting requirements require engineering review. " + expected_summary
+        )
+    conclusion_integrity = (
+        response.summary == expected_summary
+        and all(
+            finding.description == REVIEW_STATEMENT
+            for finding in response.findings
+            if finding.validation is None
+        )
+        and all(item.description == RECOMMENDATION for item in response.recommendations)
+    )
+    completed = (
+        response.status in task.expected_statuses
+        and integrity
+        and preserved
+        and conclusion_integrity
+    )
     retrieved_ids = {cite.requirement_id for cite in response.citations}
     completed &= set(task.required_requirement_ids) <= retrieved_ids
     if task.expect_no_requirements:
@@ -316,6 +348,10 @@ def score_case(
         diagnostics.append(
             "Attempted tool set differs from accepted workflows (including adversarial calls)"
         )
+    if not conclusion_integrity:
+        diagnostics.append(
+            "Response conclusion violates the controlled engineering narrative policy"
+        )
     metadata = response.execution_metadata
     return CaseScore(
         task_id=task.task_id,
@@ -327,6 +363,9 @@ def score_case(
         engineering_status_preserved=preserved
         if validation_records or any(item.validation for item in response.findings)
         else None,
+        conclusion_integrity=conclusion_integrity,
+        output_rejected=response.evidence_integrity.rejected_final_attempts > 0,
+        fallback_used=response.evidence_integrity.fallback_used,
         agent_status=response.status,
         iterations=metadata.iterations,
         tool_calls=metadata.tool_calls,
@@ -367,6 +406,9 @@ def aggregate(scores: list[CaseScore], mode: Literal["scripted", "live"]) -> dic
         "evidence_integrity": mean(score.evidence_integrity for score in scores),
         "engineering_status_preservation": mean(status_scores) if status_scores else None,
         "engineering_status_cases": len(status_scores),
+        "conclusion_integrity": mean(score.conclusion_integrity for score in scores),
+        "output_rejection_cases": sum(score.output_rejected for score in scores),
+        "fallback_cases": sum(score.fallback_used for score in scores),
         "argument_attempts": attempts,
         "valid_arguments": sum(score.valid_arguments for score in scores),
         "average_iterations": mean(score.iterations for score in scores),
@@ -455,7 +497,17 @@ async def evaluate(
         response = await AgentOrchestrator(settings, provider, lambda: knowledge).analyze(request)
         responses.append(response)
         scores.append(score_case(task, response, architecture, knowledge))
-    return aggregate(scores, mode), responses
+    report = aggregate(scores, mode)
+    report["provider_configuration"] = {
+        "provider": settings.agent_provider if mode == "live" else "scripted",
+        "models": sorted({response.execution_metadata.provider_model for response in responses}),
+        "api_mode": settings.agent_api_mode,
+        "max_iterations_per_task": settings.agent_max_iterations,
+        "max_tool_calls_per_task": settings.agent_max_tool_calls,
+        "max_output_tokens_per_call": settings.agent_max_output_tokens,
+        "timeout_seconds_per_task": settings.agent_timeout_seconds,
+    }
+    return report, responses
 
 
 def main() -> None:

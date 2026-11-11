@@ -12,7 +12,8 @@ engineering test data, not OEM production specifications. Phase 2 adds persisten
 requirements retrieval and optional evidence-citing generation. Local retrieval and
 all tests run without API keys or model downloads. Phase 3 adds a bounded, read-only
 single agent with native tool calling. Deterministic validator findings remain authoritative;
-generated interpretations are unverified. Live provider behavior is not yet verified.
+summaries come from server-owned evidence and narrative uses controlled review templates.
+Phase 3 cannot approve architectures. Live provider behavior is not yet verified.
 
 ## Executive Overview
 
@@ -393,7 +394,7 @@ it needs no companion container. Run one application worker against each local s
 - Hash embeddings provide a lexical baseline; configure a real embedding server for
   learned semantic retrieval. Live external embedding and LLM quality is not certified.
 - Citation validity verifies references, not semantic faithfulness of every generated claim.
-- Compliance and numeric-conflict guards are English heuristics; general entailment,
+- Phase 2 compliance and numeric-conflict guards are English heuristics; general entailment,
   sufficiency for nonempty context, arbitrary ID grammars, and conflict reasoning require review.
 - No OCR, production TSN analysis, architecture modification, or automatic design approval.
 
@@ -485,9 +486,15 @@ uses `--live` and a separately named output file; it does not establish certific
 `FAILED` is an unrecoverable provider/protocol/final-output failure before useful execution.
 Only server-copied `findings[].validation.status` supplies authoritative engineering
 `PASS`, `FAIL` or `NOT_EVALUATED`. Citations and evidence identities are server-owned.
+The Agent headline is rendered from those findings and their scope. Generated narrative
+is limited to controlled review templates; arbitrary approval, compliance and measurement
+assertions are rejected in summaries, findings, recommendations and questions. One repair
+is allowed, then a safe server response retains actual evidence. `evidence_integrity`
+records rejection categories, fallback use and `approval=NOT_AUTHORIZED`.
 
 See [agent architecture](docs/agent-architecture.md), [evaluation definitions](docs/agent-evaluation.md),
-and the [Phase 3 implementation report](docs/reviews/phase3-implementation-report.md)
+the [Phase 3 implementation report](docs/reviews/phase3-implementation-report.md),
+and the [remediation report](docs/reviews/phase3-remediation-report.md)
 for limits, observed results, API errors and remaining verification work.
 
 Licensed under [Apache License 2.0](LICENSE).

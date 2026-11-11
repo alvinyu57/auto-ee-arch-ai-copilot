@@ -7,19 +7,10 @@ from pydantic import BaseModel
 from ee_arch_copilot.agent.models import AgentFinding, EvidenceRecord, ModelFinal
 from ee_arch_copilot.agent.tools.adapters import PathResult, TopologyResult, ValidationResult
 from ee_arch_copilot.rag.generation.citations import citation
-from ee_arch_copilot.rag.generation.guards import VERIFICATION_CLAIM, conflicting_source_indices
+from ee_arch_copilot.rag.generation.guards import conflicting_source_indices
 from ee_arch_copilot.rag.identifiers import mentioned_identifiers
 from ee_arch_copilot.rag.models import Chunk, Citation, SearchResponse
 from ee_arch_copilot.services.validator import ValidationFinding
-
-# Generated prose has no authority to issue verification outcomes, even if a model has
-# seen a real PASS for an unrelated rule. Exact findings are copied independently below.
-VERIFICATION_LANGUAGE = re.compile(
-    r"\b(?:PASS|FAIL|NOT_EVALUATED)\b|\b(?:compliant|compliance|certified|certification)\b"
-    r"|\b(?:satisf(?:y|ies|ied)|passed|verified|validated)\b"
-    r"|\b(?:all|every)\s+(?:architecture\s+)?checks?\s+(?:have\s+)?pass",
-    re.I,
-)
 
 
 class EvidenceStore:
@@ -116,8 +107,6 @@ class EvidenceStore:
         identifiers = {r.requirement_id for r in self.records.values() if r.requirement_id}
 
         def check_text(text: str, allowed_ids: set[str], allowed_refs: set[str]) -> None:
-            if VERIFICATION_LANGUAGE.search(text) or VERIFICATION_CLAIM.search(text):
-                raise ValueError("Generated verification claims are not accepted")
             if not mentioned_identifiers(text, requirement_pattern, identifiers) <= allowed_ids:
                 raise ValueError("Unresolved requirement identifier")
             if not set(re.findall(r"\bE[1-9][0-9]*\b", text)) <= allowed_refs:

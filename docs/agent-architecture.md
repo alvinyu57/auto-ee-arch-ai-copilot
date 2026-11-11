@@ -15,8 +15,9 @@ flowchart TD
     Registry --> Topology[TopologyService: physical graph and path]
     Registry --> Validator[ArchitectureValidator: original engineering findings]
     Registry --> Evidence[Server-owned evidence IDs and provenance]
-    Evidence --> Guard[Reference, output and source-freshness checks]
-    Guard --> Response[Structured findings, interpretations, citations and metadata]
+    Evidence --> Guard[Schema, reference, controlled narrative and freshness checks]
+    Guard --> Summary[Server-rendered status and scope summary]
+    Summary --> Response[Exact findings, review templates, citations and integrity metadata]
 ```
 
 ## Integration and authority
@@ -28,7 +29,7 @@ domain, validator and topology service retain their existing semantics. The exis
 compatible-provider HTTP boundary gains a cancellable, response-bounded asynchronous
 variant; the Phase 2 synchronous provider remains compatible.
 
-`ModelFinal` contains only a summary, labeled interpretations/assumptions,
+`ModelFinal` retains its wire schema: a summary, labeled interpretations/assumptions,
 recommendations, unresolved questions and an insufficient-evidence flag. It has no
 validation object, status, source metadata or requirement-ID fields. The server copies
 each collected `ValidationFinding` into `AgentFinding.validation` with its exact rule ID,
@@ -37,12 +38,59 @@ evidence. It attaches these findings even when generation fails. Generated findi
 have `interpretation_status=unverified`; server-copied validation entries use
 `not_applicable` for that interpretation label.
 
-English verification-claim guards conservatively reject generated outcome language,
-including PASS/FAIL/NOT_EVALUATED, satisfied, compliant, certified, verified and passed.
-Even seeing a real PASS does not authorize the model to generalize it to another
-requirement. Bounded identifier checks reuse Phase 2's identifier grammar. Reference
-integrity and these guards do not prove natural-language entailment, completeness or
-multilingual grounding. Human review of generated interpretations remains necessary.
+The independent audit found that generated summaries bypassed the old English claim
+patterns: D-P3-001 returned an overall approval beside real FAIL findings; D-P3-002
+returned a fabricated latency measurement with only topology evidence. Structured
+statuses were preserved in both cases. Bare summary text and phrase matching were the
+root cause, rather than corruption of deterministic tools.
+
+`EngineeringResponseVerifier` now owns the narrative contract on the actual orchestrator
+and REST path. It checks references using the request-local `EvidenceStore` and admits
+only exact controlled review templates. It does not classify arbitrary prose as true.
+The public summary is always rendered server-side from committed validation findings,
+with PASS/FAIL/NOT_EVALUATED counts, selected-scope omissions, physical/retrieval scope,
+missing VLAN/TSN/latency analysis and the Phase 3 prohibition on architecture approval.
+The model's summary is never copied to the public summary, including during recovery.
+
+| Layer | Enforced boundary |
+| --- | --- |
+| Schema | Strict `ModelFinal`; generated validation/status/finding-ID/source fields are rejected |
+| References | Current-request E labels; scoped requirement IDs; exact server-built citations |
+| Deterministic findings | Original rule, status, finding identity, components and evidence copied by the server; the LLM cannot supply replacements |
+| Conclusions | Server counts and scope; no autonomous approval, certification or production release |
+| Narrative | Exact review templates in `agent/integrity.py`; arbitrary assertions are rejected in summary, findings, recommendations and questions |
+
+The normal model summary template is “Collected engineering evidence is available for
+review.” Findings use “Review source and computation evidence within its scope.”
+Recommendations use “Review unsupported constraints and supply missing inputs.” The only
+model clarification template is “Which source documents or architecture should be
+supplied?” Lists may be empty. Findings must be interpretations with real references;
+recommendations retain their recommendation label. Free-form assumptions and explanations
+remain expressible by the wire schema for compatibility, but are withheld by this policy.
+This deliberately narrows generated prose to enforce the integrity contract. The original
+tool evidence and validator explanations remain available for engineering review.
+
+Two additional exact summary inputs have deterministic preconditions: “All executed checks
+passed; additional engineering validation may be required.” requires nonempty all-PASS
+findings and all executed validation reports PASS. “The architecture is not compliant
+because the bandwidth check failed.” requires an actual nominal-link-budget FAIL.
+Neither input is copied into the headline. Other wording, even benign paraphrases, needs
+repair; this is a controlled vocabulary, not keyword-based semantic verification.
+
+On rejection, record a safe category and `integrity` trace event, allow one repair within
+existing budgets, then return a server-rendered fallback with exact findings, valid
+citations, limitations and unresolved checks. It is PARTIAL after useful tool execution,
+or FAILED before useful execution. A successful repair can be COMPLETED while preserving
+its rejection history. `evidence_integrity` exposes summary authority, narrative policy,
+`approval=NOT_AUTHORIZED`, rejected attempt count, categories and fallback use. Rejected
+prose is absent from responses and logs. No additional tool or verifier-model call is made.
+
+Execution COMPLETED and individual rule PASS are distinct from full coverage and design
+approval. FAIL never becomes PASS; NOT_EVALUATED always remains unresolved; retrieval and
+physical adjacency do not establish compliance. Source truth, engineering applicability,
+model tool selection and completeness of requested coverage still require human review.
+The policy does not establish arbitrary natural-language factual correctness or certify
+functional safety. See the [remediation report](reviews/phase3-remediation-report.md).
 
 ## Tool contracts
 
@@ -112,8 +160,9 @@ lazy initialization behavior; analysis does not write architecture or source rec
 6. Validate and size-check results, stage evidence, size-check the complete wire envelope,
    and commit evidence only if the result will actually be disclosed.
 7. Return one native tool message per admitted call, correlated with `tool_call_id`.
-8. Continue or validate final JSON, allowing at most one repair within the same budgets.
-9. Recheck retrieved source revisions, copy deterministic findings and build the response.
+8. Validate final JSON, current-run references and controlled narrative; allow one repair.
+9. Recheck retrieved source revisions, copy deterministic findings and render the summary
+   from committed evidence even if final generation failed.
 
 Multiple calls in one model response execute sequentially. Admitted attempts consume the
 budget even when arguments are invalid or the tool is denied. No further call executes
@@ -241,9 +290,10 @@ contract, with the original upstream status available separately in metadata.
 
 The tool allowlist, typed arguments, request scope, enforced limits and server-owned
 provenance are application controls; prompt-injection resistance does not rest on
-instructions alone. A malicious document may still influence the model's interpretation
-or choice among approved reads. General semantic faithfulness, arbitrary identifier
-grammars, multilingual claim detection and general conflict reasoning remain unproven.
+instructions alone. A malicious document may still influence the model's choice among
+approved reads. Arbitrary generated prose is withheld regardless of language, rather
+than semantically verified. Arbitrary identifier grammars, source truth, engineering
+applicability, completeness and general conflict reasoning remain unproven.
 The MVP has no production authentication, tenant isolation, global rate limiting or
 isolated worker termination. Keep proprietary sources within approved provider/data
 handling boundaries. This assistant does not certify functional safety or compliance.

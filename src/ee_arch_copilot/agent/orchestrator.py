@@ -9,10 +9,16 @@ from pydantic import JsonValue, ValidationError
 
 from ee_arch_copilot.agent.context import AgentContext
 from ee_arch_copilot.agent.evidence import EvidenceStore
+from ee_arch_copilot.agent.integrity import (
+    UNSUPPORTED_SCOPE,
+    EngineeringResponseVerifier,
+    ResponseIntegrityError,
+)
 from ee_arch_copilot.agent.models import (
     AgentResponse,
     AgentStatus,
     AnalyzeRequest,
+    EvidenceIntegrity,
     ModelFinal,
     ValidationScope,
 )
@@ -30,8 +36,8 @@ LIMITATIONS = [
     "Physical connectivity does not establish VLAN, IP, SOME/IP, TSN or service reachability.",
     "Validation covers only supported structured constraints and declared nominal traffic; "
     "retrieved prose is not automatically verified or converted into approved constraints.",
-    "Generated interpretations are unverified. Reference membership and bounded English "
-    "guards do not prove semantic support or general conflict detection.",
+    "Narrative fields use controlled review templates and server-rendered status summaries. "
+    "Source text and engineering applicability still require human review.",
 ]
 
 
@@ -59,6 +65,8 @@ class AgentOrchestrator:
         registry = registry or engineering_registry(tools, policy.tool_timeout_seconds)
         specifications = registry.specifications()
         evidence = EvidenceStore()
+        verifier = EngineeringResponseVerifier(evidence)
+        integrity_failures: list[str] = []
         messages: list[dict[str, JsonValue]] = [
             {"role": "system", "content": SYSTEM_PROMPT},
             {
@@ -226,19 +234,26 @@ class AgentOrchestrator:
                         and secret.get_secret_value() in generated
                     ):
                         raise ValueError("Credential disclosure")
-                evidence.validate_final(final, self.settings.requirement_id_pattern)
-            except (ValidationError, ValueError):
+                verifier.validate(final, executions, self.settings.requirement_id_pattern)
+            except (ValidationError, ValueError) as error:
                 final = None
                 invalid_finals += 1
+                category = (
+                    str(error) if isinstance(error, ResponseIntegrityError) else "invalid_output"
+                )
+                integrity_failures.append(category)
+                trace.record("integrity", iteration, 0, category)
                 if invalid_finals >= 2:
                     reason = "invalid_final_response"
                     break
                 messages.append(
                     {
                         "role": "user",
-                        "content": "Final response rejected. Return all required JSON fields, "
-                        "use only collected evidence references, and leave verification outcomes "
-                        "to server-attached findings. One repair attempt remains.",
+                        "content": f"Final response rejected ({category}). Return all required "
+                        "JSON fields and only collected evidence references. Use the exact "
+                        "controlled narrative templates in the system policy, or empty lists. "
+                        "One repair attempt remains. Server-rendered summary: "
+                        + verifier.summary(executions),
                     }
                 )
                 reason = "invalid_final_response"
@@ -302,6 +317,11 @@ class AgentOrchestrator:
         questions = list(final.unresolved_questions) if final else []
         if incomplete:
             questions.append(f"Analysis incomplete: {reason}.")
+        if integrity_failures:
+            questions.append(
+                "Model output was rejected by response integrity validation; "
+                "see evidence_integrity for safe failure categories."
+            )
         if provider_error and provider_error.code:
             questions.append(
                 f"Model provider rejected the request: {provider_error.code} "
@@ -332,11 +352,10 @@ class AgentOrchestrator:
                 f"Unevaluated check {record.rule_id} [{record.evidence_id}]: "
                 + str(record.data["explanation"])
             )
-        summary = (
-            final.summary
-            if final
-            else "Analysis stopped; review collected evidence and unresolved checks."
-        )
+        summary = verifier.summary(executions)
+        questions.append(UNSUPPORTED_SCOPE)
+        if incomplete:
+            summary = "Analysis incomplete; review unresolved checks. " + summary
         if conflict_refs:
             summary = "Potential conflicting requirements require engineering review. " + summary
         trace.record("final", iterations, (monotonic() - trace.started) * 1000, status)
@@ -368,4 +387,9 @@ class AgentOrchestrator:
             tool_executions=executions,
             execution_metadata=metadata,
             limitations=limitations,
+            evidence_integrity=EvidenceIntegrity(
+                rejected_final_attempts=invalid_finals,
+                failure_categories=list(dict.fromkeys(integrity_failures)),
+                fallback_used=final is None,
+            ),
         )
