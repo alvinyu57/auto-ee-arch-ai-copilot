@@ -3,6 +3,48 @@
 Measured on 2026-11-10 using Python 3.12.16, Chroma 1.5.9, and the checked-in
 synthetic corpus. No external embedding or LLM API was used.
 
+## Remediation verification — 2026-11-10
+
+The unchanged 24-query retrieval dataset and six-case QA dataset were rerun after
+corrections addressing the six audit findings. Version identity is the SHA-256 of each dataset's exact
+bytes, recorded in [the remediation evidence](reviews/phase2-remediation-evaluation.json).
+Corpus hashes match the original saved reports. The original reports below are retained
+as baseline evidence; their expectations and source documents were not changed.
+
+| Method | Recall@1 | Recall@3 | Recall@5 | Precision@3 | MRR within 5 | Exact-ID Hit@1 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Keyword | 0.787879 | 0.977273 | 0.977273 | 0.469697 | 1.000000 | 5/5 |
+| Semantic with hash vectors | 0.787879 | 0.977273 | 0.977273 | 0.469697 | 1.000000 | 5/5 |
+| Hybrid | 0.787879 | 0.977273 | 0.977273 | 0.469697 | 1.000000 | 5/5 |
+
+Baseline rankings give the same metrics. Exact-ID Hit@1 includes questions consisting
+only of a requirement ID (q01–q05); q22 contains an ID plus prose and is excluded from
+that denominator. Precision uses a fixed K denominator and ranking metrics average
+only the 22 answerable cases. The missing q09 `REQ-ISO-001` remains; all provisional
+Recall@5, MRR, and exact-ID targets pass without tuning or changed golden labels.
+
+Controlled generation across all three modes emitted **12 citations, zero invalid**;
+the original two no-evidence questions per mode gave **6/6 explicit insufficient
+responses**. Another 18 controlled adversarial outputs were suppressed. These are
+reference and abstention contract measurements, not faithfulness or live-model scores.
+Nonempty but insufficient contexts, including audit i27/i28, are not solved by empty
+retrieval handling; broader sufficiency remains dependent on provider judgment and review.
+
+The evaluator now reports Recall@1/3/5, Precision@3, MRR within 5, exact-ID Hit@1 and
+dataset hash, while retaining the existing configured-K metrics. Metrics use only the
+returned result window; use final K >= 5 for full @5 comparisons. Reproduce the complete
+controlled comparison with:
+
+```bash
+uv run --no-sync python scripts/evaluate_phase2_remediation.py --output /tmp/phase2-remediation.json
+```
+
+This script deliberately selects the hash provider and an excerpt-only test provider,
+uses a temporary store, and retains raw per-query responses and original baseline paths.
+It does not exercise a live LLM or evaluate semantic entailment. Use the existing CLI
+below with explicit provider configuration and a separate index for learned embeddings.
+See [the remediation report](reviews/phase2-remediation-report.md) for the acceptance decision.
+
 ## Retrieval dataset and procedure
 
 [The golden dataset](../data/evaluation/retrieval_dataset.json) contains **24 queries**:

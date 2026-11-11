@@ -5,6 +5,7 @@ from typing import cast
 from pydantic import JsonValue
 
 from ee_arch_copilot.core.settings import DEFAULT_REQUIREMENT_PATTERN
+from ee_arch_copilot.rag.identifiers import IDENTIFIER_HINT
 from ee_arch_copilot.rag.models import Document, SourceLocation, SourceRecord
 
 
@@ -14,11 +15,26 @@ class RequirementParser:
         self.start_pattern = re.compile(
             r"^\s*(?:[-*+]\s+|#{1,6}\s+)?(?:\*\*)?(?P<id>" + requirement_pattern + r")(?=\s|:|\*|$)"
         )
+        self.inline_pattern = re.compile(
+            r"(?<=[.;!?])[ \t]+(?P<definition>(?:\*\*)?(?P<id>"
+            + requirement_pattern
+            + r")(?:\*\*)?[ \t]*:)[ \t]*"
+        )
 
     def parse(self, document: Document) -> list[SourceRecord]:
         if document.source_type == "json":
             return self._json(document.content)
-        return self._text(document)
+        records = self._text(document)
+        for record in records:
+            if record.requirement_id is None and (
+                self.pattern.search(record.text) or IDENTIFIER_HINT.search(record.text)
+            ):
+                record.extraction_warnings.append(
+                    "Requirement-like identifiers were preserved without extracted identity; "
+                    "review source layout or configure REQUIREMENT_ID_PATTERN "
+                    f"(offset {record.location.start_offset})."
+                )
+        return records
 
     def _json(self, content: str) -> list[SourceRecord]:
         data = json.loads(content)
@@ -121,6 +137,12 @@ class RequirementParser:
                 start = None
             elif start is None and line.strip():
                 start, record_section = offset, section
+            # Only ID-colon definitions after sentence punctuation are supported
+            # inline. Ordinary references ("see REQ-X-001") never split records.
+            for inline in self.inline_pattern.finditer(line):
+                boundary = offset + inline.start("definition")
+                flush(boundary)
+                start, requirement_id, record_section = boundary, inline.group("id"), section
             offset += len(line)
         flush(len(content))
         if not records:

@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 
+from ee_arch_copilot.rag.errors import DocumentIdentityConflict
 from ee_arch_copilot.rag.models import (
     AnswerResponse,
     AskRequest,
@@ -39,7 +40,11 @@ def get_knowledge_service(request: Request) -> KnowledgeService:
 Service = Annotated[KnowledgeService, Depends(get_knowledge_service)]
 
 
-@router.post("/documents", response_model=IngestionResponse)
+@router.post(
+    "/documents",
+    response_model=IngestionResponse,
+    responses={409: {"description": "Explicit document identity required for replacement"}},
+)
 def ingest_document(source: DocumentInput, service: Service) -> IngestionResponse:
     """JSON body: filename, source_type (markdown/text/json), content, optional ID/version/metadata.
 
@@ -50,6 +55,8 @@ def ingest_document(source: DocumentInput, service: Service) -> IngestionRespons
         raise HTTPException(422, "PDF ingestion requires the trusted local PDF loader")
     try:
         return service.ingest(source)
+    except DocumentIdentityConflict as error:
+        raise HTTPException(409, str(error)) from error
     except ValueError as error:
         raise HTTPException(
             422, "Document cannot be parsed into indexable source records"

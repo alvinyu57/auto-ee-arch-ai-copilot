@@ -26,6 +26,14 @@ live external model quality and container runtime behavior remain separate verif
 - Optional compatible HTTP generation, citation validation, and explicit missing-evidence responses.
 - Four synthetic documents, 24 retrieval queries, six QA review cases, offline tests and HTTP probe.
 - See [measured evaluation](rag-evaluation.md) and the [implementation report](reviews/phase2-implementation-report.md).
+- Six acceptance-audit findings addressed with regressions: source freshness, identifier
+  checks, inline extraction/diagnostics, explicit replacement identity, semantic eligibility,
+  and bounded unverified-generation/conflict safeguards. See the
+  [remediation report](reviews/phase2-remediation-report.md). Five findings are closed;
+  full engineering-grounding verification (D-006) remains deferred with bounded safeguards.
+- Conditionally ready for reviewed Phase 3 integration; learned semantic quality and
+  live-generation sufficiency/faithfulness remain unverified. General claim entailment,
+  arbitrary ID grammars, and conflict reasoning are not supplied by the bounded guards.
 
 ## Phase 3: LLM Agent with Tool Calling
 

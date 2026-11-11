@@ -1,5 +1,10 @@
 # Phase 2 implementation report
 
+Historical implementation evidence. The subsequent acceptance audit and corrections
+are documented in the [verification report](phase2-verification-report.md) and
+[remediation report](phase2-remediation-report.md); use the latter for current behavior
+and acceptance status. Original measurements below are retained as the baseline.
+
 Date: **2026-11-10 (Europe/Berlin)**. Repository: `auto-ee-arch-ai-copilot`.
 Outcome: Phase 2 requirements retrieval, persistence, optional generation, REST APIs,
 synthetic corpus, evaluation, and offline verification are implemented. Live external

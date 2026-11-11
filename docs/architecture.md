@@ -126,6 +126,15 @@ surface deterministic evidence separately from generated commentary. Retrieval c
 should identify document version and source location; model-generated constraints need
 review before becoming machine-verifiable engineering inputs.
 
+The corrected Phase 2 `ask` boundary revalidates source revisions after generation.
+Consumers must handle `stale_evidence`, `unsupported_claims`, and `conflicting_evidence`
+as well as the original citation/insufficient statuses. Every generated response is
+typed as `claim_status=unverified` and `engineering_validation=not_performed`; only
+the deterministic service can supply its own validation findings. Bounded conflict and
+claim guards do not establish semantic support. Explicit document IDs are required
+for replacing an existing filename-derived source (HTTP 409 otherwise). See the
+[remediation report](reviews/phase2-remediation-report.md) for tested integration limits.
+
 Future VLAN/forwarding rules should have separate query/result types, not change the
 meaning of `connectivity_scope: physical`. A richer traffic model can add frame overhead,
 multicast, background flows, shared buses, and routing policy with explicit assumptions.

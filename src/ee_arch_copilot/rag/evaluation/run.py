@@ -1,7 +1,9 @@
 """uv run python -m ee_arch_copilot.rag.evaluation.run --output /tmp/rag-evaluation.json"""
 
 import argparse
+import hashlib
 import json
+import re
 import tempfile
 from pathlib import Path
 
@@ -42,6 +44,7 @@ class QueryResult(RAGModel):
 
 
 class EvaluationReport(RAGModel):
+    dataset_sha256: str | None = None
     dataset_size: int
     answerable_queries: int
     no_answer_queries: int
@@ -49,6 +52,13 @@ class EvaluationReport(RAGModel):
     embedding_provider: str
     corpus_hashes: dict[str, str]
     metrics: RetrievalMetrics
+    recall_at_1: float
+    recall_at_3: float
+    recall_at_5: float
+    precision_at_3: float
+    mrr_within_5: float
+    exact_id_queries: int
+    exact_requirement_id_hit_at_1: float | None
     no_answer_abstention_rate: float | None
     results: list[QueryResult]
     failed_queries: list[str]
@@ -60,6 +70,8 @@ def evaluate(
 ) -> EvaluationReport:
     results = []
     failures = []
+    fixed_metrics: dict[int, list[RetrievalMetrics]] = {1: [], 3: [], 5: []}
+    exact_hits: list[bool] = []
     for item in items:
         hits = service.search(item.question, options).hits
         retrieved = list(
@@ -98,6 +110,10 @@ def evaluate(
                 )
             )
             result.metrics = retrieval_metrics(ranked, expected, options.final_top_k)
+            for cutoff in fixed_metrics:
+                fixed_metrics[cutoff].append(retrieval_metrics(ranked, expected, cutoff))
+            if re.fullmatch(service.settings.requirement_id_pattern, item.question.strip(), re.I):
+                exact_hits.append(bool(ranked) and ranked[0] in expected)
             result.missing_expected_documents = sorted(
                 set(item.expected_source_documents) - set(documents)
             )
@@ -122,6 +138,13 @@ def evaluate(
             precision_at_k=sum(item.precision_at_k for item in metrics) / len(metrics),
             mrr=sum(item.mrr for item in metrics) / len(metrics),
         ),
+        recall_at_1=sum(item.recall_at_k for item in fixed_metrics[1]) / len(metrics),
+        recall_at_3=sum(item.recall_at_k for item in fixed_metrics[3]) / len(metrics),
+        recall_at_5=sum(item.recall_at_k for item in fixed_metrics[5]) / len(metrics),
+        precision_at_3=sum(item.precision_at_k for item in fixed_metrics[3]) / len(metrics),
+        mrr_within_5=sum(item.mrr for item in fixed_metrics[5]) / len(metrics),
+        exact_id_queries=len(exact_hits),
+        exact_requirement_id_hit_at_1=sum(exact_hits) / len(exact_hits) if exact_hits else None,
         no_answer_abstention_rate=sum(no_answers) / len(no_answers) if no_answers else None,
         results=results,
         failed_queries=failures,
@@ -147,14 +170,11 @@ def main() -> None:
         service = KnowledgeService(settings)
         for path in sorted((args.data / "knowledge" / "synthetic").glob("*.md")):
             service.ingest(load_file(path, document_id=path.stem, version="1.0"))
-        items = [
-            EvaluationItem.model_validate(item)
-            for item in json.loads(
-                (args.data / "evaluation" / "retrieval_dataset.json").read_text()
-            )
-        ]
+        dataset = (args.data / "evaluation" / "retrieval_dataset.json").read_bytes()
+        items = [EvaluationItem.model_validate(item) for item in json.loads(dataset)]
         options = settings.retrieval_options().model_copy(update={"method": args.method})
         report = evaluate(service, items, options)
+        report.dataset_sha256 = hashlib.sha256(dataset).hexdigest()
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(report.model_dump_json(indent=2) + "\n")
         print(report.metrics.model_dump_json())

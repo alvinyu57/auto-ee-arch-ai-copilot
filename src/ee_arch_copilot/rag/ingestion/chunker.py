@@ -56,6 +56,7 @@ class RequirementChunker:
                         original_text=record.text,
                         location=location,
                         structured_fields=record.structured_fields,
+                        extraction_warnings=record.extraction_warnings,
                     )
                 )
                 if end == len(record.text):

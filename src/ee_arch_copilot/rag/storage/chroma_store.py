@@ -70,17 +70,26 @@ class ChromaStore:
     def revision_for(self, document: Document, chunks: list[Chunk]) -> str:
         payload = [
             document.model_dump(mode="json", exclude={"ingestion_timestamp"}),
-            [chunk.model_dump(mode="json") for chunk in chunks],
+            [
+                chunk.model_dump(
+                    mode="json",
+                    exclude={"extraction_warnings"} if not chunk.extraction_warnings else set(),
+                )
+                for chunk in chunks
+            ],
             self.embedding_identity,
         ]
         return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
 
     def is_current(self, document_id: str, revision: str) -> bool:
+        return self.get_revision(document_id) == revision
+
+    def get_revision(self, document_id: str) -> str | None:
         with self.lock:
             row = self._db.execute(
                 "SELECT revision FROM documents WHERE id=?", (document_id,)
             ).fetchone()
-            return row is not None and row[0] == revision
+            return str(row[0]) if row else None
 
     def replace(
         self,
@@ -187,16 +196,25 @@ class ChromaStore:
         top_k: int,
         filters: SearchFilter,
         min_similarity: float,
+        allowed_chunk_ids: set[str] | None = None,
     ) -> list[tuple[Chunk, float]]:
         validate_vectors([vector], 1, self.dimension)
         with self.lock:
             candidates = {chunk.chunk_id: chunk for chunk in self.chunks(filters)}
+            if allowed_chunk_ids is not None:
+                candidates = {
+                    identifier: chunk
+                    for identifier, chunk in candidates.items()
+                    if identifier in allowed_chunk_ids
+                }
             if not candidates:
                 return []
             revisions = [
                 row[0] for row in self._db.execute("SELECT revision FROM documents").fetchall()
             ]
             clauses: list[Where] = [cast(Where, {"revision": {"$in": revisions}})]
+            if allowed_chunk_ids is not None:
+                clauses.append(cast(Where, {"chunk_id": {"$in": sorted(candidates)}}))
             for key, value in filters.model_dump(exclude_none=True).items():
                 clauses.append(cast(Where, {key: {"$eq": value}}))
             where: Where = {"$and": clauses} if len(clauses) > 1 else clauses[0]

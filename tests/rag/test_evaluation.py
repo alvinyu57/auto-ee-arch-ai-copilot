@@ -40,6 +40,9 @@ def test_golden_corpus_end_to_end(tmp_path: Path) -> None:
     assert report.dataset_size >= 20
     assert report.metrics.recall_at_k >= 0.8
     assert report.metrics.mrr >= 0.8
+    assert report.recall_at_1 <= report.recall_at_3 <= report.recall_at_5
+    assert report.exact_id_queries == 5
+    assert report.exact_requirement_id_hit_at_1 == 1
     assert report.no_answer_abstention_rate == 1
     for case in json.loads((DATA / "evaluation" / "qa_dataset.json").read_text()):
         answer = service.ask(AskRequest(question=case["question"]))
@@ -75,6 +78,8 @@ def test_evaluation_failure_and_abstention_paths(indexed: KnowledgeService) -> N
     assert report.failed_queries == [item.query_id for item in items]
     assert report.metrics.recall_at_k == 0
     assert report.no_answer_abstention_rate == 0
+    assert report.recall_at_1 == report.recall_at_3 == report.recall_at_5 == 0
+    assert report.precision_at_3 == report.mrr_within_5 == 0
     with pytest.raises(ValueError):
         evaluate(indexed, [items[-1]], RetrievalOptions())
     chunk = indexed.store.chunks()[0]

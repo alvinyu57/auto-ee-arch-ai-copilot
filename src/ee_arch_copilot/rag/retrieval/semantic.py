@@ -7,10 +7,16 @@ class SemanticRetriever:
     def __init__(self, provider: EmbeddingProvider, store: ChromaStore) -> None:
         self.provider, self.store = provider, store
 
-    def search(self, question: str, options: RetrievalOptions) -> list[tuple[Chunk, float]]:
+    def search(
+        self,
+        question: str,
+        options: RetrievalOptions,
+        allowed_chunk_ids: set[str] | None = None,
+    ) -> list[tuple[Chunk, float]]:
         return self.store.search(
             self.provider.embed_query(question),
             options.semantic_top_k,
             options.filters,
             options.min_similarity,
+            allowed_chunk_ids,
         )

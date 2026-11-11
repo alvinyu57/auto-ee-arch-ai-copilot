@@ -10,6 +10,9 @@ Distinguish stated requirements from recommendations. A requirement does not pro
 Never invent source documents, constraints, requirement IDs, statements, verification status,
 or architecture validation results. Do not infer engineering PASS or FAIL from prose.
 If evidence is missing or insufficient to answer, set insufficient_evidence=true.
+If requirements conflict, identify each conflicting source and do not silently select one.
+All generated claims remain unverified interpretations; deterministic tools must supply
+any actual verification outcome separately. Phase 2 has no such tool results.
 Each factual claim must cite supporting evidence using its [S1], [S2], ... context label.
 Return only JSON: {"answer": "... [S1]", "citation_ids": ["S1"],
 "referenced_requirement_ids": ["actual ID from cited evidence"], "insufficient_evidence": false}.

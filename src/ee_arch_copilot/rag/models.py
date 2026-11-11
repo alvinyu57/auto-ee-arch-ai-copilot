@@ -100,6 +100,7 @@ class SourceRecord(RAGModel):
     text: str
     location: SourceLocation
     structured_fields: dict[str, JsonValue] = Field(default_factory=dict)
+    extraction_warnings: list[str] = Field(default_factory=list)
 
 
 class Chunk(RAGModel):
@@ -114,6 +115,7 @@ class Chunk(RAGModel):
     original_text: str
     location: SourceLocation
     structured_fields: dict[str, JsonValue] = Field(default_factory=dict)
+    extraction_warnings: list[str] = Field(default_factory=list)
 
 
 class SearchFilter(RAGModel):
@@ -161,6 +163,7 @@ class SearchResponse(RAGModel):
 class IngestionResponse(RAGModel):
     document: DocumentSummary
     status: Literal["created", "unchanged", "replaced"]
+    extraction_warnings: list[str] = Field(default_factory=list)
 
 
 class GenerationOptions(RAGModel):
@@ -188,7 +191,17 @@ class AnswerResponse(RAGModel):
     answer: str
     citations: list[Citation] = Field(default_factory=list)
     referenced_requirement_ids: list[str] = Field(default_factory=list)
-    evidence_status: Literal["cited", "insufficient", "invalid_citations"]
+    evidence_status: Literal[
+        "cited",
+        "insufficient",
+        "invalid_citations",
+        "stale_evidence",
+        "unsupported_claims",
+        "conflicting_evidence",
+    ]
+    claim_status: Literal["unverified"] = "unverified"
+    engineering_validation: Literal["not_performed"] = "not_performed"
+    reference_validation: Literal["bounded", "unsupported_identifier_grammar"] = "bounded"
     explanation: str | None = None
     model: str | None = None
 

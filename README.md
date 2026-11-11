@@ -192,9 +192,13 @@ response in [the workflow evidence](docs/reviews/phase2-workflow.json).
 Choose `keyword`, `semantic`, or `hybrid`; filters support `document_id`,
 `requirement_id`, and `version`. Reranking is an optional local token-overlap heuristic.
 Repeating the same envelope returns `unchanged`; reusing `document_id` with changed
-content, metadata, or version replaces the active revision and invalidates old citations.
-Omitting `document_id` derives it from the basename, so supply explicit IDs for files
-with the same name from different origins. No requirement ID is invented.
+content, metadata, or version replaces the active revision. Content/version changes
+expire old chunk URLs; metadata-only edits may preserve chunk IDs. Omitting `document_id`
+derives it from the basename, but changing that source without an explicit ID now returns
+**409**. Use the returned ID for an intentional replacement, or another stable ID for a
+different origin with the same filename. No requirement ID is invented. Ingestion and
+chunk responses include `extraction_warnings` for detected unsupported ID/layout cases;
+review those sources before depending on exact-ID retrieval.
 
 The local default is deterministic hash embeddings. For learned semantic retrieval,
 set `EMBEDDING_PROVIDER=openai_compatible`, `EMBEDDING_MODEL` to the server's embedding
@@ -219,7 +223,14 @@ curl --fail-with-body http://127.0.0.1:8000/api/v1/knowledge/ask \
 ```
 
 `ask` returns `answer`, structured `citations`, `referenced_requirement_ids`, `model`,
-and `evidence_status` (`cited`, `insufficient`, or `invalid_citations`). Missing provider
+and `evidence_status` (`cited`, `insufficient`, `invalid_citations`, `stale_evidence`,
+`unsupported_claims`, or `conflicting_evidence`). Every answer carries
+`claim_status="unverified"` and `engineering_validation="not_performed"`.
+`reference_validation` flags unsupported prose ID grammars. `cited` means bounded
+reference checks passed; it does not establish factual support. Sources changed during
+generation suppress the answer and its citations; retry after `stale_evidence`.
+Bounded guards withhold recognized compliance assertions and surface equal-template,
+different-quantity requirements for review. Missing provider
 configuration returns **503**; provider or malformed-response errors return **502**.
 With a configured provider, empty retrieval returns a fixed insufficient-evidence
 response without calling the model. Invalid citations suppress generated claims.
@@ -380,6 +391,8 @@ it needs no companion container. Run one application worker against each local s
 - Hash embeddings provide a lexical baseline; configure a real embedding server for
   learned semantic retrieval. Live external embedding and LLM quality is not certified.
 - Citation validity verifies references, not semantic faithfulness of every generated claim.
+- Compliance and numeric-conflict guards are English heuristics; general entailment,
+  sufficiency for nonempty context, arbitrary ID grammars, and conflict reasoning require review.
 - No OCR, production TSN analysis, or agent orchestration.
 
 ## Roadmap and next step
@@ -389,5 +402,7 @@ requirements retrieval, source citations, and optional generation with a version
 synthetic corpus and reproducible evaluation.
 Retrieved text should remain separate from structured constraints until reviewed by
 an engineer; deterministic findings remain the source of truth for implemented checks.
+See the [Phase 2 remediation report](docs/reviews/phase2-remediation-report.md) for
+corrected defects, compatibility changes, and the measured acceptance limits.
 
 Licensed under [Apache License 2.0](LICENSE).

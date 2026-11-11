@@ -28,7 +28,10 @@ flowchart TD
 `DocumentInput` accepts bounded content, a source type, a basename, optional stable
 document ID, title, version, and JSON metadata. Absolute paths are never public IDs.
 Without an ID, SHA-256 of the basename determines a stable document ID. Callers should
-provide IDs for distinct sources with identical filenames. Newlines normalize to LF;
+provide IDs for distinct sources with identical filenames. An identical implicit-ID
+envelope is idempotent; a changed envelope raises `DocumentIdentityConflict` (HTTP 409)
+before embedding or storage. Supply the existing ID to intentionally replace it, or
+a different stable ID for another origin. Newlines normalize to LF;
 offsets refer to normalized text. The content hash and UTC ingestion time are persisted.
 Metadata keys that identify credentials are rejected recursively; provider settings
 are never copied into metadata. This is not a content-redaction system.
@@ -37,7 +40,13 @@ Markdown extraction tracks heading ancestry and anchored requirement starts, inc
 plain, list, and heading forms. The default ID pattern is
 `[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d+`; `REQUIREMENT_ID_PATTERN` can replace it.
 IDs absent from the source remain null. References within a sentence are not treated
-as new requirement definitions. Non-requirement paragraphs remain searchable evidence.
+as new requirement definitions. Inline `ID:` definitions following sentence punctuation
+(`.`, `;`, `!`, `?`) and whitespace form separate records with exact offsets.
+For example `REQ-ETH-010: A. REQ-ETH-011: B.` produces two independent requirements.
+Detected requirement-like IDs in unassigned records, including table rows and numeric
+underscore/colon IDs, produce `extraction_warnings` on the ingestion response and chunks.
+Source text is retained. Diagnostics are heuristic; arbitrary unknown ID conventions
+can still require manual review. Non-requirement paragraphs remain searchable evidence.
 This heuristic is not a complete requirements-language parser.
 
 JSON content is a JSON-encoded string containing a nonempty array, or an object with
@@ -56,7 +65,7 @@ manual review. HTTP PDF envelopes are rejected; uploads and OCR are out of scope
 
 ## Requirement-aware chunks
 
-Each requirement forms an independent record, retaining its ID and section. Short
+Each recognized definition forms an independent record, retaining its ID and section. Short
 requirements stay whole. Long records use bounded character windows, prefer whitespace
 breaks, and overlap by `CHUNK_OVERLAP`. Chunks include both the fragment and original
 record text. `SourceLocation` includes normalized document offsets/lines or a JSON
@@ -99,8 +108,16 @@ or chunks replaces the active revision. A process lock serializes ingestion/sear
 within the shared service. This is a one-service, one-process local store: use one
 Uvicorn worker, not concurrent writers sharing a directory. `reindex(document_id)`
 forces embedding with the current provider; index migration requires a new directory.
-Deleting a document removes its Chroma vectors and catalog records. Old citation URLs
-return 404 after replacement/deletion; archival citation retention is future work.
+Deleting a document removes its Chroma vectors and catalog records. Content/version
+replacement and deletion expire old chunk URLs. Metadata-only replacement can preserve
+IDs while changing revisions and source records. Archival citation retention is future work.
+
+No collection reset or database schema migration is needed for remediation. Existing
+catalog payloads default missing warning fields to empty; empty warnings do not change
+legacy revision fingerprints. Existing data is read without rewriting. Explicitly call
+`reindex(document_id)` for affected inline/table documents to apply extraction corrections
+and diagnostics. This reparses the preserved source and stages a replacement revision;
+unaffected documents and indexes remain in place. Back up both store components first.
 
 ## Retrieval and ranking
 
@@ -109,6 +126,9 @@ Technical tokens such as `REQ-ETH-001`, `SOME/IP-SD`, `1000BASE-T1`, `0x1234`,
 BM25 computes corpus term statistics and length normalization and boosts exact IDs.
 Queries containing explicit requirement IDs restrict eligible records to those IDs;
 unknown IDs return no evidence rather than nearby numbered requirements.
+This eligibility is pushed into Chroma's chunk-ID filter before candidate Top-K,
+alongside active revisions and requested metadata filters; references in other requirements
+cannot consume the eligible candidate budget. Multiple requested IDs remain eligible.
 
 Semantic retrieval queries Chroma using `embed_query` and applies `min_similarity`.
 Keyword search does not call an embedding provider. Empty corpora, empty meaningful
@@ -153,6 +173,30 @@ IDs must belong to cited chunks, using the configured ID pattern. Invalid output
 `invalid_citations` with generated claims suppressed. Citation metadata is assembled
 from catalog-derived records, never accepted from the model. `GET /chunks/{id}` and
 `GET /documents/{id}` resolve active evidence.
+
+Mention detection also checks case variants, numeric hyphen/underscore/colon IDs, and
+numeric families derived from actual JSON source IDs. Source spelling must remain exact:
+lowercase variants of uppercase source IDs are rejected, not silently rewritten.
+Arbitrary JSON IDs are retained, but unsupported prose grammars explicitly set
+`reference_validation="unsupported_identifier_grammar"`. No universal prose-ID detector
+is claimed; declared references are always checked against cited metadata.
+
+`KnowledgeService.ask` captures active document revisions with retrieval, releases its
+lock for generation, then rechecks every retrieved document under the same store lock.
+Deletion, content/version changes, or metadata-only replacement return `stale_evidence`
+without generated claims or citations. Clients may retry; no automatic provider retry
+or lock across the network call is used. This checks freshness at the service return
+boundary. Later source changes can still expire a URL. Direct `AnswerGenerator.answer`
+accepts caller-owned snapshots and cannot check storage freshness; use `ask` for current evidence.
+
+Every response has `claim_status="unverified"` and
+`engineering_validation="not_performed"`; the model cannot elevate these fields.
+Recognized English compliance/verification assertions are suppressed with
+`unsupported_claims`. Equal statement templates with differing numeric quantities in
+equal units produce `conflicting_evidence` with both source excerpts and citations,
+overriding a one-sided provider answer. Decimal-equivalent values and distinct statement
+scopes do not conflict. These are conservative heuristics, not claim entailment, unit
+conversion, applicability, precedence, paraphrase, or general conflict analysis.
 
 `cited` means reference validation passed. It does not prove every claim is entailed,
 that units were interpreted correctly, or that the model obeyed all prompt instructions.
