@@ -1,0 +1,1405 @@
+{
+  "request_id": "73e5f30be4484c28ba01a8976863a5c1",
+  "status": "INSUFFICIENT_EVIDENCE",
+  "summary": "Collected engineering evidence is available for review.",
+  "findings": [
+    {
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-0",
+      "description": "Schema, identifiers, references, interfaces, and declared routes are valid.",
+      "finding_type": "validation",
+      "severity": "INFO",
+      "requirement_ids": [],
+      "validation_rule_ids": [
+        "structure.consistency"
+      ],
+      "evidence_references": [
+        "E4"
+      ],
+      "validation": {
+        "rule_id": "structure.consistency",
+        "requirement_id": null,
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "synthetic-centralized-001"
+        ],
+        "explanation": "Schema, identifiers, references, interfaces, and declared routes are valid.",
+        "evidence": {
+          "device_count": 7,
+          "link_count": 6,
+          "service_count": 5
+        }
+      },
+      "interpretation_status": "not_applicable"
+    },
+    {
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-1",
+      "description": "A physical path exists; VLAN and service reachability are not established.",
+      "finding_type": "validation",
+      "severity": "INFO",
+      "requirement_ids": [
+        "REQ-CONN-001"
+      ],
+      "validation_rule_ids": [
+        "connectivity.physical_path"
+      ],
+      "evidence_references": [
+        "E5"
+      ],
+      "validation": {
+        "rule_id": "connectivity.physical_path",
+        "requirement_id": "REQ-CONN-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "front-camera",
+          "adas"
+        ],
+        "explanation": "A physical path exists; VLAN and service reachability are not established.",
+        "evidence": {
+          "device_ids": [
+            "front-camera",
+            "switch-core",
+            "adas"
+          ],
+          "link_ids": [
+            "link-camera",
+            "link-adas"
+          ],
+          "connectivity_scope": "physical"
+        }
+      },
+      "interpretation_status": "not_applicable"
+    },
+    {
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-2",
+      "description": "A physical path exists; VLAN and service reachability are not established.",
+      "finding_type": "validation",
+      "severity": "INFO",
+      "requirement_ids": [
+        "REQ-CONN-002"
+      ],
+      "validation_rule_ids": [
+        "connectivity.physical_path"
+      ],
+      "evidence_references": [
+        "E6"
+      ],
+      "validation": {
+        "rule_id": "connectivity.physical_path",
+        "requirement_id": "REQ-CONN-002",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "body",
+          "gateway"
+        ],
+        "explanation": "A physical path exists; VLAN and service reachability are not established.",
+        "evidence": {
+          "device_ids": [
+            "body",
+            "gateway"
+          ],
+          "link_ids": [
+            "link-body-can"
+          ],
+          "connectivity_scope": "physical"
+        }
+      },
+      "interpretation_status": "not_applicable"
+    },
+    {
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-3",
+      "description": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+      "finding_type": "validation",
+      "severity": "INFO",
+      "requirement_ids": [
+        "REQ-BW-001"
+      ],
+      "validation_rule_ids": [
+        "bandwidth.nominal_link_budget"
+      ],
+      "evidence_references": [
+        "E7"
+      ],
+      "validation": {
+        "rule_id": "bandwidth.nominal_link_budget",
+        "requirement_id": "REQ-BW-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "link-gateway",
+          "gateway",
+          "switch-core"
+        ],
+        "explanation": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+        "evidence": {
+          "nominal_capacity_mbps": 1000.0,
+          "routed_demand_mbps": {
+            "switch-core->gateway": "0.2"
+          },
+          "missing_information": [],
+          "budget_model": "per_direction",
+          "traffic_model": "declared provider-to-consumer unicast; no overhead or background traffic",
+          "quantity_encoding": "routed demands are decimal strings in Mbps"
+        }
+      },
+      "interpretation_status": "not_applicable"
+    },
+    {
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-4",
+      "description": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+      "finding_type": "validation",
+      "severity": "INFO",
+      "requirement_ids": [
+        "REQ-BW-001"
+      ],
+      "validation_rule_ids": [
+        "bandwidth.nominal_link_budget"
+      ],
+      "evidence_references": [
+        "E8"
+      ],
+      "validation": {
+        "rule_id": "bandwidth.nominal_link_budget",
+        "requirement_id": "REQ-BW-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "link-adas",
+          "adas",
+          "switch-core"
+        ],
+        "explanation": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+        "evidence": {
+          "nominal_capacity_mbps": 1000.0,
+          "routed_demand_mbps": {
+            "switch-core->adas": "80.0",
+            "adas->switch-core": "8.0"
+          },
+          "missing_information": [],
+          "budget_model": "per_direction",
+          "traffic_model": "declared provider-to-consumer unicast; no overhead or background traffic",
+          "quantity_encoding": "routed demands are decimal strings in Mbps"
+        }
+      },
+      "interpretation_status": "not_applicable"
+    },
+    {
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-5",
+      "description": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+      "finding_type": "validation",
+      "severity": "INFO",
+      "requirement_ids": [
+        "REQ-BW-001"
+      ],
+      "validation_rule_ids": [
+        "bandwidth.nominal_link_budget"
+      ],
+      "evidence_references": [
+        "E9"
+      ],
+      "validation": {
+        "rule_id": "bandwidth.nominal_link_budget",
+        "requirement_id": "REQ-BW-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "link-infotainment",
+          "infotainment",
+          "switch-core"
+        ],
+        "explanation": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+        "evidence": {
+          "nominal_capacity_mbps": 1000.0,
+          "routed_demand_mbps": {
+            "switch-core->infotainment": "8.0",
+            "infotainment->switch-core": "0.2"
+          },
+          "missing_information": [],
+          "budget_model": "per_direction",
+          "traffic_model": "declared provider-to-consumer unicast; no overhead or background traffic",
+          "quantity_encoding": "routed demands are decimal strings in Mbps"
+        }
+      },
+      "interpretation_status": "not_applicable"
+    },
+    {
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-6",
+      "description": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+      "finding_type": "validation",
+      "severity": "INFO",
+      "requirement_ids": [
+        "REQ-BW-001"
+      ],
+      "validation_rule_ids": [
+        "bandwidth.nominal_link_budget"
+      ],
+      "evidence_references": [
+        "E10"
+      ],
+      "validation": {
+        "rule_id": "bandwidth.nominal_link_budget",
+        "requirement_id": "REQ-BW-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "link-camera",
+          "front-camera",
+          "switch-core"
+        ],
+        "explanation": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+        "evidence": {
+          "nominal_capacity_mbps": 100.0,
+          "routed_demand_mbps": {
+            "front-camera->switch-core": "60.0"
+          },
+          "missing_information": [],
+          "budget_model": "per_direction",
+          "traffic_model": "declared provider-to-consumer unicast; no overhead or background traffic",
+          "quantity_encoding": "routed demands are decimal strings in Mbps"
+        }
+      },
+      "interpretation_status": "not_applicable"
+    },
+    {
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-7",
+      "description": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+      "finding_type": "validation",
+      "severity": "INFO",
+      "requirement_ids": [
+        "REQ-BW-001"
+      ],
+      "validation_rule_ids": [
+        "bandwidth.nominal_link_budget"
+      ],
+      "evidence_references": [
+        "E11"
+      ],
+      "validation": {
+        "rule_id": "bandwidth.nominal_link_budget",
+        "requirement_id": "REQ-BW-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "link-radar",
+          "radar",
+          "switch-core"
+        ],
+        "explanation": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+        "evidence": {
+          "nominal_capacity_mbps": 100.0,
+          "routed_demand_mbps": {
+            "radar->switch-core": "20.0"
+          },
+          "missing_information": [],
+          "budget_model": "per_direction",
+          "traffic_model": "declared provider-to-consumer unicast; no overhead or background traffic",
+          "quantity_encoding": "routed demands are decimal strings in Mbps"
+        }
+      },
+      "interpretation_status": "not_applicable"
+    },
+    {
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-8",
+      "description": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+      "finding_type": "validation",
+      "severity": "INFO",
+      "requirement_ids": [
+        "REQ-BW-001"
+      ],
+      "validation_rule_ids": [
+        "bandwidth.nominal_link_budget"
+      ],
+      "evidence_references": [
+        "E12"
+      ],
+      "validation": {
+        "rule_id": "bandwidth.nominal_link_budget",
+        "requirement_id": "REQ-BW-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "link-body-can",
+          "body",
+          "gateway"
+        ],
+        "explanation": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+        "evidence": {
+          "nominal_capacity_mbps": 1.0,
+          "routed_demand_mbps": {
+            "shared": "0.1"
+          },
+          "missing_information": [],
+          "budget_model": "shared",
+          "traffic_model": "declared provider-to-consumer unicast; no overhead or background traffic",
+          "quantity_encoding": "routed demands are decimal strings in Mbps"
+        }
+      },
+      "interpretation_status": "not_applicable"
+    },
+    {
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-9",
+      "description": "Network isolation requires a VLAN/forwarding policy engine; physical topology alone cannot establish isolation.",
+      "finding_type": "validation",
+      "severity": "WARNING",
+      "requirement_ids": [
+        "REQ-ISO-001"
+      ],
+      "validation_rule_ids": [
+        "requirement.evaluability"
+      ],
+      "evidence_references": [
+        "E13"
+      ],
+      "validation": {
+        "rule_id": "requirement.evaluability",
+        "requirement_id": "REQ-ISO-001",
+        "severity": "WARNING",
+        "status": "NOT_EVALUATED",
+        "affected_components": [
+          "front-camera",
+          "infotainment"
+        ],
+        "explanation": "Network isolation requires a VLAN/forwarding policy engine; physical topology alone cannot establish isolation.",
+        "evidence": {
+          "requirement_type": "isolation"
+        }
+      },
+      "interpretation_status": "not_applicable"
+    },
+    {
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-10",
+      "description": "Free-text requirements need a supported structured constraint.",
+      "finding_type": "validation",
+      "severity": "WARNING",
+      "requirement_ids": [
+        "REQ-TEXT-001"
+      ],
+      "validation_rule_ids": [
+        "requirement.evaluability"
+      ],
+      "evidence_references": [
+        "E14"
+      ],
+      "validation": {
+        "rule_id": "requirement.evaluability",
+        "requirement_id": "REQ-TEXT-001",
+        "severity": "WARNING",
+        "status": "NOT_EVALUATED",
+        "affected_components": [
+          "svc-camera"
+        ],
+        "explanation": "Free-text requirements need a supported structured constraint.",
+        "evidence": {
+          "requirement_type": "other"
+        }
+      },
+      "interpretation_status": "not_applicable"
+    },
+    {
+      "finding_id": "I1",
+      "description": "Review source and computation evidence within its scope.",
+      "finding_type": "interpretation",
+      "severity": "INFO",
+      "requirement_ids": [
+        "REQ-BW-001",
+        "REQ-CONN-001",
+        "REQ-CONN-002",
+        "REQ-ETH-002",
+        "REQ-ISO-001",
+        "REQ-TEXT-001"
+      ],
+      "validation_rule_ids": [
+        "bandwidth.nominal_link_budget",
+        "connectivity.physical_path",
+        "requirement.evaluability",
+        "structure.consistency"
+      ],
+      "evidence_references": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6",
+        "E7",
+        "E8",
+        "E9",
+        "E10",
+        "E11",
+        "E12",
+        "E13",
+        "E14"
+      ],
+      "validation": null,
+      "interpretation_status": "unverified"
+    }
+  ],
+  "recommendations": [
+    {
+      "description": "Review unsupported constraints and supply missing inputs.",
+      "finding_type": "recommendation",
+      "evidence_references": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6",
+        "E7",
+        "E8",
+        "E9",
+        "E10",
+        "E11",
+        "E12",
+        "E13",
+        "E14"
+      ]
+    }
+  ],
+  "unresolved_questions": [
+    "Unevaluated check requirement.evaluability [E13]: Network isolation requires a VLAN/forwarding policy engine; physical topology alone cannot establish isolation.",
+    "Unevaluated check requirement.evaluability [E14]: Free-text requirements need a supported structured constraint."
+  ],
+  "citations": [
+    {
+      "citation_id": "E1",
+      "chunk_id": "chk-684c8762d3ae09db2ab2fb3f2ccaedb5",
+      "document_id": "ethernet",
+      "filename": "ethernet.md",
+      "document_version": "1.0",
+      "requirement_id": "REQ-ETH-002",
+      "section": "Automotive Ethernet Architecture Requirements / Physical Ethernet interfaces",
+      "location": {
+        "start_offset": 517,
+        "end_offset": 827,
+        "start_line": 14,
+        "end_line": 18,
+        "page": null,
+        "json_pointer": null,
+        "text_start_offset": 0,
+        "text_end_offset": 310
+      },
+      "quote": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable."
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "E1",
+      "kind": "requirement",
+      "execution_id": "0f55ca940f6e4ba4b41e65a258876a39",
+      "source_index": 0,
+      "document_id": "ethernet",
+      "document_version": "1.0",
+      "chunk_id": "chk-684c8762d3ae09db2ab2fb3f2ccaedb5",
+      "requirement_id": "REQ-ETH-002",
+      "rule_id": null,
+      "finding_id": null,
+      "component_ids": [],
+      "data": {
+        "chunk": {
+          "chunk_id": "chk-684c8762d3ae09db2ab2fb3f2ccaedb5",
+          "document_id": "ethernet",
+          "filename": "ethernet.md",
+          "document_title": "Automotive Ethernet Architecture Requirements",
+          "document_version": "1.0",
+          "requirement_id": "REQ-ETH-002",
+          "section": "Automotive Ethernet Architecture Requirements / Physical Ethernet interfaces",
+          "text": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable.",
+          "original_text": "REQ-ETH-002:\nThe communication path between the Central Gateway (gateway) and ADAS Domain\nController (adas) shall use switch-core and two links, link-gateway and link-adas,\neach supporting a nominal bandwidth of at least 1000 Mbps using 1000BASE-T1.\nThis is a switched path, not a direct gateway-to-ADAS cable.",
+          "location": {
+            "start_offset": 517,
+            "end_offset": 827,
+            "start_line": 14,
+            "end_line": 18,
+            "page": null,
+            "json_pointer": null,
+            "text_start_offset": 0,
+            "text_end_offset": 310
+          },
+          "structured_fields": {},
+          "extraction_warnings": []
+        },
+        "score": 0.03278688524590164,
+        "rank": 1,
+        "methods": [
+          "keyword",
+          "semantic"
+        ],
+        "ranking": {
+          "keyword_score": 101.64389755686732,
+          "keyword_rank": 1.0,
+          "semantic_score": 0.4250972270965576,
+          "semantic_rank": 1.0
+        }
+      }
+    },
+    {
+      "evidence_id": "E2",
+      "kind": "topology",
+      "execution_id": "a749633f187241eeac61bc5d5f2efc8d",
+      "source_index": 0,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": null,
+      "rule_id": null,
+      "finding_id": null,
+      "component_ids": [],
+      "data": {
+        "topology": {
+          "architecture_id": "synthetic-centralized-001",
+          "nodes": [
+            {
+              "id": "gateway",
+              "name": "Central Gateway",
+              "kind": "ecu",
+              "ecu_type": "gateway"
+            },
+            {
+              "id": "adas",
+              "name": "ADAS Domain Controller",
+              "kind": "ecu",
+              "ecu_type": "domain_controller"
+            },
+            {
+              "id": "infotainment",
+              "name": "Infotainment Domain Controller",
+              "kind": "ecu",
+              "ecu_type": "domain_controller"
+            },
+            {
+              "id": "body",
+              "name": "Body Controller",
+              "kind": "ecu",
+              "ecu_type": "other"
+            },
+            {
+              "id": "front-camera",
+              "name": "Front Camera ECU",
+              "kind": "ecu",
+              "ecu_type": "sensor"
+            },
+            {
+              "id": "radar",
+              "name": "Radar ECU",
+              "kind": "ecu",
+              "ecu_type": "sensor"
+            },
+            {
+              "id": "switch-core",
+              "name": "Central Ethernet Switch",
+              "kind": "ethernet_switch",
+              "ecu_type": null
+            }
+          ],
+          "edges": [
+            {
+              "id": "link-gateway",
+              "source": {
+                "device_id": "gateway",
+                "interface_id": "eth0"
+              },
+              "destination": {
+                "device_id": "switch-core",
+                "interface_id": "p1"
+              },
+              "technology": "ethernet",
+              "nominal_bandwidth_mbps": 1000.0,
+              "source_vlan_ids": [
+                10,
+                20,
+                30
+              ],
+              "destination_vlan_ids": [
+                10,
+                20,
+                30
+              ]
+            },
+            {
+              "id": "link-body-can",
+              "source": {
+                "device_id": "body",
+                "interface_id": "can0"
+              },
+              "destination": {
+                "device_id": "gateway",
+                "interface_id": "can0"
+              },
+              "technology": "can",
+              "nominal_bandwidth_mbps": 1.0,
+              "source_vlan_ids": [],
+              "destination_vlan_ids": []
+            },
+            {
+              "id": "link-adas",
+              "source": {
+                "device_id": "adas",
+                "interface_id": "eth0"
+              },
+              "destination": {
+                "device_id": "switch-core",
+                "interface_id": "p2"
+              },
+              "technology": "ethernet",
+              "nominal_bandwidth_mbps": 1000.0,
+              "source_vlan_ids": [
+                20,
+                30
+              ],
+              "destination_vlan_ids": [
+                20,
+                30
+              ]
+            },
+            {
+              "id": "link-infotainment",
+              "source": {
+                "device_id": "infotainment",
+                "interface_id": "eth0"
+              },
+              "destination": {
+                "device_id": "switch-core",
+                "interface_id": "p3"
+              },
+              "technology": "ethernet",
+              "nominal_bandwidth_mbps": 1000.0,
+              "source_vlan_ids": [
+                30
+              ],
+              "destination_vlan_ids": [
+                30
+              ]
+            },
+            {
+              "id": "link-camera",
+              "source": {
+                "device_id": "front-camera",
+                "interface_id": "eth0"
+              },
+              "destination": {
+                "device_id": "switch-core",
+                "interface_id": "p4"
+              },
+              "technology": "ethernet",
+              "nominal_bandwidth_mbps": 100.0,
+              "source_vlan_ids": [
+                20
+              ],
+              "destination_vlan_ids": [
+                20
+              ]
+            },
+            {
+              "id": "link-radar",
+              "source": {
+                "device_id": "radar",
+                "interface_id": "eth0"
+              },
+              "destination": {
+                "device_id": "switch-core",
+                "interface_id": "p5"
+              },
+              "technology": "ethernet",
+              "nominal_bandwidth_mbps": 100.0,
+              "source_vlan_ids": [
+                20
+              ],
+              "destination_vlan_ids": [
+                20
+              ]
+            }
+          ],
+          "isolated_device_ids": [],
+          "connected_components": [
+            [
+              "adas",
+              "body",
+              "front-camera",
+              "gateway",
+              "infotainment",
+              "radar",
+              "switch-core"
+            ]
+          ],
+          "connectivity_scope": "physical",
+          "limitations": "Physical connectivity only. Paths may cross technologies or VLAN boundaries and do not establish frame forwarding, VLAN connectivity, protocol compatibility, or service reachability."
+        },
+        "total_nodes": 7,
+        "total_links": 6,
+        "truncated": false
+      }
+    },
+    {
+      "evidence_id": "E3",
+      "kind": "physical_path",
+      "execution_id": "46af8154638d4c6d9aaab54d085b9f02",
+      "source_index": 0,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": null,
+      "rule_id": null,
+      "finding_id": null,
+      "component_ids": [],
+      "data": {
+        "path": {
+          "source_device_id": "gateway",
+          "destination_device_id": "adas",
+          "exists": true,
+          "device_ids": [
+            "gateway",
+            "switch-core",
+            "adas"
+          ],
+          "link_ids": [
+            "link-gateway",
+            "link-adas"
+          ],
+          "connectivity_scope": "physical",
+          "limitations": "Physical connectivity only. Paths may cross technologies or VLAN boundaries and do not establish frame forwarding, VLAN connectivity, protocol compatibility, or service reachability."
+        },
+        "links": [
+          {
+            "id": "link-gateway",
+            "source": {
+              "device_id": "gateway",
+              "interface_id": "eth0"
+            },
+            "destination": {
+              "device_id": "switch-core",
+              "interface_id": "p1"
+            },
+            "technology": "ethernet",
+            "nominal_bandwidth_mbps": 1000.0,
+            "source_vlan_ids": [
+              10,
+              20,
+              30
+            ],
+            "destination_vlan_ids": [
+              10,
+              20,
+              30
+            ]
+          },
+          {
+            "id": "link-adas",
+            "source": {
+              "device_id": "adas",
+              "interface_id": "eth0"
+            },
+            "destination": {
+              "device_id": "switch-core",
+              "interface_id": "p2"
+            },
+            "technology": "ethernet",
+            "nominal_bandwidth_mbps": 1000.0,
+            "source_vlan_ids": [
+              20,
+              30
+            ],
+            "destination_vlan_ids": [
+              20,
+              30
+            ]
+          }
+        ],
+        "route_note": "One minimum-hop physical path; lexicographic link ID selects parallel edges. Other paths may exist. This is not the configured traffic route."
+      }
+    },
+    {
+      "evidence_id": "E4",
+      "kind": "validation",
+      "execution_id": "95b10ada24af4a91b5aafb6d7231d4fe",
+      "source_index": 0,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": null,
+      "rule_id": "structure.consistency",
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-0",
+      "component_ids": [
+        "synthetic-centralized-001"
+      ],
+      "data": {
+        "rule_id": "structure.consistency",
+        "requirement_id": null,
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "synthetic-centralized-001"
+        ],
+        "explanation": "Schema, identifiers, references, interfaces, and declared routes are valid.",
+        "evidence": {
+          "device_count": 7,
+          "link_count": 6,
+          "service_count": 5
+        }
+      }
+    },
+    {
+      "evidence_id": "E5",
+      "kind": "validation",
+      "execution_id": "95b10ada24af4a91b5aafb6d7231d4fe",
+      "source_index": 1,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": "REQ-CONN-001",
+      "rule_id": "connectivity.physical_path",
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-1",
+      "component_ids": [
+        "front-camera",
+        "adas"
+      ],
+      "data": {
+        "rule_id": "connectivity.physical_path",
+        "requirement_id": "REQ-CONN-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "front-camera",
+          "adas"
+        ],
+        "explanation": "A physical path exists; VLAN and service reachability are not established.",
+        "evidence": {
+          "device_ids": [
+            "front-camera",
+            "switch-core",
+            "adas"
+          ],
+          "link_ids": [
+            "link-camera",
+            "link-adas"
+          ],
+          "connectivity_scope": "physical"
+        }
+      }
+    },
+    {
+      "evidence_id": "E6",
+      "kind": "validation",
+      "execution_id": "95b10ada24af4a91b5aafb6d7231d4fe",
+      "source_index": 2,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": "REQ-CONN-002",
+      "rule_id": "connectivity.physical_path",
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-2",
+      "component_ids": [
+        "body",
+        "gateway"
+      ],
+      "data": {
+        "rule_id": "connectivity.physical_path",
+        "requirement_id": "REQ-CONN-002",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "body",
+          "gateway"
+        ],
+        "explanation": "A physical path exists; VLAN and service reachability are not established.",
+        "evidence": {
+          "device_ids": [
+            "body",
+            "gateway"
+          ],
+          "link_ids": [
+            "link-body-can"
+          ],
+          "connectivity_scope": "physical"
+        }
+      }
+    },
+    {
+      "evidence_id": "E7",
+      "kind": "validation",
+      "execution_id": "95b10ada24af4a91b5aafb6d7231d4fe",
+      "source_index": 3,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": "REQ-BW-001",
+      "rule_id": "bandwidth.nominal_link_budget",
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-3",
+      "component_ids": [
+        "link-gateway",
+        "gateway",
+        "switch-core"
+      ],
+      "data": {
+        "rule_id": "bandwidth.nominal_link_budget",
+        "requirement_id": "REQ-BW-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "link-gateway",
+          "gateway",
+          "switch-core"
+        ],
+        "explanation": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+        "evidence": {
+          "nominal_capacity_mbps": 1000.0,
+          "routed_demand_mbps": {
+            "switch-core->gateway": "0.2"
+          },
+          "missing_information": [],
+          "budget_model": "per_direction",
+          "traffic_model": "declared provider-to-consumer unicast; no overhead or background traffic",
+          "quantity_encoding": "routed demands are decimal strings in Mbps"
+        }
+      }
+    },
+    {
+      "evidence_id": "E8",
+      "kind": "validation",
+      "execution_id": "95b10ada24af4a91b5aafb6d7231d4fe",
+      "source_index": 4,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": "REQ-BW-001",
+      "rule_id": "bandwidth.nominal_link_budget",
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-4",
+      "component_ids": [
+        "link-adas",
+        "adas",
+        "switch-core"
+      ],
+      "data": {
+        "rule_id": "bandwidth.nominal_link_budget",
+        "requirement_id": "REQ-BW-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "link-adas",
+          "adas",
+          "switch-core"
+        ],
+        "explanation": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+        "evidence": {
+          "nominal_capacity_mbps": 1000.0,
+          "routed_demand_mbps": {
+            "switch-core->adas": "80.0",
+            "adas->switch-core": "8.0"
+          },
+          "missing_information": [],
+          "budget_model": "per_direction",
+          "traffic_model": "declared provider-to-consumer unicast; no overhead or background traffic",
+          "quantity_encoding": "routed demands are decimal strings in Mbps"
+        }
+      }
+    },
+    {
+      "evidence_id": "E9",
+      "kind": "validation",
+      "execution_id": "95b10ada24af4a91b5aafb6d7231d4fe",
+      "source_index": 5,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": "REQ-BW-001",
+      "rule_id": "bandwidth.nominal_link_budget",
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-5",
+      "component_ids": [
+        "link-infotainment",
+        "infotainment",
+        "switch-core"
+      ],
+      "data": {
+        "rule_id": "bandwidth.nominal_link_budget",
+        "requirement_id": "REQ-BW-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "link-infotainment",
+          "infotainment",
+          "switch-core"
+        ],
+        "explanation": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+        "evidence": {
+          "nominal_capacity_mbps": 1000.0,
+          "routed_demand_mbps": {
+            "switch-core->infotainment": "8.0",
+            "infotainment->switch-core": "0.2"
+          },
+          "missing_information": [],
+          "budget_model": "per_direction",
+          "traffic_model": "declared provider-to-consumer unicast; no overhead or background traffic",
+          "quantity_encoding": "routed demands are decimal strings in Mbps"
+        }
+      }
+    },
+    {
+      "evidence_id": "E10",
+      "kind": "validation",
+      "execution_id": "95b10ada24af4a91b5aafb6d7231d4fe",
+      "source_index": 6,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": "REQ-BW-001",
+      "rule_id": "bandwidth.nominal_link_budget",
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-6",
+      "component_ids": [
+        "link-camera",
+        "front-camera",
+        "switch-core"
+      ],
+      "data": {
+        "rule_id": "bandwidth.nominal_link_budget",
+        "requirement_id": "REQ-BW-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "link-camera",
+          "front-camera",
+          "switch-core"
+        ],
+        "explanation": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+        "evidence": {
+          "nominal_capacity_mbps": 100.0,
+          "routed_demand_mbps": {
+            "front-camera->switch-core": "60.0"
+          },
+          "missing_information": [],
+          "budget_model": "per_direction",
+          "traffic_model": "declared provider-to-consumer unicast; no overhead or background traffic",
+          "quantity_encoding": "routed demands are decimal strings in Mbps"
+        }
+      }
+    },
+    {
+      "evidence_id": "E11",
+      "kind": "validation",
+      "execution_id": "95b10ada24af4a91b5aafb6d7231d4fe",
+      "source_index": 7,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": "REQ-BW-001",
+      "rule_id": "bandwidth.nominal_link_budget",
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-7",
+      "component_ids": [
+        "link-radar",
+        "radar",
+        "switch-core"
+      ],
+      "data": {
+        "rule_id": "bandwidth.nominal_link_budget",
+        "requirement_id": "REQ-BW-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "link-radar",
+          "radar",
+          "switch-core"
+        ],
+        "explanation": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+        "evidence": {
+          "nominal_capacity_mbps": 100.0,
+          "routed_demand_mbps": {
+            "radar->switch-core": "20.0"
+          },
+          "missing_information": [],
+          "budget_model": "per_direction",
+          "traffic_model": "declared provider-to-consumer unicast; no overhead or background traffic",
+          "quantity_encoding": "routed demands are decimal strings in Mbps"
+        }
+      }
+    },
+    {
+      "evidence_id": "E12",
+      "kind": "validation",
+      "execution_id": "95b10ada24af4a91b5aafb6d7231d4fe",
+      "source_index": 8,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": "REQ-BW-001",
+      "rule_id": "bandwidth.nominal_link_budget",
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-8",
+      "component_ids": [
+        "link-body-can",
+        "body",
+        "gateway"
+      ],
+      "data": {
+        "rule_id": "bandwidth.nominal_link_budget",
+        "requirement_id": "REQ-BW-001",
+        "severity": "INFO",
+        "status": "PASS",
+        "affected_components": [
+          "link-body-can",
+          "body",
+          "gateway"
+        ],
+        "explanation": "Declared routed demand fits the nominal link budget. This does not guarantee application throughput, delivery, or latency.",
+        "evidence": {
+          "nominal_capacity_mbps": 1.0,
+          "routed_demand_mbps": {
+            "shared": "0.1"
+          },
+          "missing_information": [],
+          "budget_model": "shared",
+          "traffic_model": "declared provider-to-consumer unicast; no overhead or background traffic",
+          "quantity_encoding": "routed demands are decimal strings in Mbps"
+        }
+      }
+    },
+    {
+      "evidence_id": "E13",
+      "kind": "validation",
+      "execution_id": "95b10ada24af4a91b5aafb6d7231d4fe",
+      "source_index": 9,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": "REQ-ISO-001",
+      "rule_id": "requirement.evaluability",
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-9",
+      "component_ids": [
+        "front-camera",
+        "infotainment"
+      ],
+      "data": {
+        "rule_id": "requirement.evaluability",
+        "requirement_id": "REQ-ISO-001",
+        "severity": "WARNING",
+        "status": "NOT_EVALUATED",
+        "affected_components": [
+          "front-camera",
+          "infotainment"
+        ],
+        "explanation": "Network isolation requires a VLAN/forwarding policy engine; physical topology alone cannot establish isolation.",
+        "evidence": {
+          "requirement_type": "isolation"
+        }
+      }
+    },
+    {
+      "evidence_id": "E14",
+      "kind": "validation",
+      "execution_id": "95b10ada24af4a91b5aafb6d7231d4fe",
+      "source_index": 10,
+      "document_id": null,
+      "document_version": null,
+      "chunk_id": null,
+      "requirement_id": "REQ-TEXT-001",
+      "rule_id": "requirement.evaluability",
+      "finding_id": "V-95b10ada24af4a91b5aafb6d7231d4fe-10",
+      "component_ids": [
+        "svc-camera"
+      ],
+      "data": {
+        "rule_id": "requirement.evaluability",
+        "requirement_id": "REQ-TEXT-001",
+        "severity": "WARNING",
+        "status": "NOT_EVALUATED",
+        "affected_components": [
+          "svc-camera"
+        ],
+        "explanation": "Free-text requirements need a supported structured constraint.",
+        "evidence": {
+          "requirement_type": "other"
+        }
+      }
+    }
+  ],
+  "tool_executions": [
+    {
+      "execution_id": "0f55ca940f6e4ba4b41e65a258876a39",
+      "tool_call_id": "s",
+      "tool_name": "search_requirements",
+      "status": "SUCCEEDED",
+      "duration_ms": 2.920465005445294,
+      "arguments_valid": true,
+      "error_code": null,
+      "result_bytes": 1655,
+      "validation_scope": null
+    },
+    {
+      "execution_id": "a749633f187241eeac61bc5d5f2efc8d",
+      "tool_call_id": "t",
+      "tool_name": "get_architecture_topology",
+      "status": "SUCCEEDED",
+      "duration_ms": 0.5300690027070232,
+      "arguments_valid": true,
+      "error_code": null,
+      "result_bytes": 2733,
+      "validation_scope": null
+    },
+    {
+      "execution_id": "46af8154638d4c6d9aaab54d085b9f02",
+      "tool_call_id": "p",
+      "tool_name": "find_physical_path",
+      "status": "SUCCEEDED",
+      "duration_ms": 0.44162999984109774,
+      "arguments_valid": true,
+      "error_code": null,
+      "result_bytes": 1255,
+      "validation_scope": null
+    },
+    {
+      "execution_id": "95b10ada24af4a91b5aafb6d7231d4fe",
+      "tool_call_id": "v",
+      "tool_name": "validate_architecture",
+      "status": "SUCCEEDED",
+      "duration_ms": 0.6745139980921522,
+      "arguments_valid": true,
+      "error_code": null,
+      "result_bytes": 6639,
+      "validation_scope": {
+        "architecture_id": "synthetic-centralized-001",
+        "original_report_status": "NOT_EVALUATED",
+        "scope": "Structural consistency, physical connectivity, and declared nominal link budgets",
+        "selected_rule_ids": null,
+        "omitted_findings": 0
+      }
+    }
+  ],
+  "execution_metadata": {
+    "trace_id": "b64d32b11545408eaa43ea776afc6b3d",
+    "provider_model": "scripted-offline-only",
+    "iterations": 5,
+    "tool_calls": 4,
+    "duration_ms": 7.032170004094951,
+    "input_tokens": null,
+    "output_tokens": null,
+    "usage_complete": false,
+    "estimated_cost_usd": null,
+    "stop_reason": "final_response",
+    "trace": [
+      {
+        "request_id": "73e5f30be4484c28ba01a8976863a5c1",
+        "trace_id": "b64d32b11545408eaa43ea776afc6b3d",
+        "event": "llm",
+        "iteration": 1,
+        "duration_ms": 0.06118799501564354,
+        "status": "SUCCEEDED",
+        "tool_name": null,
+        "tool_call_id": null,
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "request_id": "73e5f30be4484c28ba01a8976863a5c1",
+        "trace_id": "b64d32b11545408eaa43ea776afc6b3d",
+        "event": "tool",
+        "iteration": 1,
+        "duration_ms": 2.920465005445294,
+        "status": "SUCCEEDED",
+        "tool_name": "search_requirements",
+        "tool_call_id": "s",
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "request_id": "73e5f30be4484c28ba01a8976863a5c1",
+        "trace_id": "b64d32b11545408eaa43ea776afc6b3d",
+        "event": "llm",
+        "iteration": 2,
+        "duration_ms": 0.07696799730183557,
+        "status": "SUCCEEDED",
+        "tool_name": null,
+        "tool_call_id": null,
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "request_id": "73e5f30be4484c28ba01a8976863a5c1",
+        "trace_id": "b64d32b11545408eaa43ea776afc6b3d",
+        "event": "tool",
+        "iteration": 2,
+        "duration_ms": 0.5300690027070232,
+        "status": "SUCCEEDED",
+        "tool_name": "get_architecture_topology",
+        "tool_call_id": "t",
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "request_id": "73e5f30be4484c28ba01a8976863a5c1",
+        "trace_id": "b64d32b11545408eaa43ea776afc6b3d",
+        "event": "llm",
+        "iteration": 3,
+        "duration_ms": 0.06596399907721207,
+        "status": "SUCCEEDED",
+        "tool_name": null,
+        "tool_call_id": null,
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "request_id": "73e5f30be4484c28ba01a8976863a5c1",
+        "trace_id": "b64d32b11545408eaa43ea776afc6b3d",
+        "event": "tool",
+        "iteration": 3,
+        "duration_ms": 0.44162999984109774,
+        "status": "SUCCEEDED",
+        "tool_name": "find_physical_path",
+        "tool_call_id": "p",
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "request_id": "73e5f30be4484c28ba01a8976863a5c1",
+        "trace_id": "b64d32b11545408eaa43ea776afc6b3d",
+        "event": "llm",
+        "iteration": 4,
+        "duration_ms": 0.06639600178459659,
+        "status": "SUCCEEDED",
+        "tool_name": null,
+        "tool_call_id": null,
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "request_id": "73e5f30be4484c28ba01a8976863a5c1",
+        "trace_id": "b64d32b11545408eaa43ea776afc6b3d",
+        "event": "tool",
+        "iteration": 4,
+        "duration_ms": 0.6745139980921522,
+        "status": "SUCCEEDED",
+        "tool_name": "validate_architecture",
+        "tool_call_id": "v",
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "request_id": "73e5f30be4484c28ba01a8976863a5c1",
+        "trace_id": "b64d32b11545408eaa43ea776afc6b3d",
+        "event": "llm",
+        "iteration": 5,
+        "duration_ms": 0.1870420019258745,
+        "status": "SUCCEEDED",
+        "tool_name": null,
+        "tool_call_id": null,
+        "input_tokens": null,
+        "output_tokens": null
+      },
+      {
+        "request_id": "73e5f30be4484c28ba01a8976863a5c1",
+        "trace_id": "b64d32b11545408eaa43ea776afc6b3d",
+        "event": "final",
+        "iteration": 5,
+        "duration_ms": 6.934825003554579,
+        "status": "INSUFFICIENT_EVIDENCE",
+        "tool_name": null,
+        "tool_call_id": null,
+        "input_tokens": null,
+        "output_tokens": null
+      }
+    ]
+  },
+  "limitations": [
+    "Physical connectivity does not establish VLAN, IP, SOME/IP, TSN or service reachability.",
+    "Validation covers only supported structured constraints and declared nominal traffic; retrieved prose is not automatically verified or converted into approved constraints.",
+    "Generated interpretations are unverified. Reference membership and bounded English guards do not prove semantic support or general conflict detection."
+  ]
+}

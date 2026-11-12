@@ -9,8 +9,9 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from ee_arch_copilot import __version__
+from ee_arch_copilot.agent.providers import AgentProvider
 from ee_arch_copilot.api.limits import KnowledgeBodyLimit
-from ee_arch_copilot.api.routes import architecture, health, knowledge
+from ee_arch_copilot.api.routes import agent, architecture, health, knowledge
 from ee_arch_copilot.core.settings import Settings
 from ee_arch_copilot.rag.errors import ConfigurationError, ProviderError
 from ee_arch_copilot.rag.service import KnowledgeService
@@ -19,6 +20,7 @@ from ee_arch_copilot.rag.service import KnowledgeService
 def create_app(
     settings: Settings | None = None,
     knowledge_service: KnowledgeService | None = None,
+    agent_provider: AgentProvider | None = None,
 ) -> FastAPI:
     settings = settings or Settings()
     application = FastAPI(
@@ -28,11 +30,13 @@ def create_app(
             "Phase 1: deterministic architecture modeling, physical topology, and nominal link "
             "budget checks. Phase 2: persistent requirements retrieval "
             "and optional cited generation. "
+            "Phase 3: bounded read-only native tool-calling agent. "
             "Synthetic engineering proof of concept."
         ),
     )
     application.state.settings = settings
     application.state.knowledge_service = knowledge_service
+    application.state.agent_provider = agent_provider
     application.state.knowledge_lock = RLock()
     application.add_middleware(KnowledgeBodyLimit, max_bytes=settings.max_request_bytes)
 
@@ -75,6 +79,7 @@ def create_app(
     application.include_router(health.router)
     application.include_router(architecture.router)
     application.include_router(knowledge.router)
+    application.include_router(agent.router)
     return application
 
 

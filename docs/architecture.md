@@ -120,11 +120,14 @@ structured constraint. Neither retrieval nor generation runs a validator, modifi
 architecture data, or changes existing findings. See [RAG architecture](rag-architecture.md)
 and [ADR 0002](decisions/0002-requirements-rag.md).
 
-Future tools can call `TopologyService` and `ArchitectureValidator` directly without
-HTTP. Tool calling must preserve typed inputs, validate proposed model changes, and
-surface deterministic evidence separately from generated commentary. Retrieval citations
-should identify document version and source location; model-generated constraints need
-review before becoming machine-verifiable engineering inputs.
+Phase 3's `agent` package calls `TopologyService`, `ArchitectureValidator` and
+`KnowledgeService.search` directly, without internal HTTP. The registry explicitly
+registers four read-only tools and validates inputs/results with Pydantic. A bounded
+native function-calling loop gathers progressively disclosed evidence. Each execution
+owns a copied architecture; there is no model-controlled file or architecture resolver.
+Retrieved prose is never promoted to a structured constraint. Findings and citations
+are assembled by the server, independently of model-authored interpretations.
+See [agent architecture](agent-architecture.md) and [ADR 0003](decisions/0003-agent-orchestration.md).
 
 The corrected Phase 2 `ask` boundary revalidates source revisions after generation.
 Consumers must handle `stale_evidence`, `unsupported_claims`, and `conflicting_evidence`
@@ -139,5 +142,7 @@ Future VLAN/forwarding rules should have separate query/result types, not change
 meaning of `connectivity_scope: physical`. A richer traffic model can add frame overhead,
 multicast, background flows, shared buses, and routing policy with explicit assumptions.
 Reports can consume `ValidationReport` without embedding report presentation into rules.
-Authentication, operational observability, and cloud deployment belong to later adapters.
-Phase 2 persistence is limited to the local knowledge store.
+Authentication, distributed operational observability, and cloud deployment belong to
+later adapters. Phase 3 adds metadata-only local traces and explicit usage/cost fields;
+architecture and conversation payloads remain unpersisted. Phase 2 persistence is
+limited to the local knowledge store. Existing deterministic rule semantics are unchanged.

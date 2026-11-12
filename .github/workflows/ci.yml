@@ -31,5 +31,7 @@ jobs:
         run: uv run --locked mypy
       - name: Test with coverage
         run: uv run --locked pytest
+      - name: Evaluate offline agent workflows
+        run: uv run --locked python -m ee_arch_copilot.agent.evaluation --output /tmp/agent-evaluation-scripted.json
       - name: Build distributions
         run: uv build

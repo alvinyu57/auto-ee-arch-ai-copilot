@@ -9,7 +9,9 @@ class KnowledgeBodyLimit:
         self.app, self.max_bytes = app, max_bytes
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        if scope["type"] != "http" or not scope["path"].startswith("/api/v1/knowledge"):
+        if scope["type"] != "http" or not scope["path"].startswith(
+            ("/api/v1/knowledge", "/api/v1/agent")
+        ):
             await self.app(scope, receive, send)
             return
         body = bytearray()
@@ -20,7 +22,7 @@ class KnowledgeBodyLimit:
             body.extend(message.get("body", b""))
             if len(body) > self.max_bytes:
                 await JSONResponse(
-                    status_code=413, content={"detail": "Knowledge request exceeds size limit"}
+                    status_code=413, content={"detail": "Request exceeds size limit"}
                 )(scope, receive, send)
                 return
             if not message.get("more_body", False):

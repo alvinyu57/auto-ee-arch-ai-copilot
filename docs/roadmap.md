@@ -1,7 +1,8 @@
 # Roadmap
 
-This is a technical proof of concept using synthetic data. Phases 1 and 2 are implemented;
-live external model quality and container runtime behavior remain separate verification work.
+This is a technical proof of concept using synthetic data. Phases 1, 2 and the offline
+Phase 3 implementation are available. Live Phase 3 tool-calling quality is NOT VERIFIED;
+external model quality and container runtime behavior remain separate verification work.
 
 ## Phase 1: Core Architecture Modeling & Deterministic Validation
 
@@ -35,13 +36,20 @@ live external model quality and container runtime behavior remain separate verif
   live-generation sufficiency/faithfulness remain unverified. General claim entailment,
   arbitrary ID grammars, and conflict reasoning are not supplied by the bounded guards.
 
-## Phase 3: LLM Agent with Tool Calling
+## Phase 3: LLM Agent with Tool Calling — implemented, live verification pending
 
 - Expose typed deterministic topology and validation tools to a model orchestrator.
-- Validate tool inputs and proposed architecture changes with the domain schemas.
+- Validate tool arguments and request-scoped architecture inputs with the domain schemas.
 - Preserve findings and citations independently of generated explanations.
 - Require human review of generated engineering assumptions and constraints.
 - Add bounded execution, provider adapters, and reproducible orchestration tests.
+- Four explicit read-only tools; no architecture changes, dynamic code, shell, URLs, or write APIs.
+- Native compatible HTTP provider using existing credentials and HTTP infrastructure.
+- Injected scripted provider, structured output repair, citation/reference checks and source freshness.
+- Request/time/call/context/result limits, safe errors, metadata traces and optional explicit costs.
+- Stateless Agent API and 24 independently scored offline evaluation tasks in CI.
+- See [implementation report](reviews/phase3-implementation-report.md). Offline protocol
+  verification does not establish real-model selection or interpretation quality.
 
 ## Phase 4: Architecture Review Reports & AI Evaluation
 
@@ -61,10 +69,10 @@ live external model quality and container runtime behavior remain separate verif
 
 ## Recommended next increment
 
-Begin Phase 3 with read-only typed tools around `KnowledgeService`, `TopologyService`,
-and `ArchitectureValidator`. Compare a learned embedding model against the checked-in
-retrieval baseline, and run a separately labeled live LLM QA review before trusting
-generated engineering summaries. Physical/VLAN/service analyses must retain distinct
+Verify a configured real provider on the combined Phase 3 workflow, then use its
+structured evidence as the foundation for reviewed Phase 4 reports. Compare a learned
+embedding model against the checked-in retrieval baseline, and keep live LLM evaluation
+separate from scripted protocol verification. Physical/VLAN/service analyses must retain distinct
 semantics as engineering coverage grows. More detailed networking (VLAN forwarding,
 shared CAN buses, multicast, overhead, scheduling, or latency bounds) needs explicit
 models and evidence-backed rules, not assumptions derived from physical adjacency.
