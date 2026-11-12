@@ -299,6 +299,7 @@ class AgentOrchestrator:
             terminal_failure = reason in {
                 "provider_error",
                 "provider_timeout",
+                "execution_timeout",
                 "invalid_tool_call_ids",
                 "invalid_final_response",
             }

@@ -214,13 +214,15 @@ and agent routes, including chunked requests.
 | `COMPLETED` | Valid final response and supporting tool evidence, without execution errors or collected unresolved evaluations; does not imply design PASS |
 | `INSUFFICIENT_EVIDENCE` | Execution finished but evidence is absent, model flags insufficiency, sources conflict, or collected validation findings include NOT_EVALUATED |
 | `PARTIAL` | Execution was limited, a tool failed, topology was truncated, sources expired/could not be checked, or generation failed after useful execution |
-| `FAILED` | Unrecoverable provider, protocol or final-output error before useful tool execution/evidence |
+| `FAILED` | Execution deadline expired or an unrecoverable provider, protocol or final-output error occurred before useful tool execution/evidence |
 
 HTTP 200 carries completed, insufficient or partial analysis, including real engineering
 FAIL findings. Input errors/raised request limits return 422, excessive bodies 413 and
 missing/invalid provider configuration 503. Provider/protocol/final-output failures
-without usable execution return a structured FAILED response with 502, or 504 for the
-outer provider deadline. Partial results retain HTTP 200 and explicit failed checks.
+without usable execution return a structured FAILED response with 502. Expiry of the
+end-to-end execution deadline before usable execution returns FAILED with 504, including
+expiry during request setup or while waiting for the provider. Partial results retain
+HTTP 200 and explicit failed checks.
 
 ## Configuration and observability
 

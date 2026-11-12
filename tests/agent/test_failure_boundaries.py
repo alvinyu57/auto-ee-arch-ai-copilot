@@ -10,7 +10,7 @@ from ee_arch_copilot.agent.orchestrator import AgentOrchestrator
 from ee_arch_copilot.agent.providers import CompatibleAgentProvider, ProviderReply
 from ee_arch_copilot.agent.testing import Messages, ScriptedProvider, referenced_final, tool_reply
 from ee_arch_copilot.agent.tools.adapters import EngineeringTools, TopologyArguments
-from ee_arch_copilot.agent.tools.registry import json_bytes
+from ee_arch_copilot.agent.tools.registry import ToolRegistry, json_bytes
 from ee_arch_copilot.core.settings import Settings
 from ee_arch_copilot.domain.models import Architecture
 from ee_arch_copilot.main import create_app
@@ -92,7 +92,13 @@ async def test_native_adapter_api_workflow_with_mock_http(
 
 
 @pytest.mark.parametrize("timeout", [False, True])
-async def test_provider_failure_http_status(agent_settings: Settings, timeout: bool) -> None:
+async def test_provider_failure_http_status(
+    agent_settings: Settings, timeout: bool, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Exercise provider failures independently of the time spent building tool schemas.
+    monkeypatch.setattr("ee_arch_copilot.agent.observability.monotonic", lambda: 0.0)
+    monkeypatch.setattr("ee_arch_copilot.agent.orchestrator.monotonic", lambda: 0.0)
+
     class FailedProvider:
         model = "failed-test"
 
@@ -111,7 +117,61 @@ async def test_provider_failure_http_status(agent_settings: Settings, timeout: b
         result = await client.post("/api/v1/agent/analyze", json={"question": "Inspect"})
         assert result.status_code == (504 if timeout else 502)
         assert result.json()["status"] == "FAILED"
+        assert result.json()["execution_metadata"]["stop_reason"] == (
+            "provider_timeout" if timeout else "provider_error"
+        )
         assert "private provider error" not in result.text
+
+
+@pytest.mark.parametrize("phase", ["setup", "before_tool", "after_evidence"])
+async def test_execution_timeout_http_status(
+    agent_settings: Settings, phase: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    now = 0.0
+    monkeypatch.setattr("ee_arch_copilot.agent.observability.monotonic", lambda: now)
+    monkeypatch.setattr("ee_arch_copilot.agent.orchestrator.monotonic", lambda: now)
+
+    def expire(messages: Messages) -> ProviderReply:
+        nonlocal now
+        now = agent_settings.agent_timeout_seconds
+        return tool_reply("get_architecture_topology", {}, "expired")
+
+    if phase == "setup":
+        specifications = ToolRegistry.specifications
+
+        def expired_specifications(self: ToolRegistry) -> list[dict[str, JsonValue]]:
+            nonlocal now
+            result = specifications(self)
+            now = agent_settings.agent_timeout_seconds
+            return result
+
+        monkeypatch.setattr(ToolRegistry, "specifications", expired_specifications)
+
+    has_evidence = phase == "after_evidence"
+    provider = ScriptedProvider(
+        [tool_reply("get_architecture_topology", {}, "topology"), expire]
+        if has_evidence
+        else [expire]
+    )
+    app = create_app(agent_settings, agent_provider=provider)
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app), base_url="http://test"
+    ) as client:
+        result = await client.post(
+            "/api/v1/agent/analyze",
+            json={"question": "Inspect", "architecture": {"id": "empty", "name": "Empty"}},
+        )
+    assert result.status_code == (200 if has_evidence else 504)
+    response = AgentResponse.model_validate(result.json())
+    assert response.status == ("PARTIAL" if has_evidence else "FAILED")
+    assert response.execution_metadata.stop_reason == "execution_timeout"
+    expected_iterations = {"setup": 0, "before_tool": 1, "after_evidence": 2}[phase]
+    assert response.execution_metadata.iterations == expected_iterations
+    assert len(provider.histories) == response.execution_metadata.iterations
+    assert response.execution_metadata.tool_calls == int(has_evidence)
+    assert len(response.tool_executions) == int(has_evidence)
+    assert bool(response.evidence) == has_evidence
+    assert app.state.knowledge_service is None
 
 
 async def test_complete_wire_envelope_size_is_enforced(

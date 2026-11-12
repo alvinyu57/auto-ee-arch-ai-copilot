@@ -17,7 +17,7 @@ router = APIRouter(
         413: {"description": "Request body exceeds configured size limit"},
         503: {"description": "Configure AGENT_PROVIDER and AGENT_MODEL / LLM_MODEL"},
         502: {"description": "Provider failed before any usable evidence was collected"},
-        504: {"description": "Provider execution deadline exceeded without usable evidence"},
+        504: {"description": "Analysis execution deadline exceeded without usable evidence"},
     },
 )
 
@@ -41,8 +41,9 @@ async def analyze(
 ) -> AgentResponse:
     """Read-only analysis. COMPLETED describes execution, never design approval.
 
-    Partial analyses retain independent findings with HTTP 200. Provider failures with
-    no usable evidence return a structured FAILED result and 502/504. Invalid input is 422.
+    Partial analyses retain independent findings with HTTP 200. Provider failures or deadline
+    expiry without usable execution return a structured FAILED result and 502/504. Invalid input
+    is 422.
     Submit a complete Phase 1 architecture, or omit it for requirements-only questions.
     """
     orchestrator = AgentOrchestrator(
@@ -52,7 +53,10 @@ async def analyze(
         result = await orchestrator.analyze(body)
         if result.status == "FAILED":
             response.status_code = (
-                504 if result.execution_metadata.stop_reason == "provider_timeout" else 502
+                504
+                if result.execution_metadata.stop_reason
+                in {"provider_timeout", "execution_timeout"}
+                else 502
             )
         return result
     except ValueError as error:

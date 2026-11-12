@@ -483,7 +483,8 @@ uses `--live` and a separately named output file; it does not establish certific
 `COMPLETED` means orchestration finished with evidence, not that a design passed.
 `INSUFFICIENT_EVIDENCE` includes empty retrieval, conflicting sources and collected
 `NOT_EVALUATED` findings. `PARTIAL` discloses tool failures, limits or stale sources;
-`FAILED` is an unrecoverable provider/protocol/final-output failure before useful execution.
+`FAILED` is a deadline expiry or unrecoverable provider/protocol/final-output failure before
+useful execution.
 Only server-copied `findings[].validation.status` supplies authoritative engineering
 `PASS`, `FAIL` or `NOT_EVALUATED`. Citations and evidence identities are server-owned.
 The Agent headline is rendered from those findings and their scope. Generated narrative
